@@ -1,0 +1,105 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { FlatCompat } from "@eslint/eslintrc";
+import js from "@eslint/js";
+import typescriptEslint from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import reactPlugin from "eslint-plugin-react";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
+});
+
+export default [
+  {
+    ignores: ["eslint.config.mjs", "src/__test__/*"],
+  },
+  ...compat.extends(
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ),
+  {
+    plugins: {
+      "@typescript-eslint": typescriptEslint,
+      react: reactPlugin,
+    },
+
+    languageOptions: {
+      parser: tsParser,
+    },
+
+    rules: {
+      semi: ["error", "always"],
+      "max-depth": ["error", 3],
+      "import/prefer-default-export": "off",
+      "import/no-default-export": "error",
+      "@typescript-eslint/no-floating-promises": "off",
+
+      "max-lines-per-function": [
+        "error",
+        {
+          max: 20,
+          skipBlankLines: true,
+          skipComments: true,
+          IIFEs: true,
+        },
+      ],
+
+      "react/jsx-max-depth": ["error", { max: 3 }],
+
+      "import/order": [
+        "error",
+        {
+          groups: ["builtin", "external", ["parent", "sibling"], "index"],
+
+          pathGroups: [
+            {
+              pattern: "react",
+              group: "external",
+              position: "before",
+            },
+          ],
+
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+
+          "newlines-between": "always",
+        },
+      ],
+
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          js: "never",
+          jsx: "never",
+          ts: "never",
+          tsx: "never",
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/**/*.tsx"],
+
+    rules: {
+      "max-lines-per-function": "off",
+    },
+  },
+  {
+    files: ["src/app/**/*.tsx"],
+
+    rules: {
+      "import/no-default-export": "off",
+    },
+  },
+];
