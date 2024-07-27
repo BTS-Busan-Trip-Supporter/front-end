@@ -1,11 +1,11 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { FlatCompat } from "@eslint/eslintrc";
-import js from "@eslint/js";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import reactPlugin from "eslint-plugin-react";
+import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import reactPlugin from 'eslint-plugin-react';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,17 +17,17 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ["eslint.config.mjs", "src/__test__/*"],
+    ignores: ['eslint.config.mjs', 'src/__test__/*'],
   },
   ...compat.extends(
-    "next/core-web-vitals",
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
+    'next/core-web-vitals',
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
   ),
   {
     plugins: {
-      "@typescript-eslint": typescriptEslint,
+      '@typescript-eslint': typescriptEslint,
       react: reactPlugin,
     },
 
@@ -36,14 +36,14 @@ export default [
     },
 
     rules: {
-      semi: ["error", "always"],
-      "max-depth": ["error", 3],
-      "import/prefer-default-export": "off",
-      "import/no-default-export": "error",
-      "@typescript-eslint/no-floating-promises": "off",
+      semi: ['error', 'always'],
+      'max-depth': ['error', 3],
+      'import/prefer-default-export': 'off',
+      'import/no-default-export': 'error',
+      '@typescript-eslint/no-floating-promises': 'off',
 
-      "max-lines-per-function": [
-        "error",
+      'max-lines-per-function': [
+        'error',
         {
           max: 20,
           skipBlankLines: true,
@@ -52,54 +52,54 @@ export default [
         },
       ],
 
-      "react/jsx-max-depth": ["error", { max: 3 }],
+      'react/jsx-max-depth': ['error', { max: 3 }],
 
-      "import/order": [
-        "error",
+      'import/order': [
+        'error',
         {
-          groups: ["builtin", "external", ["parent", "sibling"], "index"],
+          groups: ['builtin', 'external', ['parent', 'sibling'], 'index'],
 
           pathGroups: [
             {
-              pattern: "react",
-              group: "external",
-              position: "before",
+              pattern: 'react',
+              group: 'external',
+              position: 'before',
             },
           ],
 
           alphabetize: {
-            order: "asc",
+            order: 'asc',
             caseInsensitive: true,
           },
 
-          "newlines-between": "always",
+          'newlines-between': 'always',
         },
       ],
 
-      "import/extensions": [
-        "error",
-        "ignorePackages",
+      'import/extensions': [
+        'error',
+        'ignorePackages',
         {
-          js: "never",
-          jsx: "never",
-          ts: "never",
-          tsx: "never",
+          js: 'never',
+          jsx: 'never',
+          ts: 'never',
+          tsx: 'never',
         },
       ],
     },
   },
   {
-    files: ["src/**/*.tsx"],
+    files: ['src/**/*.tsx'],
 
     rules: {
-      "max-lines-per-function": "off",
+      'max-lines-per-function': 'off',
     },
   },
   {
-    files: ["src/app/**/*.tsx"],
+    files: ['src/app/**/*.tsx'],
 
     rules: {
-      "import/no-default-export": "off",
+      'import/no-default-export': 'off',
     },
   },
 ];
