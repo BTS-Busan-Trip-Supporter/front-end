@@ -1,13 +1,13 @@
 const config = {
+  semi: true,
   tabWidth: 2,
   useTabs: false,
+  endOfLine: 'auto',
   singleQuote: true,
   jsxSingleQuote: true,
-  arrowParens: 'always',
-  trailingComma: 'all',
-  semi: true,
   bracketSpacing: true,
-  endOfLine: 'auto',
+  trailingComma: 'all',
+  arrowParens: 'always',
 };
 
 export default config;
