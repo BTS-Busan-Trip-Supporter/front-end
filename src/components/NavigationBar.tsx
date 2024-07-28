@@ -29,11 +29,11 @@ const styles = {
     align-items: center;
     text-align: center;
     gap: 0.2rem;
+  `,
 
-    img {
-      width: 1.75rem;
-      object-fit: content;
-    }
+  icon: styled.img`
+    width: 1.75rem;
+    object-fit: content;
   `,
 };
 
@@ -48,32 +48,32 @@ export function NavigationBar() {
     <styles.container>
       {pathName === '/travel' ? (
         <styles.menu $active>
-          <img src='./travel-active.png' alt='travel-active-menu' />
+          <styles.icon src='./travel-active.png' alt='travel-active-menu' />
           여행하기
         </styles.menu>
       ) : (
         <styles.menu>
-          <img src='./travel.png' alt='travel-menu' />
+          <styles.icon src='./travel.png' alt='travel-menu' />
           여행하기
         </styles.menu>
       )}
       {pathName === '/' ? (
         <styles.menu $active>
-          <img src='./home-active.png' alt='home-active-menu' />홈
+          <styles.icon src='./home-active.png' alt='home-active-menu' />홈
         </styles.menu>
       ) : (
         <styles.menu>
-          <img src='./home.png' alt='home-menu' />홈
+          <styles.icon src='./home.png' alt='home-menu' />홈
         </styles.menu>
       )}
       {pathName === '/write' ? (
         <styles.menu $active>
-          <img src='./write-active.png' alt='write-active-menu' />
+          <styles.icon src='./write-active.png' alt='write-active-menu' />
           기록하기
         </styles.menu>
       ) : (
         <styles.menu>
-          <img src='./write.png' alt='write-menu' />
+          <styles.icon src='./write.png' alt='write-menu' />
           기록하기
         </styles.menu>
       )}
