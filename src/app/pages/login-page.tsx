@@ -87,7 +87,7 @@ const styles = {
         background: url('./mail.png') no-repeat center; 
         margin-right: 0.5rem; 
         background-size: 100%;
-        transform: translateY(0.155rem);
+        transform: translateY(0.2rem);
       }
     `}
     }
