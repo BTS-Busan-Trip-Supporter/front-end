@@ -44,6 +44,10 @@ interface NavProps {
 export function NavigationBar() {
   const pathName = usePathname();
 
+  if (pathName === '/login' || pathName === '/my') {
+    return null;
+  }
+
   return (
     <styles.container>
       {pathName === '/travel' ? (

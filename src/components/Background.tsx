@@ -7,6 +7,7 @@ const styles = {
     width: 100%;
     height: 100%;
     position: absolute;
+    background: #fafaff;
     z-index: -100;
   `,
 
@@ -32,7 +33,7 @@ const styles = {
 
     filter: blur(2px);
     position: absolute;
-    bottom: 18rem;
+    bottom: ${(props) => (props.$page === 'login' ? '12rem' : '18rem')};
     left: -3rem;
   `,
 };
@@ -59,7 +60,7 @@ export function Background({ page }: { page: string }) {
       />
       <styles.image
         src={`./background/bottom-${page}.svg`}
-        $bottom='6rem'
+        $bottom={page === 'login' ? '0' : '6rem'}
         $right='0'
       />
       <styles.rec $page={page} />
