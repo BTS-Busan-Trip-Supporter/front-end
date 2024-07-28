@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { usePathname } from 'next/navigation';
 
 const styles = {
   hamburger: styled.button`
@@ -17,5 +18,10 @@ const styles = {
 };
 
 export function Header() {
+  const pathName = usePathname();
+
+  if (pathName === '/login' || pathName === '/my') {
+    return null;
+  }
   return <styles.hamburger />;
 }
