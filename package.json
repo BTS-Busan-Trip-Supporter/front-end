@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "jest",
     "test-watch": "jest --watch",
-    "lint": "eslint .",
+    "lint-check": "eslint .",
     "prettier-check": "prettier --check ."
   },
   "dependencies": {
