@@ -23,7 +23,7 @@ main {
   min-width: 375px;
 
   display: flex;
-  justify-content: center;
+  flex-direction: column;
 }
 
 @media (prefers-color-scheme: dark) {
