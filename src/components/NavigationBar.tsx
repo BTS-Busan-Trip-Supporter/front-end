@@ -56,7 +56,7 @@ export function NavigationBar() {
           router.replace('/travel');
         }}
       >
-        {pathName === '/travel' ? (
+        {pathName.startsWith('/travel') ? (
           <styles.menu $active>
             <styles.icon src='./travel-active.png' alt='travel-active-menu' />
             여행하기
@@ -88,7 +88,7 @@ export function NavigationBar() {
           router.replace('/record');
         }}
       >
-        {pathName === '/record' ? (
+        {pathName.startsWith('/record') ? (
           <styles.menu $active>
             <styles.icon src='./record-active.png' alt='record-active-menu' />
             기록하기
