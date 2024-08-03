@@ -1,1 +1,2 @@
-export * from './travel-schedule.type';
+export * from './travel-schedule.model';
+export * from './travel-schedule.slice';
