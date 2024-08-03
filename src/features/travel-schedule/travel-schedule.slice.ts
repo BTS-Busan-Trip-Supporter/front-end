@@ -52,7 +52,6 @@ const addDestination = ({
   set: Setter;
 }) =>
   set((state) => {
-    console.log(state.schedules, day, destination);
     const result = [...state.schedules];
     result[day].addDestination({ destination });
     return { schedules: result };
