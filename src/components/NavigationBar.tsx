@@ -1,9 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-
 import { usePathname, useRouter } from 'next/navigation';
-
 
 const styles = {
   container: styled.nav`
@@ -46,7 +44,6 @@ interface NavProps {
 export function NavigationBar() {
   const pathName = usePathname();
   const router = useRouter();
-
 
   if (pathName === '/login' || pathName === '/my') {
     return null;
