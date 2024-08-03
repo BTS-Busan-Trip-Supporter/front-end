@@ -19,8 +19,8 @@ export default function RootLayout({
   return (
     <html lang='ko-kr'>
       <body className={inter.className}>
-        <Header />
         <main>
+          <Header />
           {children}
           <NavigationBar />
         </main>
