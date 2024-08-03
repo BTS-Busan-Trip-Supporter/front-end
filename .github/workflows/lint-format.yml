@@ -20,7 +20,15 @@ jobs:
         run: npm install
 
       - name: Run ESLint
-        run: npm run lint-check
+        run: npm run lint-fix
 
       - name: Run Prettier
-        run: npm run prettier-check
+        run: npm run prettier-fix
+
+      - name: Commit changes if any
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git diff --quiet || (git add . && git commit -m 'chore: auto-fix linting and formatting issues' && git push)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
