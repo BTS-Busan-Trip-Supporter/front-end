@@ -79,13 +79,13 @@ const styles = {
 
     width: 10.1875rem;
     height: 2.8125rem;
-    background: url('./start-social-login.svg') no-repeat center;
+    background: url('/start-social-login.svg') no-repeat center;
     background-size: 100%;
   `,
   kakaoLoginBtn: styled.button`
     width: 3.25rem;
     height: 3.25rem;
-    background: url('./kakao.svg') no-repeat center;
+    background: url('/kakao.svg') no-repeat center;
     background-size: 100%;
     border: none;
   `,
@@ -117,7 +117,7 @@ const styles = {
         display: inline-block;
         width: 1.12906rem; 
         height: 1.16669rem; 
-        background: url('./mail.png') no-repeat center; 
+        background: url('/mail.png') no-repeat center; 
         margin-right: 0.5rem; 
         background-size: 100%;
         transform: translateY(0.2rem);

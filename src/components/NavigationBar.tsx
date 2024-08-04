@@ -24,12 +24,12 @@ export function NavigationBar() {
       >
         {pathName.startsWith('/travel') ? (
           <styles.menu $active>
-            <styles.icon src='./travel-active.png' alt='travel-active-menu' />
+            <styles.icon src='/travel-active.png' alt='travel-active-menu' />
             여행하기
           </styles.menu>
         ) : (
           <styles.menu>
-            <styles.icon src='./travel.png' alt='travel-menu' />
+            <styles.icon src='/travel.png' alt='travel-menu' />
             여행하기
           </styles.menu>
         )}
@@ -41,11 +41,11 @@ export function NavigationBar() {
       >
         {pathName === '/' ? (
           <styles.menu $active>
-            <styles.icon src='./home-active.png' alt='home-active-menu' />홈
+            <styles.icon src='/home-active.png' alt='home-active-menu' />홈
           </styles.menu>
         ) : (
           <styles.menu>
-            <styles.icon src='./home.png' alt='home-menu' />홈
+            <styles.icon src='/home.png' alt='home-menu' />홈
           </styles.menu>
         )}
       </div>
@@ -56,12 +56,12 @@ export function NavigationBar() {
       >
         {pathName.startsWith('/record') ? (
           <styles.menu $active>
-            <styles.icon src='./record-active.png' alt='record-active-menu' />
+            <styles.icon src='/record-active.png' alt='record-active-menu' />
             기록하기
           </styles.menu>
         ) : (
           <styles.menu>
-            <styles.icon src='./record.png' alt='record-menu' />
+            <styles.icon src='/record.png' alt='record-menu' />
             기록하기
           </styles.menu>
         )}

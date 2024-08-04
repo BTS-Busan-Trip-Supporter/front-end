@@ -16,14 +16,14 @@ interface Color {
 export function Background({ page }: { page: string }) {
   return (
     <styles.container>
-      <styles.image src={`./background/top-left-${page}.svg`} />
+      <styles.image src={`/background/top-left-${page}.svg`} />
       <styles.image
-        src={`./background/top-right-${page}.svg`}
+        src={`/background/top-right-${page}.svg`}
         $top='10rem'
         $right='0'
       />
       <styles.image
-        src={`./background/bottom-${page}.svg`}
+        src={`/background/bottom-${page}.svg`}
         $bottom={page === 'login' ? '0' : '6rem'}
         $right='0'
       />

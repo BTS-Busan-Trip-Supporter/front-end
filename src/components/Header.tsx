@@ -18,11 +18,12 @@ const styles = {
     width: 1.25rem;
     height: 1.25rem;
     border: none;
-    background: url('./bars.svg') no-repeat center;
+    background: url('/bars.svg') no-repeat center;
     background-size: content;
 
     position: absolute;
     top: 2.25rem;
     right: 1.5rem;
+    z-index: 9999;
   `,
 };

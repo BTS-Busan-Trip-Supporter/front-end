@@ -59,7 +59,7 @@ export function MyPage() {
     <styles.container>
       <styles.top>
         <styles.header>
-          <styles.xBtn src='./x.svg' alt='x' />
+          <styles.xBtn src='/x.svg' alt='x' />
           <span>프로필 편집</span>
         </styles.header>
         <styles.profileSection>
@@ -243,7 +243,7 @@ const styles = {
   ellipsisBtn: styled.button`
     width: 1rem;
     height: 100%;
-    background: url('./ellipsis.svg') no-repeat center;
+    background: url('/ellipsis.svg') no-repeat center;
     background-size: 100%;
     border: none;
     cursor: pointer;
