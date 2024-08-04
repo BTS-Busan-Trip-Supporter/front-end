@@ -3,6 +3,16 @@
 import styled from '@emotion/styled';
 import { usePathname } from 'next/navigation';
 
+export function Header() {
+  const pathName = usePathname();
+
+  if (pathName === '/login' || pathName === '/my') {
+    return null;
+  }
+
+  return <styles.hamburger />;
+}
+
 const styles = {
   hamburger: styled.button`
     width: 1.25rem;
@@ -16,13 +26,3 @@ const styles = {
     right: 1.5rem;
   `,
 };
-
-export function Header() {
-  const pathName = usePathname();
-
-  if (pathName === '/login' || pathName === '/my') {
-    return null;
-  }
-
-  return <styles.hamburger />;
-}

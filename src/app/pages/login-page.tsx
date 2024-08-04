@@ -4,6 +4,39 @@ import styled from '@emotion/styled';
 
 import { Background } from '@/components';
 
+interface ButtonProps {
+  $type?: string;
+}
+
+export function LoginPage() {
+  return (
+    <>
+      <Background page='login' />
+      <styles.container>
+        <h2>
+          P의 여행과 함께
+          <br /> 지금 여행을 시작하세요!
+        </h2>
+        <styles.socialSection>
+          <styles.bubble>간편 로그인 시작하기</styles.bubble>
+          <styles.kakaoLoginBtn />
+        </styles.socialSection>
+        <styles.customBtn $type='login'>
+          <span>이메일로 로그인</span>
+        </styles.customBtn>
+        <styles.customBtn $type='sign'>
+          <span>회원가입</span>
+        </styles.customBtn>
+        <styles.loginMenuContainer>
+          <li>아이디 찾기</li>
+          <li>비밀번호 찾기</li>
+          <li>문의하기</li>
+        </styles.loginMenuContainer>
+      </styles.container>
+    </>
+  );
+}
+
 const styles = {
   container: styled.section`
     width: 100%;
@@ -124,36 +157,3 @@ const styles = {
     }
   `,
 };
-
-interface ButtonProps {
-  $type?: string;
-}
-
-export function LoginPage() {
-  return (
-    <>
-      <Background page='login' />
-      <styles.container>
-        <h2>
-          P의 여행과 함께
-          <br /> 지금 여행을 시작하세요!
-        </h2>
-        <styles.socialSection>
-          <styles.bubble>간편 로그인 시작하기</styles.bubble>
-          <styles.kakaoLoginBtn />
-        </styles.socialSection>
-        <styles.customBtn $type='login'>
-          <span>이메일로 로그인</span>
-        </styles.customBtn>
-        <styles.customBtn $type='sign'>
-          <span>회원가입</span>
-        </styles.customBtn>
-        <styles.loginMenuContainer>
-          <li>아이디 찾기</li>
-          <li>비밀번호 찾기</li>
-          <li>문의하기</li>
-        </styles.loginMenuContainer>
-      </styles.container>
-    </>
-  );
-}

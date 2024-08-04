@@ -3,6 +3,97 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+export function MyPage() {
+  const user = {
+    name: 'P의 여행자님',
+    travel: {
+      1: {
+        name: '부산 여행',
+        date: '2024.6.23 - 6.25',
+        with: '친구들과 함께',
+      },
+      2: {
+        name: '부산 여행',
+        date: '2024.6.23 - 6.25',
+        with: '친구들과 함께',
+      },
+      3: {
+        name: '부산 여행',
+        date: '2024.6.23 - 6.25',
+        with: '친구들과 함께',
+      },
+    },
+    record: {},
+    scrap: {},
+  };
+
+  const [activeTab, setActiveTab] = useState('travel');
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'travel':
+        return (
+          <styles.tabContents>
+            {Object.values(user.travel).map((travel, index) => (
+              <styles.list key={index}>
+                <styles.thumbnail />
+                <section>
+                  <h3>{travel.name}</h3>
+                  <p>{travel.date}</p>
+                  <p>{travel.with}</p>
+                </section>
+                <styles.ellipsisBtn />
+              </styles.list>
+            ))}
+          </styles.tabContents>
+        );
+      case 'record':
+        return <div></div>;
+      case 'scrap':
+        return <div></div>;
+      default:
+        return null;
+    }
+  };
+  return (
+    <styles.container>
+      <styles.top>
+        <styles.header>
+          <styles.xBtn src='./x.svg' alt='x' />
+          <span>프로필 편집</span>
+        </styles.header>
+        <styles.profileSection>
+          <styles.profileImg />
+          <p>{user.name}</p>
+        </styles.profileSection>
+      </styles.top>
+      <styles.tabContainer>
+        <styles.tabList>
+          <styles.tabItem
+            $active={activeTab === 'travel'}
+            onClick={() => setActiveTab('travel')}
+          >
+            내 여행 {Object.keys(user.travel).length}
+          </styles.tabItem>
+          <styles.tabItem
+            $active={activeTab === 'record'}
+            onClick={() => setActiveTab('record')}
+          >
+            내 기록
+          </styles.tabItem>
+          <styles.tabItem
+            $active={activeTab === 'scrap'}
+            onClick={() => setActiveTab('scrap')}
+          >
+            내 저장
+          </styles.tabItem>
+        </styles.tabList>
+        {renderTabContent()}
+      </styles.tabContainer>
+    </styles.container>
+  );
+}
+
 const styles = {
   container: styled.div`
     display: flex;
@@ -158,94 +249,3 @@ const styles = {
     cursor: pointer;
   `,
 };
-
-export function MyPage() {
-  const user = {
-    name: 'P의 여행자님',
-    travel: {
-      1: {
-        name: '부산 여행',
-        date: '2024.6.23 - 6.25',
-        with: '친구들과 함께',
-      },
-      2: {
-        name: '부산 여행',
-        date: '2024.6.23 - 6.25',
-        with: '친구들과 함께',
-      },
-      3: {
-        name: '부산 여행',
-        date: '2024.6.23 - 6.25',
-        with: '친구들과 함께',
-      },
-    },
-    record: {},
-    scrap: {},
-  };
-
-  const [activeTab, setActiveTab] = useState('travel');
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'travel':
-        return (
-          <styles.tabContents>
-            {Object.values(user.travel).map((travel, index) => (
-              <styles.list key={index}>
-                <styles.thumbnail />
-                <section>
-                  <h3>{travel.name}</h3>
-                  <p>{travel.date}</p>
-                  <p>{travel.with}</p>
-                </section>
-                <styles.ellipsisBtn />
-              </styles.list>
-            ))}
-          </styles.tabContents>
-        );
-      case 'record':
-        return <div></div>;
-      case 'scrap':
-        return <div></div>;
-      default:
-        return null;
-    }
-  };
-  return (
-    <styles.container>
-      <styles.top>
-        <styles.header>
-          <styles.xBtn src='./x.svg' alt='x' />
-          <span>프로필 편집</span>
-        </styles.header>
-        <styles.profileSection>
-          <styles.profileImg />
-          <p>{user.name}</p>
-        </styles.profileSection>
-      </styles.top>
-      <styles.tabContainer>
-        <styles.tabList>
-          <styles.tabItem
-            $active={activeTab === 'travel'}
-            onClick={() => setActiveTab('travel')}
-          >
-            내 여행 {Object.keys(user.travel).length}
-          </styles.tabItem>
-          <styles.tabItem
-            $active={activeTab === 'record'}
-            onClick={() => setActiveTab('record')}
-          >
-            내 기록
-          </styles.tabItem>
-          <styles.tabItem
-            $active={activeTab === 'scrap'}
-            onClick={() => setActiveTab('scrap')}
-          >
-            내 저장
-          </styles.tabItem>
-        </styles.tabList>
-        {renderTabContent()}
-      </styles.tabContainer>
-    </styles.container>
-  );
-}

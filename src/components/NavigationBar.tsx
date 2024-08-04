@@ -3,40 +3,6 @@
 import styled from '@emotion/styled';
 import { usePathname, useRouter } from 'next/navigation';
 
-const styles = {
-  container: styled.nav`
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 1.5rem 0;
-    position: fixed;
-    bottom: 0;
-    background-color: white;
-  `,
-
-  menu: styled.span<NavProps>`
-    color: ${(props) => (props.$active ? '#605EFF' : '#b0afbc')};
-
-    font-family: 'Noto Sans KR';
-    font-size: 0.75rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 0.2rem;
-  `,
-
-  icon: styled.img`
-    width: 1.75rem;
-    object-fit: content;
-  `,
-};
-
 interface NavProps {
   $active?: boolean;
 }
@@ -103,3 +69,37 @@ export function NavigationBar() {
     </styles.container>
   );
 }
+
+const styles = {
+  container: styled.nav`
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1.5rem 0;
+    position: fixed;
+    bottom: 0;
+    background-color: white;
+  `,
+
+  menu: styled.span<NavProps>`
+    color: ${(props) => (props.$active ? '#605EFF' : '#b0afbc')};
+
+    font-family: 'Noto Sans KR';
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.2rem;
+  `,
+
+  icon: styled.img`
+    width: 1.75rem;
+    object-fit: content;
+  `,
+};
