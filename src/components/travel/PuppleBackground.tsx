@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { ReactNode } from 'react';
 
 interface Position {
   $top?: string;
@@ -9,34 +10,12 @@ interface Position {
   $right?: string;
 }
 
-interface ChoiceProps {
-  where?: string;
-  what?: string;
-  when?: string;
-}
-
-export function PuppleBackground({ choiceList }: { choiceList: ChoiceProps }) {
+export function PuppleBackground({ child }: { child: ReactNode }) {
   return (
     <styles.container>
       <Elements />
-      <styles.choiceSection>
-        <h2>내가 선택한</h2>
-        <styles.choiceList>
-          {choiceList.where && <ChoiceItem item={choiceList.where} />}
-          {choiceList.what && <ChoiceItem item={choiceList.what} />}
-          {choiceList.when && <ChoiceItem item={choiceList.when} />}
-        </styles.choiceList>
-      </styles.choiceSection>
+      <styles.choiceSection>{child}</styles.choiceSection>
     </styles.container>
-  );
-}
-
-function ChoiceItem({ item }: { item: string }) {
-  return (
-    <styles.choiceItem>
-      <styles.pin src='/pin.svg' />
-      <span>{item}</span>
-    </styles.choiceItem>
   );
 }
 
@@ -81,10 +60,10 @@ function Elements() {
 const styles = {
   container: styled.div`
     width: 100%;
-    height: 30%;
+    height: 17rem;
     position: relative;
     background: linear-gradient(180deg, #6b67f9 0.04%, #3f3d93 90.12%);
-    padding: 2.88rem 1.25rem;
+    padding: 1.25rem;
     display: flex;
     z-index: -10000;
   `,
@@ -116,45 +95,5 @@ const styles = {
 
   choiceSection: styled.div`
     display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-
-    h2 {
-      color: rgba(199, 198, 253, 0.56);
-      font-family: 'Noto Sans KR';
-      font-size: 0.8125rem;
-      font-style: normal;
-      font-weight: 500;
-      line-height: normal;
-      letter-spacing: -0.02438rem;
-    }
-  `,
-
-  choiceList: styled.ul`
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  `,
-
-  choiceItem: styled.li`
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-end;
-
-    span {
-      color: #fff;
-      font-family: 'Noto Sans KR';
-      font-size: 1.0625rem;
-      font-style: normal;
-      font-weight: 700;
-      line-height: normal;
-      letter-spacing: -0.03188rem;
-    }
-  `,
-
-  pin: styled.img`
-    width: 0.3125rem;
-    height: auto;
-    transform: translateY(-0.2rem);
   `,
 };

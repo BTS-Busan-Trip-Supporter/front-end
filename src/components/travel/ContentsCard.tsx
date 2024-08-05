@@ -3,20 +3,24 @@
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
 
-export function ContentsCard({ child }: { child: ReactNode }) {
-  return <styles.container>{child}</styles.container>;
+export function ContentsCard({
+  child,
+  type,
+}: {
+  child: ReactNode;
+  type: string;
+}) {
+  return <styles.container $type={type}>{child}</styles.container>;
 }
 
 const styles = {
-  container: styled.div`
+  container: styled.div<{ $type: string }>`
     width: 100%;
-    min-height: 75%;
-    max-height: 86%;
+    min-height: 32.5rem;
     border-radius: 2.6875rem;
     background: #fafaff;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     position: absolute;
-    bottom: 0;
     overflow: auto;
 
     display: flex;
@@ -25,8 +29,17 @@ const styles = {
     align-items: center;
     justify-content: center;
 
-    @media (max-height: 700px) {
-      max-height: 82%;
-    }
+    top: ${({ $type }) => {
+      switch ($type) {
+        case 'auto':
+          return '12rem';
+        case 'traveler':
+          return '7rem';
+        case 'edit':
+          return '9rem';
+        default:
+          return '0';
+      }
+    }};
   `,
 };

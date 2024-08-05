@@ -1,17 +1,15 @@
 'use client';
 
+import styled from '@emotion/styled';
 import { ReactNode } from 'react';
 
 import { ContentsCard } from '@/components/travel/ContentsCard';
 import { PuppleBackground } from '@/components/travel/PuppleBackground';
 
 interface TravelComponentProps {
-  choiceList: {
-    where?: string;
-    what?: string;
-    when?: string;
-  };
+  backgroundNode: ReactNode;
   childNode: ReactNode;
+  type: string;
 }
 
 export function TravelComponent({
@@ -20,9 +18,17 @@ export function TravelComponent({
   contents: TravelComponentProps;
 }) {
   return (
-    <>
-      <PuppleBackground choiceList={contents.choiceList} />
-      <ContentsCard child={contents.childNode} />
-    </>
+    <styles.container>
+      <PuppleBackground child={contents.backgroundNode} />
+      <ContentsCard child={contents.childNode} type={contents.type} />
+    </styles.container>
   );
 }
+
+const styles = {
+  container: styled.div`
+    width: 100%;
+    height: 100%;
+    position: relative;
+  `,
+};
