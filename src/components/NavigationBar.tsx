@@ -80,6 +80,7 @@ const styles = {
     position: fixed;
     bottom: 0;
     background-color: white;
+    z-index: 99999;
   `,
 
   menu: styled.span<NavProps>`
