@@ -14,7 +14,11 @@ interface TravelComponentProps {
   childNode: ReactNode;
 }
 
-export function Travel({ contents }: { contents: TravelComponentProps }) {
+export function TravelComponent({
+  contents,
+}: {
+  contents: TravelComponentProps;
+}) {
   return (
     <>
       <PuppleBackground choiceList={contents.choiceList} />

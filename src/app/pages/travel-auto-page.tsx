@@ -1,6 +1,6 @@
 'use client';
 
-import { Travel } from '@/components';
+import { TravelComponent } from '@/components';
 
 const Contents = {
   choiceList: {
@@ -12,5 +12,5 @@ const Contents = {
 };
 
 export function TravelAutoPage() {
-  return <Travel contents={Contents} />;
+  return <TravelComponent contents={Contents} />;
 }
