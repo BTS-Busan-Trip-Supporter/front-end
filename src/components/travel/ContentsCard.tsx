@@ -16,12 +16,12 @@ export function ContentsCard({
 const styles = {
   container: styled.div<{ $type: string }>`
     width: 100%;
-    min-height: 32.5rem;
+    min-height: 75%;
     border-radius: 2.6875rem;
     background: #fafaff;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     position: absolute;
-    overflow: auto;
+    overflow-y: auto;
 
     display: flex;
     padding: 1.25rem;
@@ -38,7 +38,7 @@ const styles = {
         case 'edit':
           return '9rem';
         default:
-          return '0';
+          return '12rem';
       }
     }};
   `,
