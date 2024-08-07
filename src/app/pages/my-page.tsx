@@ -3,6 +3,21 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+interface Travel {
+  name: string;
+  date: string;
+  with: string;
+}
+
+interface User {
+  name: string;
+  travel: {
+    [id: number]: Travel;
+  };
+  record: { [id: number]: string };
+  scrap: { [id: number]: string };
+}
+
 export function MyPage() {
   const user = {
     name: 'P의 여행자님',
@@ -32,29 +47,16 @@ export function MyPage() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'travel':
-        return (
-          <styles.tabContents>
-            {Object.values(user.travel).map((travel, index) => (
-              <styles.list key={index}>
-                <styles.thumbnail />
-                <section>
-                  <h3>{travel.name}</h3>
-                  <p>{travel.date}</p>
-                  <p>{travel.with}</p>
-                </section>
-                <styles.ellipsisBtn />
-              </styles.list>
-            ))}
-          </styles.tabContents>
-        );
+        return <TravelTab user={user} />;
       case 'record':
-        return <div></div>;
+        return <RecordTab />;
       case 'scrap':
-        return <div></div>;
+        return <ScrapTab />;
       default:
         return null;
     }
   };
+
   return (
     <styles.container>
       <styles.top>
@@ -92,6 +94,32 @@ export function MyPage() {
       </styles.tabContainer>
     </styles.container>
   );
+}
+
+function TravelTab({ user }: { user: User }) {
+  return (
+    <styles.tabContents>
+      {Object.values(user.travel).map((travel, id) => (
+        <styles.list key={id}>
+          <styles.thumbnail />
+          <section>
+            <h3>{travel.name}</h3>
+            <p>{travel.date}</p>
+            <p>{travel.with}</p>
+          </section>
+          <styles.ellipsisBtn />
+        </styles.list>
+      ))}
+    </styles.tabContents>
+  );
+}
+
+function RecordTab() {
+  return <></>;
+}
+
+function ScrapTab() {
+  return <></>;
 }
 
 const styles = {
