@@ -32,7 +32,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          BRANCH_NAME="${GITHUB_HEAD_REF}"
-          git diff --quiet || (git add . && git commit -m 'chore: auto-fix linting and formatting issues' && git push https://github-actions:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:$BRANCH_NAME)
+          git diff --quiet || (git add . && git commit -m 'chore: auto-fix linting and formatting issues' && git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
