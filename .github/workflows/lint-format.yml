@@ -2,7 +2,7 @@ name: Lint & Format
 
 on:
   pull_request:
-    branches: [main, dev]
+    branches: [ "main", "dev" ]
 
 jobs:
   lint:
@@ -29,7 +29,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          BRANCH_NAME=$(echo "${GITHUB_HEAD_REF#refs/heads/}")
+          BRANCH_NAME="${GITHUB_HEAD_REF}"
           git remote set-url origin https://github-actions:${{ secrets.CI_TOKEN }}@github.com/${{ github.repository }}.git
           git diff --quiet || (git add . && git commit -m 'chore: auto-fix linting and formatting issues' && git push origin "$BRANCH_NAME")
         env:
