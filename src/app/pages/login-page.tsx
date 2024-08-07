@@ -4,6 +4,39 @@ import styled from '@emotion/styled';
 
 import { Background } from '@/components';
 
+interface ButtonProps {
+  $type?: string;
+}
+
+export function LoginPage() {
+  return (
+    <>
+      <Background page='login' />
+      <styles.container>
+        <h2>
+          P의 여행과 함께
+          <br /> 지금 여행을 시작하세요!
+        </h2>
+        <styles.socialSection>
+          <styles.bubble>간편 로그인 시작하기</styles.bubble>
+          <styles.kakaoLoginBtn />
+        </styles.socialSection>
+        <styles.customBtn $type='login'>
+          <span>이메일로 로그인</span>
+        </styles.customBtn>
+        <styles.customBtn $type='sign'>
+          <span>회원가입</span>
+        </styles.customBtn>
+        <styles.loginMenuContainer>
+          <li>아이디 찾기</li>
+          <li>비밀번호 찾기</li>
+          <li>문의하기</li>
+        </styles.loginMenuContainer>
+      </styles.container>
+    </>
+  );
+}
+
 const styles = {
   container: styled.section`
     width: 100%;
@@ -46,13 +79,13 @@ const styles = {
 
     width: 10.1875rem;
     height: 2.8125rem;
-    background: url('./start-social-login.svg') no-repeat center;
+    background: url('/start-social-login.svg') no-repeat center;
     background-size: 100%;
   `,
   kakaoLoginBtn: styled.button`
     width: 3.25rem;
     height: 3.25rem;
-    background: url('./kakao.svg') no-repeat center;
+    background: url('/kakao.svg') no-repeat center;
     background-size: 100%;
     border: none;
   `,
@@ -84,7 +117,7 @@ const styles = {
         display: inline-block;
         width: 1.12906rem; 
         height: 1.16669rem; 
-        background: url('./mail.png') no-repeat center; 
+        background: url('/mail.png') no-repeat center; 
         margin-right: 0.5rem; 
         background-size: 100%;
         transform: translateY(0.2rem);
@@ -124,36 +157,3 @@ const styles = {
     }
   `,
 };
-
-interface ButtonProps {
-  $type?: string;
-}
-
-export function LoginPage() {
-  return (
-    <>
-      <Background page='login' />
-      <styles.container>
-        <h2>
-          P의 여행과 함께
-          <br /> 지금 여행을 시작하세요!
-        </h2>
-        <styles.socialSection>
-          <styles.bubble>간편 로그인 시작하기</styles.bubble>
-          <styles.kakaoLoginBtn />
-        </styles.socialSection>
-        <styles.customBtn $type='login'>
-          <span>이메일로 로그인</span>
-        </styles.customBtn>
-        <styles.customBtn $type='sign'>
-          <span>회원가입</span>
-        </styles.customBtn>
-        <styles.loginMenuContainer>
-          <li>아이디 찾기</li>
-          <li>비밀번호 찾기</li>
-          <li>문의하기</li>
-        </styles.loginMenuContainer>
-      </styles.container>
-    </>
-  );
-}
