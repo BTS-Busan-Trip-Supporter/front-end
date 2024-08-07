@@ -29,6 +29,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git diff --quiet || (git add . && git commit -m 'chore: auto-fix linting and formatting issues' && git push)
+          git diff --quiet || (git add . && git commit -m 'chore: auto-fix linting and formatting issues' && git push origin "HEAD:${GITHUB_HEAD_REF}")
         env:
           GITHUB_TOKEN: ${{ secrets.CI_TOKEN }}
