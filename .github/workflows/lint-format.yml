@@ -34,5 +34,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.CI_TOKEN }}@github.com/${{ github.repository }}.git
+          git remote remove origin
+          git remote add origin https://BTS-Busan-Trip-Supporter:${{ secrets.CI_TOKEN }}@github.com/BTS-Busan-Trip-Supporter/front-end.git
           git diff --quiet || (git add . && git commit -m 'chore: auto-fix linting and formatting issues' && git push)
