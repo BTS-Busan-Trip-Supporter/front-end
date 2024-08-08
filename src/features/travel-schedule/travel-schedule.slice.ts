@@ -18,6 +18,12 @@ export interface TravelScheduleActions {
     destination: Destination;
   }) => void;
 
+  updateDestination: (params: {
+    day: number;
+    target: Destination;
+    updateValue: Destination;
+  }) => void;
+
   reset: () => void;
 }
 
@@ -72,6 +78,26 @@ const removeDestination = ({
     return { schedules: result };
   });
 
+const updateDestination = ({
+  day,
+  target,
+  updateValue,
+  set,
+}: {
+  day: number;
+  target: Destination;
+  updateValue: Destination;
+  set: Setter;
+}) =>
+  set((state) => {
+    const result = [...state.schedules];
+    result[day].updateDestination({
+      destinationId: target.id,
+      updateValue: updateValue,
+    });
+    return { schedules: result };
+  });
+
 export const createTravelScheduleStore = (
   initState: TravelScheduleState = defaultInitState,
 ) => {
@@ -82,6 +108,8 @@ export const createTravelScheduleStore = (
       addDestination({ day, destination, set }),
     removeDestination: ({ day, destination }) =>
       removeDestination({ day, destination, set }),
+    updateDestination: ({ day, target, updateValue }) =>
+      updateDestination({ day, target, updateValue, set }),
     reset: () => set(defaultInitState),
   }));
 };

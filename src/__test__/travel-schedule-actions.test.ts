@@ -4,7 +4,7 @@ import {
 } from '@/features/travel-schedule';
 
 describe('여행 관련 일정 로직 테스트', () => {
-  test('초기 상태는 반드시 비어 있는 배열이어야 합니다.', () => {
+  test('초기 상태는 반드시 비어 있는 배열이어야 합니다', () => {
     const store = createTravelScheduleStore();
 
     const schedules = store.getState().schedules;
@@ -12,7 +12,7 @@ describe('여행 관련 일정 로직 테스트', () => {
     expect(schedules.length).toEqual(0);
   });
 
-  test('여행 일자를 추가하였을 때, 정상적으로 추가되어야 합니다.', () => {
+  test('여행 일자를 추가하였을 때, 정상적으로 추가되어야 합니다', () => {
     const store = createTravelScheduleStore();
 
     const { schedules, addDaySchedule } = store.getState();
@@ -21,7 +21,7 @@ describe('여행 관련 일정 로직 테스트', () => {
     expect(store.getState().schedules.length).not.toEqual(schedules.length);
   });
 
-  test('목적지를 추가하였을 때, 정상적으로 추가되어야 합니다.', () => {
+  test('목적지를 추가하였을 때, 정상적으로 추가되어야 합니다', () => {
     const store = createTravelScheduleStore();
 
     const destination: Destination = {
@@ -44,7 +44,7 @@ describe('여행 관련 일정 로직 테스트', () => {
     expect(target).not.toBeUndefined();
   });
 
-  test('목적지를 삭제하였을 때, 정상적으로 제거되어야 합니다.', () => {
+  test('목적지를 삭제하였을 때, 정상적으로 제거되어야 합니다', () => {
     const store = createTravelScheduleStore();
 
     const destination: Destination = {
@@ -67,5 +67,37 @@ describe('여행 관련 일정 로직 테스트', () => {
       .getState()
       .schedules[0].destinations.find(({ id }) => id === 'test-id');
     expect(target).toBeUndefined();
+  });
+
+  test('목적지를 수정했을 때, 정상적으로 변경되어야 합니다', () => {
+    const store = createTravelScheduleStore();
+
+    const destination: Destination = {
+      id: 'test-id',
+      name: 'test-name',
+      timeToDestination: -1,
+      startDate: new Date(),
+      endDate: new Date(),
+    };
+    const { addDaySchedule, addDestination, updateDestination } =
+      store.getState();
+    addDaySchedule();
+    addDestination({
+      day: 0,
+      destination,
+    });
+    updateDestination({
+      day: 0,
+      target: destination,
+      updateValue: {
+        ...destination,
+        name: 'changed-name',
+      },
+    });
+
+    const target = store
+      .getState()
+      .schedules[0].destinations.find(({ id }) => id === 'test-id');
+    expect(target).not.toEqual(destination);
   });
 });
