@@ -19,12 +19,12 @@ export function Background({ page }: { page: string }) {
       <styles.image src={`/background/top-left-${page}.svg`} />
       <styles.image
         src={`/background/top-right-${page}.svg`}
-        $top='10rem'
+        $top='6rem'
         $right='0'
       />
       <styles.image
         src={`/background/bottom-${page}.svg`}
-        $bottom={page === 'login' ? '0' : '6rem'}
+        $bottom={page === 'login' ? '0rem' : '2rem'}
         $right='0'
       />
       <styles.rec $page={page} />
@@ -64,6 +64,6 @@ const styles = {
     filter: blur(2px);
     position: absolute;
     bottom: ${(props) => (props.$page === 'login' ? '12rem' : '18rem')};
-    left: -3rem;
+    left: -3.5rem;
   `,
 };

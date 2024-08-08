@@ -43,7 +43,9 @@ const styles = {
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 11rem 3.56rem;
+    padding: 3.56rem;
+    justify-content: center;
+    align-items: center;
 
     h2 {
       color: #505050;
