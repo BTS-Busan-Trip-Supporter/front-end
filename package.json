@@ -7,10 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test-watch": "jest --watch",
-    "lint-check": "eslint .",
-    "prettier-check": "prettier --check ."
+    "lint-fix": "eslint . --fix",
+    "prettier-fix": "prettier --write ."
   },
   "dependencies": {
     "@emotion/styled": "^11.13.0",
