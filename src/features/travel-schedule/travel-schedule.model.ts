@@ -18,7 +18,7 @@ export class DaySchedule {
     this.sortByStartTime();
   }
 
-  removeDestination({ destinationId }: { destinationId: string }) {
+  removeDestination({ destinationId }: { destinationId: Destination['id'] }) {
     this.destinations = this.destinations.filter(
       ({ id }) => id !== destinationId,
     );
@@ -28,7 +28,7 @@ export class DaySchedule {
     destinationId,
     updateValue,
   }: {
-    destinationId: string;
+    destinationId: Destination['id'];
     updateValue: Partial<Destination>;
   }) {
     this.destinations = this.destinations.map((destination) =>
