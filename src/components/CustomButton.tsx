@@ -6,8 +6,20 @@ interface Color {
   $color: string;
 }
 
-export function CustomButton({ color, text }: { color: string; text: string }) {
-  return <styles.button $color={color}>{text}</styles.button>;
+export function CustomButton({
+  color,
+  text,
+  onClick,
+}: {
+  color: string;
+  text: string;
+  onClick: () => void;
+}) {
+  return (
+    <styles.button $color={color} onClick={onClick}>
+      {text}
+    </styles.button>
+  );
 }
 
 const styles = {

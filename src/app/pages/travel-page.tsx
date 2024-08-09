@@ -19,8 +19,8 @@ export function TravelPage() {
         </h2>
         <SearchBox />
         <styles.btnCon>
-          <CustomButton color='#FF75C8' text='알아서 해줘' />
-          <CustomButton color='#514EBD' text='여행자 모드' />
+          <CustomButton color='#FF75C8' text='알아서 해줘' onClick={() => {}} />
+          <CustomButton color='#514EBD' text='여행자 모드' onClick={() => {}} />
         </styles.btnCon>
       </styles.container>
     </>
