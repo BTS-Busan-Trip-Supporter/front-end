@@ -10,10 +10,10 @@ export function TravelAutoPage() {
     when: '늦은 오후',
   };
 
-  const Contents = {
+  const contents = {
     backgroundNode: <ChoiceList choiceList={data} />,
     childNode: <></>,
-    type: 'auto',
+    type: 'auto' as const,
   };
-  return <TravelComponent contents={Contents} />;
+  return <TravelComponent contents={contents} />;
 }
