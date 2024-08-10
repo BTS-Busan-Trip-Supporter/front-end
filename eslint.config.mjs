@@ -102,4 +102,11 @@ export default [
       'import/no-default-export': 'off',
     },
   },
+  {
+    files: ['src/app/layout.tsx'],
+
+    rules: {
+      'react/jsx-max-depth': 'off',
+    },
+  },
 ];
