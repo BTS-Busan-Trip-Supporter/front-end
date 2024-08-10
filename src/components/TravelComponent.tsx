@@ -9,7 +9,7 @@ import { PuppleBackground } from '@/components/travel/PuppleBackground';
 interface TravelComponentProps {
   backgroundNode: ReactNode;
   childNode: ReactNode;
-  type: string;
+  type: 'auto' | 'traveler' | 'edit';
 }
 
 export function TravelComponent({
