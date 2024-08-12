@@ -10,7 +10,7 @@ interface Position {
   $right?: string;
 }
 
-export function PuppleBackground({ child }: { child: ReactNode }) {
+export function PurpleBackground({ child }: { child: ReactNode }) {
   return (
     <styles.container>
       <Elements />
