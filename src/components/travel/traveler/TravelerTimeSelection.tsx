@@ -36,7 +36,7 @@ function TimeItem({
   );
 }
 
-export function TravelerTimeSelect({
+export function TravelerTimeSelection({
   day,
   onChangeNextUI,
 }: {
