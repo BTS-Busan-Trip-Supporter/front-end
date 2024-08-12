@@ -36,7 +36,13 @@ function TimeItem({
   );
 }
 
-export function TravelerTimeSelect({ day }: { day: number }) {
+export function TravelerTimeSelect({
+  day,
+  onChangeNextUI,
+}: {
+  day: number;
+  onChangeNextUI: (range: Set<number>) => void;
+}) {
   const [selectedRange, setSelectedRange] = useState<
     Record<number, boolean | undefined>
   >({});
@@ -117,7 +123,13 @@ export function TravelerTimeSelect({ day }: { day: number }) {
           onTouchMove={handleTouchMove}
         />
       ))}
-      <styles.confirmButton>선택완료</styles.confirmButton>
+      <styles.confirmButton
+        onClick={() =>
+          onChangeNextUI(new Set(Object.keys(selectedRange).map(parseInt)))
+        }
+      >
+        선택완료
+      </styles.confirmButton>
     </styles.container>
   );
 }
