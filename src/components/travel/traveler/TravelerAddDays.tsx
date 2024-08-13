@@ -2,17 +2,17 @@
 
 import styled from '@emotion/styled';
 
-import { useTravelScheduleStore } from '@/providers';
+import { DaySchedule } from '@/features/travel-schedule';
 
 export function TravelerAddDays({
+  schedules,
+  onAddDaySchedule,
   onChangeNextUI,
 }: {
+  schedules: DaySchedule[];
+  onAddDaySchedule: () => void;
   onChangeNextUI: (day: number) => void;
 }) {
-  const { schedules, addDaySchedule } = useTravelScheduleStore(
-    (state) => state,
-  );
-
   return (
     <styles.container>
       <styles.dayContainer>
@@ -27,7 +27,7 @@ export function TravelerAddDays({
         <styles.addDayFrame>
           <p>1박</p>
           <p>추가하기</p>
-          <button onClick={addDaySchedule}>+</button>
+          <button onClick={onAddDaySchedule}>+</button>
         </styles.addDayFrame>
       </styles.dayContainer>
     </styles.container>

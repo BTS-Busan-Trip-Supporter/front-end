@@ -5,37 +5,6 @@ import React, { useRef, useState } from 'react';
 
 const range = Array.from({ length: 23 - 9 + 1 }, (_, index) => index + 9);
 
-function TimeItem({
-  time,
-  selected,
-  last,
-  onMouseDown,
-  onMouseEnter,
-  onTouchStart,
-  onTouchMove,
-}: {
-  time: number;
-  selected: boolean;
-  last: boolean;
-  onMouseDown: (time: number) => void;
-  onMouseEnter: (time: number) => void;
-  onTouchStart: (time: number) => void;
-  onTouchMove: (e: React.TouchEvent) => void;
-}) {
-  return (
-    <styles.timeItem $selected={selected} $last={last}>
-      <p>{time}시</p>
-      <div
-        data-time={time}
-        onMouseDown={() => onMouseDown(time)}
-        onMouseEnter={() => onMouseEnter(time)}
-        onTouchStart={() => onTouchStart(time)}
-        onTouchMove={onTouchMove}
-      />
-    </styles.timeItem>
-  );
-}
-
 export function TravelerTimeSelection({
   day,
   onChangeNextUI,
@@ -131,6 +100,37 @@ export function TravelerTimeSelection({
         선택완료
       </styles.confirmButton>
     </styles.container>
+  );
+}
+
+function TimeItem({
+  time,
+  selected,
+  last,
+  onMouseDown,
+  onMouseEnter,
+  onTouchStart,
+  onTouchMove,
+}: {
+  time: number;
+  selected: boolean;
+  last: boolean;
+  onMouseDown: (time: number) => void;
+  onMouseEnter: (time: number) => void;
+  onTouchStart: (time: number) => void;
+  onTouchMove: (e: React.TouchEvent) => void;
+}) {
+  return (
+    <styles.timeItem $selected={selected} $last={last}>
+      <p>{time}시</p>
+      <div
+        data-time={time}
+        onMouseDown={() => onMouseDown(time)}
+        onMouseEnter={() => onMouseEnter(time)}
+        onTouchStart={() => onTouchStart(time)}
+        onTouchMove={onTouchMove}
+      />
+    </styles.timeItem>
   );
 }
 
