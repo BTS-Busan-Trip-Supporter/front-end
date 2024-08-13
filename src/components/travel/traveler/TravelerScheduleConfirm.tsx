@@ -116,7 +116,6 @@ const styles = {
 
     display: flex;
     flex-direction: column;
-
     align-items: center;
   `,
 
@@ -174,7 +173,7 @@ const styles = {
     }
   `,
 
-  destinationItem: styled.div`
+  destinationItem: styled.li`
     width: 100%;
     height: fit-content;
 
