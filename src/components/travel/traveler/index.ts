@@ -5,3 +5,4 @@ export * from './TravelerTimeSelection';
 export * from './TravelerActivitySelection';
 export * from './TravelerScheduleConfirm';
 export * from './TravelerTravelArrange';
+export * from './TravelerTravelReview';

@@ -106,6 +106,8 @@ const styles = {
 
     gap: 39px;
 
+    overflow-y: auto;
+
     button {
       all: unset;
       cursor: pointer;

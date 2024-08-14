@@ -117,6 +117,10 @@ const styles = {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    gap: 39px;
+
+    overflow-y: auto;
   `,
 
   location: styled.h1`
