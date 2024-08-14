@@ -292,8 +292,8 @@ const styles = {
     justify-content: center;
     align-items: center;
 
-    width: 32px;
-    height: 32px;
+    width: 22px;
+    height: 22px;
 
     border: ${({ $selected }) =>
       $selected ? '0.5px solid transparent' : '0.5px solid #aaaaaa'};
@@ -302,8 +302,8 @@ const styles = {
     background: ${({ $selected }) => ($selected ? '#625EE3' : '#ffffff')};
 
     img {
-      width: 22px;
-      height: 22px;
+      width: 15px;
+      height: 15px;
       filter: ${({ $selected }) =>
         $selected
           ? 'invert(100%) brightness(200%);'
