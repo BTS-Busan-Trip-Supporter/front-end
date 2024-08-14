@@ -95,5 +95,6 @@ const styles = {
 
   choiceSection: styled.div`
     display: flex;
+    width: 100%;
   `,
 };
