@@ -76,7 +76,7 @@ function DestinationItem({ destination }: { destination: Destination }) {
   const TimeToDestination = () => (
     <div style={{ width: '100%', gap: '6px' }}>
       <img src='/location-pin.svg' alt='location pin image' />
-      <p data-timeToDestination>{destination.timeToDestination}분</p>
+      <p data-timetodestination>{destination.timeToDestination}분</p>
     </div>
   );
 
@@ -217,7 +217,7 @@ const styles = {
       color: #a2a2a2;
     }
 
-    p[data-timeToDestination] {
+    p[data-timetodestination] {
       flex-shrink: 0;
 
       font-family: Noto Sans KR;
