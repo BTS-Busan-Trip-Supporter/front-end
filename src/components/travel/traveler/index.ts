@@ -1,4 +1,5 @@
 export * from './TravelerModeLogo';
+export * from './TravelerHeaderText';
 export * from './TravelerMain';
 export * from './TravelerAddDays';
 export * from './TravelerTimeSelection';
