@@ -19,20 +19,31 @@ export function TravelerAddDays({
         {schedules.map((schedule, index) => (
           <styles.daySchedule key={index}>
             <styles.dayTitle>{index + 1}일차</styles.dayTitle>
-            <styles.dayFrame
-              onClick={() => onChangeNextUI(index + 1)}
-            ></styles.dayFrame>
+            <styles.dayFrame>
+              <AddButton onClick={() => onChangeNextUI(index + 1)} />
+            </styles.dayFrame>
           </styles.daySchedule>
         ))}
         <styles.addDayFrame>
           <p>1박</p>
           <p>추가하기</p>
-          <button onClick={onAddDaySchedule}>+</button>
+          <AddButton onClick={onAddDaySchedule} />
         </styles.addDayFrame>
       </styles.dayContainer>
     </styles.container>
   );
 }
+
+const AddButton = ({ onClick }: React.HTMLAttributes<HTMLButtonElement>) => {
+  return (
+    <styles.addDayButton onClick={onClick}>
+      <img
+        src='/traveler-mode-add-button.svg'
+        alt='button to add destination'
+      />
+    </styles.addDayButton>
+  );
+};
 
 const styles = {
   container: styled.div`
@@ -72,6 +83,11 @@ const styles = {
   `,
 
   dayFrame: styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
     width: 136px;
     height: 283px;
     border-radius: 10px;
@@ -85,7 +101,7 @@ const styles = {
     width: 136px;
     min-width: 136px;
     max-width: 136px;
-    height: 283px;
+    height: calc(283px + 23.16px + 13px);
     border-radius: 10px;
 
     display: flex;
@@ -108,21 +124,13 @@ const styles = {
         margin-bottom: 11px;
       }
     }
+  `,
 
-    button {
-      all: unset;
+  addDayButton: styled.button`
+    all: unset;
+    cursor: pointer;
 
-      width: 21px;
-      height: 21px;
-      border-radius: 50%;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      background: #ebff00;
-      box-shadow: 1.1px 1.1px 1px 0px #0000001c;
-      color: #7d7d7d;
-    }
+    display: flex;
+    align-items: center;
   `,
 };
