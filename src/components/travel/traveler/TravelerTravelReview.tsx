@@ -154,14 +154,17 @@ const styles = {
 
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
 
     gap: 39px;
 
     overflow-y: auto;
+    padding-top: 10px;
   `,
 
   location: styled.h1`
+    transform: translateY(20px);
+
     font-family: Noto Sans KR;
     font-size: 16px;
     font-weight: 500;
