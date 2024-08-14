@@ -179,6 +179,11 @@ const styles = {
       text-align: right;
 
       color: #7d7d7d;
+
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     div {
