@@ -41,5 +41,18 @@ const styles = {
           return '12rem';
       }
     }};
+
+    padding-bottom: ${({ $type }) => {
+      switch ($type) {
+        case 'auto':
+          return '13rem';
+        case 'traveler':
+          return '8rem';
+        case 'edit':
+          return '10rem';
+        default:
+          return '13rem';
+      }
+    }};
   `,
 };

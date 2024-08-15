@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
 
 import { Background, SearchBox, CustomButton } from '@/components';
 
@@ -8,6 +9,9 @@ export function TravelPage() {
   const user = {
     name: '최보윤',
   };
+
+  const router = useRouter();
+
   return (
     <>
       <Background page='travel' />
@@ -19,8 +23,20 @@ export function TravelPage() {
         </h2>
         <SearchBox />
         <styles.btnCon>
-          <CustomButton color='#FF75C8' text='알아서 해줘' onClick={() => {}} />
-          <CustomButton color='#514EBD' text='여행자 모드' onClick={() => {}} />
+          <CustomButton
+            color='#FF75C8'
+            text='알아서 해줘'
+            onClick={() => {
+              router.replace('/travel/auto');
+            }}
+          />
+          <CustomButton
+            color='#514EBD'
+            text='여행자 모드'
+            onClick={() => {
+              router.replace('/travel/travler');
+            }}
+          />
         </styles.btnCon>
       </styles.container>
     </>
