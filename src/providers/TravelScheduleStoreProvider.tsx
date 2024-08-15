@@ -20,9 +20,9 @@ export interface TravelScheduleStoreProviderProps {
   children: ReactNode;
 }
 
-export const TravelScheduleStoreProvider = ({
+export function TravelScheduleStoreProvider({
   children,
-}: TravelScheduleStoreProviderProps) => {
+}: TravelScheduleStoreProviderProps) {
   const storeRef = useRef<TravelScheduleStoreApi>();
   if (!storeRef.current) {
     storeRef.current = createTravelScheduleStore();
@@ -33,7 +33,7 @@ export const TravelScheduleStoreProvider = ({
       {children}
     </TravelScheduleContext.Provider>
   );
-};
+}
 
 export const useTravelScheduleStore = <T,>(
   selector: (store: TravelScheduleStore) => T,

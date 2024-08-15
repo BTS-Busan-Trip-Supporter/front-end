@@ -46,7 +46,7 @@ export class DaySchedule {
         rhs.startDate.getTime(),
       ];
       if (lhsStartTime < rhsStartTime) return -1;
-      else if (lhsStartTime === rhsStartTime) return 0;
+      if (lhsStartTime === rhsStartTime) return 0;
       return 1;
     });
   }

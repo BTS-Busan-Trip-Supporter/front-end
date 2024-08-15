@@ -93,15 +93,15 @@ const updateDestination = ({
     const result = [...state.schedules];
     result[day].updateDestination({
       destinationId: target.id,
-      updateValue: updateValue,
+      updateValue,
     });
     return { schedules: result };
   });
 
 export const createTravelScheduleStore = (
   initState: TravelScheduleState = defaultInitState,
-) => {
-  return createStore<TravelScheduleStore>()((set) => ({
+) =>
+  createStore<TravelScheduleStore>()((set) => ({
     ...initState,
     addDaySchedule: () => addDaySchedule({ set }),
     addDestination: ({ day, destination }) =>
@@ -112,4 +112,3 @@ export const createTravelScheduleStore = (
       updateDestination({ day, target, updateValue, set }),
     reset: () => set(defaultInitState),
   }));
-};
