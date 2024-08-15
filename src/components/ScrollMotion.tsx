@@ -14,20 +14,21 @@ export function ScrollMotion() {
 
 const styles = {
   container: styled.div`
-    position: absolute;
+    position: fixed;
     height: 100px;
-    bottom: 12rem;
+    bottom: 5rem;
   `,
 
   scrollMotionBtn: styled.span`
     position: absolute;
+    z-index: 9999;
     top: 0;
     left: 50%;
     width: 24px;
     height: 24px;
     margin-left: -12px;
-    border-left: 1px solid #000;
-    border-bottom: 1px solid #000;
+    border-left: 1px solid #505050;
+    border-bottom: 1px solid #505050;
     transform: rotate(-45deg);
     animation: motion 1.5s infinite;
     box-sizing: border-box;
