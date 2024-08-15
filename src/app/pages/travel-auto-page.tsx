@@ -1,8 +1,15 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
-import { TravelComponent, SearchBox, ScrollMotion } from '@/components';
+import {
+  TravelComponent,
+  SearchBox,
+  ScrollMotion,
+  TimeCard,
+  CustomButton,
+} from '@/components';
 import { ChoiceList } from '@/components/travel';
 
 export function TravelAutoPage() {
@@ -29,7 +36,7 @@ function InputWhat() {
   return (
     <styles.container>
       <styles.description>
-        부산(대한민국)에서
+        부산(대한민국) 에서
         <br /> 뭐하고 싶으세요?
       </styles.description>
       <SearchBox />
@@ -39,7 +46,44 @@ function InputWhat() {
 }
 
 function InputWhen() {
-  return <styles.container></styles.container>;
+  const [selectedTime, setSelectedTime] = useState<string | null>('오전');
+
+  const handleTimeCardClick = (time: string) => {
+    setSelectedTime(time);
+  };
+
+  return (
+    <styles.container>
+      <styles.description>언제 가시나요?</styles.description>
+      <styles.timeCardCon>
+        <TimeCard
+          time='오전'
+          selected={selectedTime === '오전'}
+          onClick={() => handleTimeCardClick('오전')}
+        />
+        <TimeCard
+          time='오후'
+          selected={selectedTime === '오후'}
+          onClick={() => handleTimeCardClick('오후')}
+        />
+        <TimeCard
+          time='저녁'
+          selected={selectedTime === '저녁'}
+          onClick={() => handleTimeCardClick('저녁')}
+        />
+        <TimeCard
+          time='밤'
+          selected={selectedTime === '밤'}
+          onClick={() => handleTimeCardClick('밤')}
+        />
+      </styles.timeCardCon>
+      <CustomButton
+        color='linear-gradient(90deg, #6B67F9 0%, #423FB3 100%)'
+        text='오늘이 아니야'
+        onClick={() => {}}
+      />
+    </styles.container>
+  );
 }
 
 const styles = {
@@ -61,5 +105,12 @@ const styles = {
     font-weight: 700;
     line-height: normal;
     letter-spacing: -0.02875rem;
+  `,
+
+  timeCardCon: styled.div`
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
   `,
 };

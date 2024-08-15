@@ -5,3 +5,4 @@ export * from './TravelComponent';
 export * from './SearchBox';
 export * from './CustomButton';
 export * from './ScrollMotion';
+export * from './TimeCard';
