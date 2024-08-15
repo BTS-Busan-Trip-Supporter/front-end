@@ -20,6 +20,10 @@ export default [
     ignores: ['eslint.config.mjs', 'src/__test__/*'],
   },
   ...compat.extends(
+    'airbnb',
+    'airbnb-typescript',
+    'airbnb/hooks',
+    'airbnb/whitespace',
     'next/core-web-vitals',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -33,6 +37,9 @@ export default [
 
     languageOptions: {
       parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+      },
     },
 
     rules: {
@@ -86,6 +93,10 @@ export default [
           tsx: 'never',
         },
       ],
+
+      'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
+      'no-use-before-define': 'off',
+      '@typescript-eslint/no-use-before-define': 'off',
     },
   },
   {
