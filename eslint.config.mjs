@@ -17,7 +17,12 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['eslint.config.mjs', 'src/__test__/*'],
+    ignores: [
+      'eslint.config.mjs',
+      'src/__test__/*',
+      '.next',
+      'prettier.config.mjs',
+    ],
   },
   ...compat.extends(
     'airbnb',
