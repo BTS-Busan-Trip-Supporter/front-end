@@ -1,15 +1,22 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { ChangeEvent } from 'react';
 
-export function SearchBox() {
-  const [, setContent] = useState('');
+export function SearchBox({
+  setContent,
+}: {
+  setContent: (value: string) => void;
+}) {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setContent(e.target.value);
+  };
+
   return (
     <styles.container>
       <input
         placeholder='키워드나 활동을 찾아보세요.'
-        onChange={(e) => setContent(e.target.value)}
+        onChange={handleChange}
       />
     </styles.container>
   );

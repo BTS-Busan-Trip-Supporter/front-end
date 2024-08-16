@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import {
@@ -13,19 +14,27 @@ import {
 import { ChoiceList } from '@/components/travel';
 
 export function TravelAutoPage() {
-  const data = {
-    where: '부산 (Busan)',
-    what: '웰니스 관광',
-    when: '늦은 오후',
-  };
+  const searchParams = useSearchParams();
+  const place = String(searchParams.get('place'));
+
+  const [what, setWhat] = useState('');
+  const [time, setTime] = useState('오전');
 
   const Contents = {
-    backgroundNode: <ChoiceList choiceList={data} />,
+    backgroundNode: (
+      <ChoiceList
+        choiceList={{
+          where: place,
+          what: what,
+          when: time,
+        }}
+      />
+    ),
     childNode: (
       <>
         <styles.wrapper>
-          <InputWhat />
-          <InputWhen />
+          <InputWhat where={place} setContent={setWhat} />
+          <InputWhen setContent={setTime} />
           <Results />
         </styles.wrapper>
         <ScrollMotion />
@@ -36,23 +45,30 @@ export function TravelAutoPage() {
   return <TravelComponent contents={Contents} />;
 }
 
-function InputWhat() {
+function InputWhat({
+  where,
+  setContent,
+}: {
+  where: string;
+  setContent: (value: string) => void;
+}) {
   return (
     <styles.container>
       <styles.description>
-        부산(대한민국) 에서
+        {where} 에서
         <br /> 뭐하고 싶으세요?
       </styles.description>
-      <SearchBox />
+      <SearchBox setContent={setContent} />
     </styles.container>
   );
 }
 
-function InputWhen() {
+function InputWhen({ setContent }: { setContent: (value: string) => void }) {
   const [selectedTime, setSelectedTime] = useState<string | null>('오전');
 
   const handleTimeCardClick = (time: string) => {
     setSelectedTime(time);
+    setContent(time);
   };
 
   return (

@@ -2,10 +2,12 @@
 
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import { Background, SearchBox, CustomButton } from '@/components';
 
 export function TravelPage() {
+  const [searchContent, setSearchContent] = useState('');
   const user = {
     name: '최보윤',
   };
@@ -21,13 +23,15 @@ export function TravelPage() {
           <br />
           어디가실 계획인가요?
         </h2>
-        <SearchBox />
+        <SearchBox setContent={setSearchContent} />
         <styles.btnCon>
           <CustomButton
             color='#FF75C8'
             text='알아서 해줘'
             onClick={() => {
-              router.replace('/travel/auto');
+              router.replace(
+                `/travel/auto?place=${encodeURIComponent(searchContent)}`,
+              );
             }}
           />
           <CustomButton
