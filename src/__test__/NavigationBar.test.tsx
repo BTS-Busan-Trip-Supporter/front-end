@@ -35,6 +35,15 @@ describe('내비게이션 바 스냅샷 테스트', () => {
     expect(container2.firstChild).toBeNull();
   });
 
+  test('pathname이 /login 이나 /my가 아닌 경우 내비게이션 바가 렌더링 되어야 합니다.', () => {
+    mockUsePathname.mockReturnValue('/test');
+
+    const { getByText } = render(<NavigationBar />);
+    expect(getByText('여행하기')).toBeInTheDocument();
+    expect(getByText('홈')).toBeInTheDocument();
+    expect(getByText('기록하기')).toBeInTheDocument();
+  });
+
   test('pathname이 /travel인 경우 여행하기 메뉴가 활성화 되어야 합니다.', () => {
     mockUsePathname.mockReturnValue('/travel');
     render(<NavigationBar />);
@@ -59,9 +68,30 @@ describe('내비게이션 바 스냅샷 테스트', () => {
     expect(screen.getByText('기록하기')).toHaveStyle('color: #605EFF');
   });
 
-  test('여행하기 메뉴에 클릭 이벤트가 발생한 경우 router가 /travel 로 replace 되어야 합니다.', () => {});
+  test('여행하기 메뉴에 클릭 이벤트가 발생한 경우 router가 /travel 로 replace 되어야 합니다.', () => {
+    mockUsePathname.mockReturnValue('/travel');
 
-  test('홈 메뉴에 클릭 이벤트가 발생한 경우 router가 / 로 replace 되어야 합니다.', () => {});
+    const { getByText } = render(<NavigationBar />);
+    fireEvent.click(getByText('여행하기'));
 
-  test('기록하기 메뉴에 클릭 이벤트가 발생한 경우 router가 /record 로 replace 되어야 합니다.', () => {});
+    expect(mockRouter.replace).toHaveBeenCalledWith('/travel');
+  });
+
+  test('홈 메뉴에 클릭 이벤트가 발생한 경우 router가 / 로 replace 되어야 합니다.', () => {
+    mockUsePathname.mockReturnValue('/');
+
+    const { getByText } = render(<NavigationBar />);
+    fireEvent.click(getByText('홈'));
+
+    expect(mockRouter.replace).toHaveBeenCalledWith('/');
+  });
+
+  test('기록하기 메뉴에 클릭 이벤트가 발생한 경우 router가 /record 로 replace 되어야 합니다.', () => {
+    mockUsePathname.mockReturnValue('/record');
+
+    const { getByText } = render(<NavigationBar />);
+    fireEvent.click(getByText('기록하기'));
+
+    expect(mockRouter.replace).toHaveBeenCalledWith('/record');
+  });
 });
