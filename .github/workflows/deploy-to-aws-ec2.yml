@@ -36,5 +36,5 @@ jobs:
             git pull origin main
             npm install
             npm run build
-            pm2 start npm --name "${{ secrets.APP_NAME }}" -- start || pm2 restart "${{ secrets.APP_NAME }}"
+            pm2 restart "${{ secrets.APP_NAME }}" || pm2 start --name "${{ secrets.APP_NAME }}" npm -- start
           EOF
