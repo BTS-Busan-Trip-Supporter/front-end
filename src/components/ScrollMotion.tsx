@@ -27,22 +27,21 @@ const styles = {
     width: 24px;
     height: 24px;
     margin-left: -12px;
-    border-left: 1px solid #505050;
-    border-bottom: 1px solid #505050;
-    transform: rotate(-45deg);
+    background: url('/chevron-bottom.svg') no-repeat center;
+    background-size: 100%;
     animation: motion 1.5s infinite;
     box-sizing: border-box;
 
     @keyframes motion {
       0% {
-        transform: rotate(-45deg) translate(0, 0);
+        transform: translate(0, 0);
         opacity: 0;
       }
       50% {
         opacity: 1;
       }
       100% {
-        transform: rotate(-45deg) translate(-20px, 20px);
+        transform: translate(0, 20px);
         opacity: 0;
       }
     }
