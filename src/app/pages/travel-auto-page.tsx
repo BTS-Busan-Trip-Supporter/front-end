@@ -124,6 +124,7 @@ const styles = {
     height: 100vh;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
+    scroll-snap-type: y mandatory;
 
     &::-webkit-scrollbar {
       display: none;
@@ -139,6 +140,7 @@ const styles = {
     align-items: center;
     justify-content: center;
     padding-bottom: 20rem;
+    scroll-snap-align: start;
   `,
 
   description: styled.p`
