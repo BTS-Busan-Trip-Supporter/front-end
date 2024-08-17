@@ -102,6 +102,7 @@ export default [
       'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
       'no-use-before-define': 'off',
       '@typescript-eslint/no-use-before-define': 'off',
+      '@next/next/no-img-element': 'off',
     },
   },
   {

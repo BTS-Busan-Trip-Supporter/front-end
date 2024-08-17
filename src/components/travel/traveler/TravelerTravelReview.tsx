@@ -80,57 +80,67 @@ function DestinationItem({
   onLikeButtonClick: (destination: Destination) => void;
   onUnlikeButtonClick: (destination: Destination) => void;
 }) {
-  const DashedLine = () => (
-    <svg>
-      <line x1='0' y1='5' x2='100%' y2='5' />
-    </svg>
-  );
+  function DashedLine() {
+    return (
+      <svg>
+        <line x1='0' y1='5' x2='100%' y2='5' />
+      </svg>
+    );
+  }
 
-  const LocationAndTime = () => (
-    <div>
-      {/* ICON */}
-      <p data-location>{destination.name}</p>
-      <span className='dashed'>
-        <DashedLine />
-      </span>
-      <p data-time>
-        {convertTimeString(destination.startDate)} -
-        {convertTimeString(destination.endDate)}
-      </p>
-    </div>
-  );
+  function LocationAndTime() {
+    return (
+      <div>
+        {/* ICON */}
+        <p data-location>{destination.name}</p>
+        <span className='dashed'>
+          <DashedLine />
+        </span>
+        <p data-time>
+          {convertTimeString(destination.startDate)} -
+          {convertTimeString(destination.endDate)}
+        </p>
+      </div>
+    );
+  }
 
-  const LikeButton = () => (
-    <styles.likeButton
-      $selected={destination.selected === 'like'}
-      onClick={() => onLikeButtonClick(destination)}
-    >
-      <img
-        src='https://s3-alpha-sig.figma.com/img/fc94/f84d/00ab7214741a0b77e2d326ec543caed5?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=W2v204pE7-sCMbigzy-bjnH8wOsy97lSTo9KTIVYCh6lOSXgwKbRTpBDghyxESV5d9whWvksFggzi0dPyYHGkJ6CczRHTNrgwzXWg-RleSOfLrFd2bgjEzhhjYYfNZzjjaHOb76YhSzzwNIwrwZH-WwE9nZH3MKvxNLDAQjIdag2dvLrMUFENTXygqfGymvXIdoJ79ZB-EL2Qu1Mfots58mUTYfe98EMMpR34eE75av7usqw9~1ngl8mKnudTVoVYX3QJ5LabbN7iFUGGADII2wJPTL9xgEphSnfjGYWI5m25ZmQjGjvdSFT1aZd7xC70KoRQ0kiZNBAE4umU0eHJA__'
-        alt='like'
-      />
-    </styles.likeButton>
-  );
+  function LikeButton() {
+    return (
+      <styles.likeButton
+        $selected={destination.selected === 'like'}
+        onClick={() => onLikeButtonClick(destination)}
+      >
+        <img
+          src='https://s3-alpha-sig.figma.com/img/fc94/f84d/00ab7214741a0b77e2d326ec543caed5?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=W2v204pE7-sCMbigzy-bjnH8wOsy97lSTo9KTIVYCh6lOSXgwKbRTpBDghyxESV5d9whWvksFggzi0dPyYHGkJ6CczRHTNrgwzXWg-RleSOfLrFd2bgjEzhhjYYfNZzjjaHOb76YhSzzwNIwrwZH-WwE9nZH3MKvxNLDAQjIdag2dvLrMUFENTXygqfGymvXIdoJ79ZB-EL2Qu1Mfots58mUTYfe98EMMpR34eE75av7usqw9~1ngl8mKnudTVoVYX3QJ5LabbN7iFUGGADII2wJPTL9xgEphSnfjGYWI5m25ZmQjGjvdSFT1aZd7xC70KoRQ0kiZNBAE4umU0eHJA__'
+          alt='like'
+        />
+      </styles.likeButton>
+    );
+  }
 
-  const UnlikeButton = () => (
-    <styles.likeButton
-      $selected={destination.selected === 'unlike'}
-      onClick={() => onUnlikeButtonClick(destination)}
-    >
-      <img
-        data-unlike
-        src='https://s3-alpha-sig.figma.com/img/fc94/f84d/00ab7214741a0b77e2d326ec543caed5?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=W2v204pE7-sCMbigzy-bjnH8wOsy97lSTo9KTIVYCh6lOSXgwKbRTpBDghyxESV5d9whWvksFggzi0dPyYHGkJ6CczRHTNrgwzXWg-RleSOfLrFd2bgjEzhhjYYfNZzjjaHOb76YhSzzwNIwrwZH-WwE9nZH3MKvxNLDAQjIdag2dvLrMUFENTXygqfGymvXIdoJ79ZB-EL2Qu1Mfots58mUTYfe98EMMpR34eE75av7usqw9~1ngl8mKnudTVoVYX3QJ5LabbN7iFUGGADII2wJPTL9xgEphSnfjGYWI5m25ZmQjGjvdSFT1aZd7xC70KoRQ0kiZNBAE4umU0eHJA__'
-        alt='unlike'
-      />
-    </styles.likeButton>
-  );
+  function UnlikeButton() {
+    return (
+      <styles.likeButton
+        $selected={destination.selected === 'unlike'}
+        onClick={() => onUnlikeButtonClick(destination)}
+      >
+        <img
+          data-unlike
+          src='https://s3-alpha-sig.figma.com/img/fc94/f84d/00ab7214741a0b77e2d326ec543caed5?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=W2v204pE7-sCMbigzy-bjnH8wOsy97lSTo9KTIVYCh6lOSXgwKbRTpBDghyxESV5d9whWvksFggzi0dPyYHGkJ6CczRHTNrgwzXWg-RleSOfLrFd2bgjEzhhjYYfNZzjjaHOb76YhSzzwNIwrwZH-WwE9nZH3MKvxNLDAQjIdag2dvLrMUFENTXygqfGymvXIdoJ79ZB-EL2Qu1Mfots58mUTYfe98EMMpR34eE75av7usqw9~1ngl8mKnudTVoVYX3QJ5LabbN7iFUGGADII2wJPTL9xgEphSnfjGYWI5m25ZmQjGjvdSFT1aZd7xC70KoRQ0kiZNBAE4umU0eHJA__'
+          alt='unlike'
+        />
+      </styles.likeButton>
+    );
+  }
 
-  const ReviewButtons = () => (
-    <styles.likeButtons>
-      <LikeButton />
-      <UnlikeButton />
-    </styles.likeButtons>
-  );
+  function ReviewButtons() {
+    return (
+      <styles.likeButtons>
+        <LikeButton />
+        <UnlikeButton />
+      </styles.likeButtons>
+    );
+  }
 
   return (
     <styles.destinationItem>
