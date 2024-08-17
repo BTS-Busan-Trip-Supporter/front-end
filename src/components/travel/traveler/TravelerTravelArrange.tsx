@@ -23,7 +23,7 @@ export function TravelerTravelArrange({
           destinations={schedule.destinations}
         />
       ))}
-      <button onClick={onRecord}>
+      <button type='button' onClick={onRecord}>
         <div>
           <img src='/traveler-write-record.svg' alt='button to write review' />
           <p>기록하기</p>
@@ -53,32 +53,38 @@ function DayScheduleItem({
 }
 
 function DestinationItem({ destination }: { destination: Destination }) {
-  const DashedLine = () => (
-    <svg>
-      <line x1='0' y1='5' x2='100%' y2='5' />
-    </svg>
-  );
+  function DashedLine() {
+    return (
+      <svg>
+        <line x1='0' y1='5' x2='100%' y2='5' />
+      </svg>
+    );
+  }
 
-  const LocationAndTime = () => (
-    <div>
-      {/* ICON */}
-      <p data-location>{destination.name}</p>
-      <span className='dashed'>
-        <DashedLine />
-      </span>
-      <p data-time>
-        {convertTimeString(destination.startDate)} -
-        {convertTimeString(destination.endDate)}
-      </p>
-    </div>
-  );
+  function LocationAndTime() {
+    return (
+      <div>
+        {/* ICON */}
+        <p data-location>{destination.name}</p>
+        <span className='dashed'>
+          <DashedLine />
+        </span>
+        <p data-time>
+          {convertTimeString(destination.startDate)} -
+          {convertTimeString(destination.endDate)}
+        </p>
+      </div>
+    );
+  }
 
-  const TimeToDestination = () => (
-    <div style={{ width: '100%', gap: '6px' }}>
-      <img src='/location-pin.svg' alt='location pin image' />
-      <p data-timetodestination>{destination.timeToDestination}분</p>
-    </div>
-  );
+  function TimeToDestination() {
+    return (
+      <div style={{ width: '100%', gap: '6px' }}>
+        <img src='/location-pin.svg' alt='location pin' />
+        <p data-timetodestination>{destination.timeToDestination}분</p>
+      </div>
+    );
+  }
 
   return (
     <styles.destinationItem>
