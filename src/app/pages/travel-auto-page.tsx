@@ -18,7 +18,7 @@ export function TravelAutoPage() {
   const place = String(searchParams.get('place'));
 
   const [what, setWhat] = useState('');
-  const [time, setTime] = useState('오전');
+  const [time, setTime] = useState('');
 
   const Contents = {
     backgroundNode: (
@@ -64,7 +64,7 @@ function InputWhat({
 }
 
 function InputWhen({ setContent }: { setContent: (value: string) => void }) {
-  const [selectedTime, setSelectedTime] = useState<string | null>('오전');
+  const [selectedTime, setSelectedTime] = useState<string | null>('');
 
   const handleTimeCardClick = (time: string) => {
     setSelectedTime(time);

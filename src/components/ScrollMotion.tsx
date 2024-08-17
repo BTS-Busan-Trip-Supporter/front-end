@@ -16,7 +16,7 @@ const styles = {
   container: styled.div`
     position: fixed;
     height: 100px;
-    bottom: 5rem;
+    bottom: 4rem;
   `,
 
   scrollMotionBtn: styled.span`
