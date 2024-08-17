@@ -8,13 +8,13 @@ export function ContentsCard({
   type,
 }: {
   child: ReactNode;
-  type: string;
+  type: 'auto' | 'traveler' | 'edit';
 }) {
   return <styles.container $type={type}>{child}</styles.container>;
 }
 
 const styles = {
-  container: styled.div<{ $type: string }>`
+  container: styled.div<{ $type: 'auto' | 'traveler' | 'edit' }>`
     width: 100%;
     min-height: 100%;
     border-radius: 2.6875rem;
@@ -39,6 +39,19 @@ const styles = {
           return '9rem';
         default:
           return '12rem';
+      }
+    }};
+
+    padding-bottom: ${({ $type }) => {
+      switch ($type) {
+        case 'auto':
+          return '13rem';
+        case 'traveler':
+          return '8rem';
+        case 'edit':
+          return '10rem';
+        default:
+          return '13rem';
       }
     }};
   `,

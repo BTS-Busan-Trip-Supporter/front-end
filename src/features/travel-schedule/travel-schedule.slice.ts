@@ -59,7 +59,7 @@ const addDestination = ({
 }) =>
   set((state) => {
     const result = [...state.schedules];
-    result[day].addDestination({ destination });
+    result[day - 1].addDestination({ destination });
     return { schedules: result };
   });
 
@@ -74,7 +74,7 @@ const removeDestination = ({
 }) =>
   set((state) => {
     const result = [...state.schedules];
-    result[day].removeDestination({ destinationId: destination.id });
+    result[day - 1].removeDestination({ destinationId: destination.id });
     return { schedules: result };
   });
 
@@ -91,7 +91,7 @@ const updateDestination = ({
 }) =>
   set((state) => {
     const result = [...state.schedules];
-    result[day].updateDestination({
+    result[day - 1].updateDestination({
       destinationId: target.id,
       updateValue,
     });

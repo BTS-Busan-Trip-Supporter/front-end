@@ -4,6 +4,7 @@ export interface Destination {
   timeToDestination: number;
   startDate: Date;
   endDate: Date;
+  selected?: 'like' | 'unlike';
 }
 
 export class DaySchedule {

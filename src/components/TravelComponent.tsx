@@ -3,13 +3,12 @@
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
 
-import { ContentsCard } from '@/components/travel/ContentsCard';
-import { PuppleBackground } from '@/components/travel/PuppleBackground';
+import { ContentsCard, PurpleBackground } from '@/components/travel';
 
 interface TravelComponentProps {
   backgroundNode: ReactNode;
   childNode: ReactNode;
-  type: string;
+  type: 'auto' | 'traveler' | 'edit';
 }
 
 export function TravelComponent({
@@ -19,7 +18,7 @@ export function TravelComponent({
 }) {
   return (
     <styles.container>
-      <PuppleBackground child={contents.backgroundNode} />
+      <PurpleBackground child={contents.backgroundNode} />
       <ContentsCard child={contents.childNode} type={contents.type} />
     </styles.container>
   );

@@ -34,7 +34,7 @@ describe('여행 관련 일정 로직 테스트', () => {
     const { addDaySchedule, addDestination } = store.getState();
     addDaySchedule();
     addDestination({
-      day: 0,
+      day: 1,
       destination,
     });
 
@@ -58,10 +58,10 @@ describe('여행 관련 일정 로직 테스트', () => {
       store.getState();
     addDaySchedule();
     addDestination({
-      day: 0,
+      day: 1,
       destination,
     });
-    removeDestination({ day: 0, destination });
+    removeDestination({ day: 1, destination });
 
     const target = store
       .getState()
@@ -83,11 +83,11 @@ describe('여행 관련 일정 로직 테스트', () => {
       store.getState();
     addDaySchedule();
     addDestination({
-      day: 0,
+      day: 1,
       destination,
     });
     updateDestination({
-      day: 0,
+      day: 1,
       target: destination,
       updateValue: {
         ...destination,

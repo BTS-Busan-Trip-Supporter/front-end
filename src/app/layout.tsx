@@ -24,8 +24,8 @@ export default function RootLayout({
           <main>
             <Header />
             {children}
-            <NavigationBar />
           </main>
+          <NavigationBar />
         </TravelScheduleStoreProvider>
       </body>
     </html>

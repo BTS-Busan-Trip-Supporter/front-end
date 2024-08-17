@@ -1,5 +1,5 @@
 import { TravelAutoPage } from '@/app/pages';
 
-export default function Login() {
+export default function TravelAutoModePage() {
   return <TravelAutoPage />;
 }
