@@ -17,7 +17,8 @@ export function NavigationBar() {
 
   return (
     <styles.container>
-      <div
+      <button
+        type='button'
         onClick={() => {
           router.replace('/travel');
         }}
@@ -33,8 +34,9 @@ export function NavigationBar() {
             여행하기
           </styles.menu>
         )}
-      </div>
-      <div
+      </button>
+      <button
+        type='button'
         onClick={() => {
           router.replace('/');
         }}
@@ -48,8 +50,9 @@ export function NavigationBar() {
             <styles.icon src='/home.png' alt='home-menu' />홈
           </styles.menu>
         )}
-      </div>
-      <div
+      </button>
+      <button
+        type='button'
         onClick={() => {
           router.replace('/record');
         }}
@@ -65,7 +68,7 @@ export function NavigationBar() {
             기록하기
           </styles.menu>
         )}
-      </div>
+      </button>
     </styles.container>
   );
 }
@@ -81,6 +84,10 @@ const styles = {
     bottom: 0;
     background-color: white;
     z-index: 99999;
+
+    button {
+      all: unset;
+    }
   `,
 
   menu: styled.span<NavProps>`
