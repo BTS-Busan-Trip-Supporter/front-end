@@ -74,7 +74,10 @@ function DestinationItem({
 }) {
   return (
     <styles.destinationItem>
-      <button onClickCapture={() => onRemoveDestination(day, destination)}>
+      <button
+        type='button'
+        onClickCapture={() => onRemoveDestination(day, destination)}
+      >
         <img
           src='/traveler-mode-delete-button.svg'
           alt='button to remove destination'

@@ -93,6 +93,8 @@ export function TravelerPage() {
         return <TravelerHeaderText text='여행을 정리할게요!' />;
       case 'traveler-travel-review':
         return <TravelerHeaderText text='여행은 어땠나요?' />;
+      default:
+        return <TravelModeLogo />;
     }
   };
 

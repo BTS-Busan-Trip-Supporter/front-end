@@ -34,7 +34,7 @@ export function TravelerAddDays({
   );
 }
 
-const AddButton = ({ onClick }: React.HTMLAttributes<HTMLButtonElement>) => {
+function AddButton({ onClick }: React.HTMLAttributes<HTMLButtonElement>) {
   return (
     <styles.addDayButton onClick={onClick}>
       <img
@@ -43,7 +43,7 @@ const AddButton = ({ onClick }: React.HTMLAttributes<HTMLButtonElement>) => {
       />
     </styles.addDayButton>
   );
-};
+}
 
 const styles = {
   container: styled.div`
