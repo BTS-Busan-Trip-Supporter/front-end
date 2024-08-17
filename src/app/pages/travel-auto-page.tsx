@@ -34,7 +34,7 @@ export function TravelAutoPage() {
       <>
         <styles.wrapper>
           <InputWhat where={place} setContent={setWhat} />
-          <InputWhen setContent={setTime} />
+          <InputWhen selectedTime={time} setContent={setTime} />
           <Results />
         </styles.wrapper>
         <ScrollMotion />
@@ -63,11 +63,14 @@ function InputWhat({
   );
 }
 
-function InputWhen({ setContent }: { setContent: (value: string) => void }) {
-  const [selectedTime, setSelectedTime] = useState<string | null>('');
-
+function InputWhen({
+  selectedTime,
+  setContent,
+}: {
+  selectedTime: string;
+  setContent: (value: string) => void;
+}) {
   const handleTimeCardClick = (time: string) => {
-    setSelectedTime(time);
     setContent(time);
   };
 
