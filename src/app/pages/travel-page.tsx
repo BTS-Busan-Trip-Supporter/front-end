@@ -14,6 +14,11 @@ export function TravelPage() {
 
   const router = useRouter();
 
+  const handleButtonClick = () => {
+    sessionStorage.setItem('searchContent', searchContent);
+    router.replace('/travel/auto');
+  };
+
   return (
     <>
       <Background page='travel' />
@@ -29,9 +34,7 @@ export function TravelPage() {
             color='#FF75C8'
             text='알아서 해줘'
             onClick={() => {
-              router.replace(
-                `/travel/auto?place=${encodeURIComponent(searchContent)}`,
-              );
+              handleButtonClick();
             }}
           />
           <CustomButton

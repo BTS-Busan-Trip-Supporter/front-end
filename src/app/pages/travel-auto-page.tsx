@@ -1,8 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   TravelComponent,
@@ -14,8 +13,15 @@ import {
 import { ChoiceList } from '@/components/travel';
 
 export function TravelAutoPage() {
-  const searchParams = useSearchParams();
-  const place = String(searchParams.get('place'));
+  const [searchContent, setSearchContent] = useState('');
+
+  useEffect(() => {
+    const savedContent = sessionStorage.getItem('searchContent');
+    if (savedContent) {
+      setSearchContent(savedContent);
+      sessionStorage.removeItem('searchContent');
+    }
+  }, []);
 
   const [what, setWhat] = useState('');
   const [time, setTime] = useState('');
@@ -24,7 +30,7 @@ export function TravelAutoPage() {
     backgroundNode: (
       <ChoiceList
         choiceList={{
-          where: place,
+          where: searchContent,
           what: what,
           when: time,
         }}
@@ -33,7 +39,7 @@ export function TravelAutoPage() {
     childNode: (
       <>
         <styles.wrapper>
-          <InputWhat where={place} setContent={setWhat} />
+          <InputWhat where={searchContent} setContent={setWhat} />
           <InputWhen selectedTime={time} setContent={setTime} />
           <Results />
         </styles.wrapper>
