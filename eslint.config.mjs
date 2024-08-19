@@ -17,9 +17,18 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['eslint.config.mjs', 'src/__test__/*'],
+    ignores: [
+      'eslint.config.mjs',
+      'src/__test__/*',
+      '.next',
+      'prettier.config.mjs',
+    ],
   },
   ...compat.extends(
+    'airbnb',
+    'airbnb-typescript',
+    'airbnb/hooks',
+    'airbnb/whitespace',
     'next/core-web-vitals',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -33,6 +42,9 @@ export default [
 
     languageOptions: {
       parser: tsParser,
+      parserOptions: {
+        project: './tsconfig.json',
+      },
     },
 
     rules: {
@@ -86,6 +98,11 @@ export default [
           tsx: 'never',
         },
       ],
+
+      'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
+      'no-use-before-define': 'off',
+      '@typescript-eslint/no-use-before-define': 'off',
+      '@next/next/no-img-element': 'off',
     },
   },
   {
@@ -100,6 +117,13 @@ export default [
 
     rules: {
       'import/no-default-export': 'off',
+    },
+  },
+  {
+    files: ['src/app/layout.tsx'],
+
+    rules: {
+      'react/jsx-max-depth': 'off',
     },
   },
 ];

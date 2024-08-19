@@ -40,7 +40,7 @@ export function TravelAutoPage() {
         <ScrollMotion />
       </>
     ),
-    type: 'auto',
+    type: 'auto' as const,
   };
   return <TravelComponent contents={Contents} />;
 }
