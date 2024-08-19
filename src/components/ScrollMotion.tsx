@@ -6,7 +6,7 @@ export function ScrollMotion() {
   return (
     <styles.container>
       <div>
-        <styles.scrollMotionBtn></styles.scrollMotionBtn>
+        <styles.scrollMotionBtn />
       </div>
     </styles.container>
   );

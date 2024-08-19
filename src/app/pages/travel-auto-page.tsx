@@ -23,7 +23,7 @@ export function TravelAutoPage() {
     }
   }, []);
 
-  const [what, setWhat] = useState('');
+  const [event, setEvent] = useState('');
   const [time, setTime] = useState('');
 
   const Contents = {
@@ -31,7 +31,7 @@ export function TravelAutoPage() {
       <ChoiceList
         choiceList={{
           where: searchContent,
-          what: what,
+          what: event,
           when: time,
         }}
       />
@@ -39,7 +39,7 @@ export function TravelAutoPage() {
     childNode: (
       <>
         <styles.wrapper>
-          <InputWhat where={searchContent} setContent={setWhat} />
+          <InputWhat where={searchContent} setContent={setEvent} />
           <InputWhen selectedTime={time} setContent={setTime} />
           <Results />
         </styles.wrapper>

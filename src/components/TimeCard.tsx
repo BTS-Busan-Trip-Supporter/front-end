@@ -28,6 +28,9 @@ export function TimeCard({
       break;
     case '밤':
       timeString = 'moon';
+      break;
+    default:
+      timeString = '';
   }
   return (
     <styles.container onClick={onClick}>
