@@ -13,6 +13,10 @@ import {
 import { ChoiceList } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
 
+interface Loading {
+  $isLoading: boolean;
+}
+
 export function TravelAutoPage() {
   const [searchContent, setSearchContent] = useState('');
 
@@ -26,6 +30,7 @@ export function TravelAutoPage() {
 
   const [event, setEvent] = useState('');
   const [time, setTime] = useState<Times>('기본');
+  const [isLoading] = useState<boolean>(true);
 
   const Contents = {
     backgroundNode: (
@@ -42,7 +47,7 @@ export function TravelAutoPage() {
         <styles.wrapper>
           <InputWhat where={searchContent} setContent={setEvent} />
           <InputWhen selectedTime={time} setContent={setTime} />
-          <Results />
+          <Results isLoading={isLoading} />
         </styles.wrapper>
         <ScrollMotion />
       </>
@@ -115,29 +120,29 @@ function InputWhen({
   );
 }
 
-function Results() {
+function Results({ isLoading }: { isLoading: boolean }) {
   return (
     <styles.container>
       <styles.resultCon>
         <styles.description>이런 곳 어떠세요?</styles.description>
         <styles.cardList>
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
         </styles.cardList>
       </styles.resultCon>
       <styles.resultCon>
         <styles.description>이후에 이 곳은 어떠세요?</styles.description>
         <styles.cardList>
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
+          <styles.card $isLoading={isLoading} />
         </styles.cardList>
       </styles.resultCon>
     </styles.container>
@@ -209,13 +214,30 @@ const styles = {
     justify-content: flex-start;
   `,
 
-  card: styled.div`
+  card: styled.div<Loading>`
     width: 6.875rem;
     height: 7.6875rem;
     flex-shrink: 0;
     border-radius: 14px;
-    background: #fff;
+    background-color: ${(props) => (props.$isLoading ? '#f0f0f0' : '#fff')};
+    background-image: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0)
+    );
+    background-size: 40px 100%;
+    background-repeat: no-repeat;
+    background-position: left -80px top 0;
 
     box-shadow: 2px 3px 4px 0px rgba(0, 0, 0, 0.07);
+    animation: ${(props) =>
+      props.$isLoading ? 'loading 1s ease-in-out infinite' : 'none'};
+
+    @keyframes loading {
+      to {
+        background-position: right -40px top 0;
+      }
+    }
   `,
 };
