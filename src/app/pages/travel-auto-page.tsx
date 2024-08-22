@@ -219,7 +219,7 @@ const styles = {
     height: 7.6875rem;
     flex-shrink: 0;
     border-radius: 14px;
-    background-color: ${(props) => (props.$isLoading ? '#f0f0f0' : '#fff')};
+    background-color: ${(props) => (props.$isLoading ? '#f9f9f9' : '#fff')};
     background-image: linear-gradient(
       90deg,
       rgba(255, 255, 255, 0),

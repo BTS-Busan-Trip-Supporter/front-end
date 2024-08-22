@@ -104,6 +104,7 @@ const styles = {
     align-items: center;
     text-align: center;
     gap: 0.2rem;
+    transition: 0.3s ease;
   `,
 
   icon: styled.img`

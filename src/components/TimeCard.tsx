@@ -61,5 +61,6 @@ const styles = {
     font-weight: 700;
     line-height: normal;
     letter-spacing: -0.0175rem;
+    transition: 0.3s ease;
   `,
 };
