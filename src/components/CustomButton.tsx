@@ -27,7 +27,7 @@ const styles = {
     border-radius: 2.8125rem;
     background: ${(props) => props.$color};
     padding: 0.6rem 1.13rem;
-    box-shadow: -2px 2px 4px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: inset 2px 2px 4px 0px rgba(0, 0, 0, 0.15);
     border: none;
 
     color: #fff;
@@ -37,5 +37,6 @@ const styles = {
     font-weight: 700;
     line-height: normal;
     letter-spacing: -0.02rem;
+    text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   `,
 };
