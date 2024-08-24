@@ -23,7 +23,9 @@ const styles = {
     height: 1.25rem;
     border: none;
     background: ${(props) =>
-      props.$pathname === '/' ? `url('/bars.svg')` : `url('/bars-white.svg')`};
+      props.$pathname === '/' || props.$pathname === '/travel'
+        ? `url('/bars.svg')`
+        : `url('/bars-white.svg')`};
     background-repeat: no-repeat;
     background-position: center;
     background-size: content;
