@@ -2,6 +2,11 @@
 
 import styled from '@emotion/styled';
 
+import {
+  TIME_STRINGS,
+  Times,
+} from '@/features/travel-schedule/travel-schedule.type';
+
 interface Color {
   $selected: boolean;
 }
@@ -11,27 +16,12 @@ export function TimeCard({
   selected,
   onClick,
 }: {
-  time: string;
+  time: Times;
   selected: boolean;
   onClick: () => void;
 }) {
-  let timeString;
-  switch (time) {
-    case '오전':
-      timeString = 'sunrise';
-      break;
-    case '오후':
-      timeString = 'sun';
-      break;
-    case '저녁':
-      timeString = 'sunset';
-      break;
-    case '밤':
-      timeString = 'moon';
-      break;
-    default:
-      timeString = '';
-  }
+  const timeString = TIME_STRINGS[time as Times] || '';
+
   return (
     <styles.container onClick={onClick}>
       <styles.timeIcon

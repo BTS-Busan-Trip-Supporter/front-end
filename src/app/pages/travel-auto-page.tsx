@@ -11,6 +11,7 @@ import {
   CustomButton,
 } from '@/components';
 import { ChoiceList } from '@/components/travel';
+import { Times } from '@/features/travel-schedule/travel-schedule.type';
 
 export function TravelAutoPage() {
   const [searchContent, setSearchContent] = useState('');
@@ -24,7 +25,7 @@ export function TravelAutoPage() {
   }, []);
 
   const [event, setEvent] = useState('');
-  const [time, setTime] = useState('');
+  const [time, setTime] = useState<Times>('기본');
 
   const Contents = {
     backgroundNode: (
@@ -73,10 +74,10 @@ function InputWhen({
   selectedTime,
   setContent,
 }: {
-  selectedTime: string;
-  setContent: (value: string) => void;
+  selectedTime: Times;
+  setContent: (value: Times) => void;
 }) {
-  const handleTimeCardClick = (time: string) => {
+  const handleTimeCardClick = (time: Times) => {
     setContent(time);
   };
 
