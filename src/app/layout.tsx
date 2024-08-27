@@ -19,6 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='ko-kr'>
+      <head>
+        <meta name='theme-color' content='#605EFF' />
+      </head>
       <body className={inter.className}>
         <TravelScheduleStoreProvider>
           <main>
