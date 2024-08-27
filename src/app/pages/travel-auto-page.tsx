@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import {
   TravelComponent,
@@ -12,6 +12,7 @@ import {
 } from '@/components';
 import { ChoiceList } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
+import { useIntersectionObserver } from '@/shared';
 
 interface Loading {
   $isLoading: boolean;
@@ -32,6 +33,9 @@ export function TravelAutoPage() {
   const [time, setTime] = useState<Times>('기본');
   const [isLoading] = useState<boolean>(true);
 
+  const inputWhenRef = useRef<HTMLDivElement | null>(null);
+  const isResultVisible = useIntersectionObserver(inputWhenRef);
+
   const Contents = {
     backgroundNode: (
       <ChoiceList
@@ -47,9 +51,11 @@ export function TravelAutoPage() {
         <styles.wrapper>
           <InputWhat where={searchContent} setContent={setEvent} />
           <InputWhen selectedTime={time} setContent={setTime} />
-          <Results isLoading={isLoading} />
+          <div ref={inputWhenRef}>
+            <Results isLoading={isLoading} />
+          </div>
         </styles.wrapper>
-        <ScrollMotion />
+        {!isResultVisible && <ScrollMotion />}
       </>
     ),
     type: 'auto' as const,
