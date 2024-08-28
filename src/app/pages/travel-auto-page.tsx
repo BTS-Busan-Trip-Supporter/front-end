@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import {
   TravelComponent,
@@ -9,9 +9,40 @@ import {
   ScrollMotion,
   TimeCard,
   CustomButton,
+  LoadingCard,
 } from '@/components';
 import { ChoiceList } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
+import { useIntersectionObserver } from '@/shared';
+
+interface Location {
+  id: number;
+  imageUrl: string;
+  name: string;
+}
+
+const dummyLocations: Location[] = [
+  {
+    id: 1,
+    imageUrl: 'https://picsum.photos/400/600',
+    name: 'hi',
+  },
+  {
+    id: 2,
+    imageUrl: 'https://picsum.photos/2600/2600',
+    name: 'hi',
+  },
+  {
+    id: 3,
+    imageUrl: 'https://picsum.photos/200/500',
+    name: 'hi',
+  },
+  {
+    id: 4,
+    imageUrl: 'https://picsum.photos/100/100',
+    name: 'hi',
+  },
+];
 
 export function TravelAutoPage() {
   const [searchContent, setSearchContent] = useState('');
@@ -26,6 +57,10 @@ export function TravelAutoPage() {
 
   const [event, setEvent] = useState('');
   const [time, setTime] = useState<Times>('기본');
+  const [isLoading] = useState<boolean>(true);
+
+  const inputWhenRef = useRef<HTMLDivElement | null>(null);
+  const isResultVisible = useIntersectionObserver(inputWhenRef);
 
   const Contents = {
     backgroundNode: (
@@ -33,7 +68,7 @@ export function TravelAutoPage() {
         choiceList={{
           where: searchContent,
           what: event,
-          when: time,
+          when: time === '기본' ? undefined : time,
         }}
       />
     ),
@@ -42,9 +77,15 @@ export function TravelAutoPage() {
         <styles.wrapper>
           <InputWhat where={searchContent} setContent={setEvent} />
           <InputWhen selectedTime={time} setContent={setTime} />
-          <Results />
+          <div ref={inputWhenRef}>
+            <Results
+              isLoading={isLoading}
+              locations={dummyLocations}
+              nextLocations={dummyLocations}
+            />
+          </div>
         </styles.wrapper>
-        <ScrollMotion />
+        {!isResultVisible && <ScrollMotion />}
       </>
     ),
     type: 'auto' as const,
@@ -115,29 +156,39 @@ function InputWhen({
   );
 }
 
-function Results() {
+function Results({
+  isLoading,
+  locations,
+  nextLocations,
+}: {
+  isLoading: boolean;
+  locations: Location[];
+  nextLocations: Location[];
+}) {
   return (
     <styles.container>
       <styles.resultCon>
         <styles.description>이런 곳 어떠세요?</styles.description>
         <styles.cardList>
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
+          {locations.map((location) => (
+            <LoadingCard
+              key={location.id}
+              dataLoading={isLoading}
+              imageUrl={location.imageUrl}
+            />
+          ))}
         </styles.cardList>
       </styles.resultCon>
       <styles.resultCon>
         <styles.description>이후에 이 곳은 어떠세요?</styles.description>
         <styles.cardList>
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
-          <styles.card />
+          {nextLocations.map((location) => (
+            <LoadingCard
+              key={location.id}
+              dataLoading={isLoading}
+              imageUrl={location.imageUrl}
+            />
+          ))}
         </styles.cardList>
       </styles.resultCon>
     </styles.container>
@@ -207,15 +258,5 @@ const styles = {
       display: none;
     }
     justify-content: flex-start;
-  `,
-
-  card: styled.div`
-    width: 6.875rem;
-    height: 7.6875rem;
-    flex-shrink: 0;
-    border-radius: 14px;
-    background: #fff;
-
-    box-shadow: 2px 3px 4px 0px rgba(0, 0, 0, 0.07);
   `,
 };
