@@ -9,14 +9,40 @@ import {
   ScrollMotion,
   TimeCard,
   CustomButton,
+  LoadingCard,
 } from '@/components';
 import { ChoiceList } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
 import { useIntersectionObserver } from '@/shared';
 
-interface Loading {
-  $isLoading: boolean;
+interface Location {
+  id: number;
+  imageUrl: string;
+  name: string;
 }
+
+const dummyLocations: Location[] = [
+  {
+    id: 1,
+    imageUrl: 'https://picsum.photos/400/600',
+    name: 'hi',
+  },
+  {
+    id: 2,
+    imageUrl: 'https://picsum.photos/2600/2600',
+    name: 'hi',
+  },
+  {
+    id: 3,
+    imageUrl: 'https://picsum.photos/200/500',
+    name: 'hi',
+  },
+  {
+    id: 4,
+    imageUrl: 'https://picsum.photos/100/100',
+    name: 'hi',
+  },
+];
 
 export function TravelAutoPage() {
   const [searchContent, setSearchContent] = useState('');
@@ -42,7 +68,7 @@ export function TravelAutoPage() {
         choiceList={{
           where: searchContent,
           what: event,
-          when: time,
+          when: time === '기본' ? undefined : time,
         }}
       />
     ),
@@ -52,7 +78,11 @@ export function TravelAutoPage() {
           <InputWhat where={searchContent} setContent={setEvent} />
           <InputWhen selectedTime={time} setContent={setTime} />
           <div ref={inputWhenRef}>
-            <Results isLoading={isLoading} />
+            <Results
+              isLoading={isLoading}
+              locations={dummyLocations}
+              nextLocations={dummyLocations}
+            />
           </div>
         </styles.wrapper>
         {!isResultVisible && <ScrollMotion />}
@@ -126,29 +156,39 @@ function InputWhen({
   );
 }
 
-function Results({ isLoading }: { isLoading: boolean }) {
+function Results({
+  isLoading,
+  locations,
+  nextLocations,
+}: {
+  isLoading: boolean;
+  locations: Location[];
+  nextLocations: Location[];
+}) {
   return (
     <styles.container>
       <styles.resultCon>
         <styles.description>이런 곳 어떠세요?</styles.description>
         <styles.cardList>
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
+          {locations.map((location) => (
+            <LoadingCard
+              key={location.id}
+              dataLoading={isLoading}
+              imageUrl={location.imageUrl}
+            />
+          ))}
         </styles.cardList>
       </styles.resultCon>
       <styles.resultCon>
         <styles.description>이후에 이 곳은 어떠세요?</styles.description>
         <styles.cardList>
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
-          <styles.card $isLoading={isLoading} />
+          {nextLocations.map((location) => (
+            <LoadingCard
+              key={location.id}
+              dataLoading={isLoading}
+              imageUrl={location.imageUrl}
+            />
+          ))}
         </styles.cardList>
       </styles.resultCon>
     </styles.container>
@@ -218,32 +258,5 @@ const styles = {
       display: none;
     }
     justify-content: flex-start;
-  `,
-
-  card: styled.div<Loading>`
-    width: 6.875rem;
-    height: 7.6875rem;
-    flex-shrink: 0;
-    border-radius: 14px;
-    background-color: ${(props) => (props.$isLoading ? '#f9f9f9' : '#fff')};
-    background-image: linear-gradient(
-      90deg,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 0.5),
-      rgba(255, 255, 255, 0)
-    );
-    background-size: 40px 100%;
-    background-repeat: no-repeat;
-    background-position: left -80px top 0;
-
-    box-shadow: 2px 3px 4px 0px rgba(0, 0, 0, 0.07);
-    animation: ${(props) =>
-      props.$isLoading ? 'loading 1s ease-in-out infinite' : 'none'};
-
-    @keyframes loading {
-      to {
-        background-position: right -40px top 0;
-      }
-    }
   `,
 };
