@@ -4,7 +4,11 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Header, ProfileSection } from '@/components/profile';
+import {
+  Header,
+  EditProfileSection,
+  EditPasswordSection,
+} from '@/components/profile';
 import { type User } from '@/features/profile';
 
 const dummyUser: User = {
@@ -26,16 +30,25 @@ export function ProfileEditPage() {
             h2='프로필 편집'
             prevButtonHandler={() => router.replace('/my')}
           />
-          <ProfileSection user={dummyUser} handlingEditPWD={setIsEditPWD} />
+          <EditProfileSection user={dummyUser} handlingEditPWD={setIsEditPWD} />
         </>
       ) : (
-        <Header
-          h2='비밀번호 변경하기'
-          prevButtonHandler={() => {
-            router.replace('/my/edit');
-            setIsEditPWD(false);
-          }}
-        />
+        <>
+          <Header
+            h2='비밀번호 변경하기'
+            prevButtonHandler={() => {
+              router.replace('/my/edit');
+              setIsEditPWD(false);
+            }}
+          />
+          <EditPasswordSection
+            currentPWD={dummyUser.password}
+            onClick={() => {
+              router.replace('/my/edit');
+              setIsEditPWD(false);
+            }}
+          />
+        </>
       )}
     </styles.container>
   );

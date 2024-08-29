@@ -69,7 +69,7 @@ export function MyPage() {
             alt='x'
             onClick={() => router.replace('/')}
           />
-          <button type='button' onClick={() => router.replace('/my/profile')}>
+          <button type='button' onClick={() => router.replace('/my/edit')}>
             프로필 편집
           </button>
         </styles.header>

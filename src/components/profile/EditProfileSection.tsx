@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 
 import { type User } from '@/features/profile';
 
-export function ProfileSection({
+export function EditProfileSection({
   user,
   handlingEditPWD,
 }: {
@@ -45,7 +45,7 @@ function ProfileInfo({
       <ListItem menu='닉네임' content={user.nickname} onClick={() => {}} />
       <ListItem
         menu='비밀번호'
-        content={user.password.replace(/./g, '*')}
+        content={user.password.replace(/./g, '•')}
         onClick={() => {
           handlingEditPWD(true);
         }}
