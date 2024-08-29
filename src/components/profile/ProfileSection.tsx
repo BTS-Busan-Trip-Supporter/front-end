@@ -4,7 +4,13 @@ import styled from '@emotion/styled';
 
 import { type User } from '@/features/profile';
 
-export function ProfileSection({ user }: { user: User }) {
+export function ProfileSection({
+  user,
+  handlingEditPWD,
+}: {
+  user: User;
+  handlingEditPWD: (value: boolean) => void;
+}) {
   return (
     <styles.container>
       <styles.infoEditSection>
@@ -12,7 +18,7 @@ export function ProfileSection({ user }: { user: User }) {
         <styles.nickname>{`${user.nickname} #${user.tag}`}</styles.nickname>
       </styles.infoEditSection>
       <styles.infoSection>
-        <ProfileInfo user={user} />
+        <ProfileInfo user={user} handlingEditPWD={handlingEditPWD} />
       </styles.infoSection>
     </styles.container>
   );
@@ -27,14 +33,22 @@ function EditProfileImage({ imgSrc }: { imgSrc: string }) {
   );
 }
 
-function ProfileInfo({ user }: { user: User }) {
+function ProfileInfo({
+  user,
+  handlingEditPWD,
+}: {
+  user: User;
+  handlingEditPWD: (value: boolean) => void;
+}) {
   return (
     <styles.infoList>
       <ListItem menu='닉네임' content={user.nickname} onClick={() => {}} />
       <ListItem
         menu='비밀번호'
         content={user.password.replace(/./g, '*')}
-        onClick={() => {}}
+        onClick={() => {
+          handlingEditPWD(true);
+        }}
       />
       <ListItem menu='이메일' content={user.email} onClick={() => {}} />
     </styles.infoList>
