@@ -22,6 +22,12 @@ const dummyUser: User = {
 export function ProfileEditPage() {
   const router = useRouter();
   const [isEditPWD, setIsEditPWD] = useState(false);
+
+  const returnToEditPage = () => {
+    router.replace('/my/edit');
+    setIsEditPWD(false);
+  };
+
   return (
     <styles.container>
       {!isEditPWD ? (
@@ -36,17 +42,11 @@ export function ProfileEditPage() {
         <>
           <Header
             h2='비밀번호 변경하기'
-            prevButtonHandler={() => {
-              router.replace('/my/edit');
-              setIsEditPWD(false);
-            }}
+            prevButtonHandler={() => returnToEditPage()}
           />
           <EditPasswordSection
             currentPWD={dummyUser.password}
-            onClick={() => {
-              router.replace('/my/edit');
-              setIsEditPWD(false);
-            }}
+            onClick={() => returnToEditPage()}
           />
         </>
       )}

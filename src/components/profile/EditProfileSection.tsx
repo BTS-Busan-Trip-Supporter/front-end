@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
 import { type User } from '@/features/profile';
 
@@ -64,10 +65,18 @@ function ListItem({
   content: string;
   onClick: () => void;
 }) {
+  const [value, setValue] = useState<string>();
   return (
     <li>
       <p>{menu}</p>
-      <input type='text' value={content} readOnly={menu === '비밀번호'} />
+      <input
+        type='text'
+        value={value ?? content}
+        readOnly={menu === '비밀번호'}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+      />
       <styles.changeButton onClick={onClick}>변경하기</styles.changeButton>
     </li>
   );
