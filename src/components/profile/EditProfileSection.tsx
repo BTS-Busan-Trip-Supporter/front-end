@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import { type User } from '@/features/profile';
 
@@ -26,9 +26,27 @@ export function EditProfileSection({
 }
 
 function EditProfileImage({ imgSrc }: { imgSrc: string }) {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [img, setImgSrc] = useState<string>(imgSrc);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const objectUrl = URL.createObjectURL(file);
+      setImgSrc(URL.createObjectURL(file));
+
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  };
+
   return (
-    <styles.imageWrapper>
-      <styles.profileImg src={imgSrc} alt='profile-img' />
+    <styles.imageWrapper
+      onClick={() => {
+        fileInputRef.current?.click();
+      }}
+    >
+      <input type='file' ref={fileInputRef} onChange={handleFileChange} />
+      <styles.profileImg src={img ?? imgSrc} alt='profile-img' />
       <styles.cameraIcon />
     </styles.imageWrapper>
   );
@@ -103,6 +121,10 @@ const styles = {
   imageWrapper: styled.div`
     display: flex;
     position: relative;
+
+    input {
+      display: none;
+    }
   `,
   profileImg: styled.img`
     width: 4.625rem;
