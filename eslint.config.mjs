@@ -6,6 +6,7 @@ import js from '@eslint/js';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import reactPlugin from 'eslint-plugin-react';
+import query from '@tanstack/eslint-plugin-query';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,6 +39,7 @@ export default [
     plugins: {
       '@typescript-eslint': typescriptEslint,
       react: reactPlugin,
+      query,
     },
 
     languageOptions: {
