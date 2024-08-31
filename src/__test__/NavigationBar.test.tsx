@@ -25,14 +25,15 @@ describe('내비게이션 바 스냅샷 테스트', () => {
     jest.clearAllMocks();
   });
 
-  test('pathname이 /login 이거나 /my 인 경우에는 내비게이션 바가 렌더링되지 않아야 합니다.', () => {
-    mockUsePathname.mockReturnValue('/login');
-    const { container } = render(<NavigationBar />);
-    expect(container.firstChild).toBeNull();
+  test('pathname이 /login 이거나 /my, /my/edit 인 경우에는 내비게이션 바가 렌더링되지 않아야 합니다.', () => {
+    const pathnames = ['/login', '/my', '/my/edit'];
 
-    mockUsePathname.mockReturnValue('/my');
-    const { container: container2 } = render(<NavigationBar />);
-    expect(container2.firstChild).toBeNull();
+    pathnames.forEach((pathname) => {
+      mockUsePathname.mockReturnValue(pathname);
+
+      const { container } = render(<NavigationBar />);
+      expect(container.firstChild).toBeNull();
+    });
   });
 
   test('pathname이 /login 이나 /my가 아닌 경우 내비게이션 바가 렌더링 되어야 합니다.', () => {

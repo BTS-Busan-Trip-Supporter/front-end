@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface Travel {
@@ -57,12 +58,20 @@ export function MyPage() {
     }
   };
 
+  const router = useRouter();
+
   return (
     <styles.container>
       <styles.top>
         <styles.header>
-          <styles.xBtn src='/x.svg' alt='x' />
-          <span>프로필 편집</span>
+          <styles.xBtn
+            src='/x.svg'
+            alt='x'
+            onClick={() => router.replace('/')}
+          />
+          <button type='button' onClick={() => router.replace('/my/edit')}>
+            프로필 편집
+          </button>
         </styles.header>
         <styles.profileSection>
           <styles.profileImg />
@@ -146,7 +155,7 @@ const styles = {
     align-items: center;
     align-self: stretch;
 
-    span {
+    button {
       color: #605eff;
 
       text-align: center;
@@ -157,6 +166,9 @@ const styles = {
       line-height: normal;
       letter-spacing: -0.01625rem;
       cursor: pointer;
+
+      border: none;
+      background-color: transparent;
     }
   `,
 
