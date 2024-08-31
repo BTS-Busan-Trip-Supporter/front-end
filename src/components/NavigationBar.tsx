@@ -11,7 +11,7 @@ export function NavigationBar() {
   const pathName = usePathname();
   const router = useRouter();
 
-  if (pathName === '/login' || pathName === '/my') {
+  if (pathName === '/login' || pathName.startsWith('/my')) {
     return null;
   }
 

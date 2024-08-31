@@ -41,7 +41,7 @@ export function TravelPage() {
             color='#514EBD'
             text='여행자 모드'
             onClick={() => {
-              router.replace('/travel/travler');
+              router.replace('/travel/traveler');
             }}
           />
         </styles.btnCon>

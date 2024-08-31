@@ -16,7 +16,7 @@ export function ContentsCard({
 const styles = {
   container: styled.div<{ $type: 'auto' | 'traveler' | 'edit' }>`
     width: 100%;
-    min-height: 100%;
+    min-height: calc(100% - 96.7px);
     border-radius: 2.6875rem;
     background: #fafaff;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
