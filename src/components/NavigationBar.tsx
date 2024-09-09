@@ -76,6 +76,7 @@ export function NavigationBar() {
 const styles = {
   container: styled.nav`
     width: 100%;
+    max-width: 375px;
     display: flex;
     justify-content: space-around;
     align-items: center;
