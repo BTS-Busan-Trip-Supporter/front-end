@@ -105,6 +105,9 @@ export default [
       'no-use-before-define': 'off',
       '@typescript-eslint/no-use-before-define': 'off',
       '@next/next/no-img-element': 'off',
+
+      'no-return-await': 'off',
+      '@typescript-eslint/return-await': ['error', 'in-try-catch'],
     },
   },
   {
