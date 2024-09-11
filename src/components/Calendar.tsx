@@ -36,18 +36,11 @@ export function Calendar({
       if (selectedDates.start == null) {
         setSelectedDates({ start: date });
       } else if (selectedDates.end == null) {
-        setSelectedDates(({ start }) => {
-          if (start && start.getTime() < date.getTime()) {
-            return {
-              start,
-              end: date,
-            };
-          }
-          return {
-            start: date,
-            end: start,
-          };
-        });
+        setSelectedDates(({ start }) =>
+          start.getTime() < date.getTime()
+            ? { start, end: date }
+            : { start: date, end: start }
+        );
       } else {
         setSelectedDates({ start: date });
       }
@@ -58,28 +51,28 @@ export function Calendar({
     () => (
       <>
         <button
-          type='button'
+          type="button"
           onClick={() => {
             setNow(new Date(now.getFullYear(), now.getMonth() - 1));
           }}
         >
-          <img src='calendar-prev-next.svg' alt='to select previous month' />
+          <img src="calendar-prev-next.svg" alt="to select previous month" />
         </button>
         <button
-          type='button'
+          type="button"
           onClick={() => {
             setNow(new Date(now.getFullYear(), now.getMonth() + 1));
           }}
         >
           <img
-            src='calendar-prev-next.svg'
-            alt='to select next month'
+            src="calendar-prev-next.svg"
+            alt="to select next month"
             style={{ rotate: '180deg' }}
           />
         </button>
       </>
     ),
-    [now],
+    [now]
   );
 
   useEffect(() => {
@@ -98,7 +91,7 @@ export function Calendar({
       </styles.header>
       <styles.dates>
         {DAYS.map((day) => (
-          <span className='day' key={day}>
+          <span className="day" key={day}>
             {day}
           </span>
         ))}
