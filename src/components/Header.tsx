@@ -30,7 +30,7 @@ const styles = {
     background-position: center;
     background-size: content;
 
-    position: absolute;
+    position: fixed;
     top: 2.25rem;
     right: 1.5rem;
     z-index: 9999;
