@@ -37,7 +37,7 @@ export function Calendar({
         setSelectedDates({ start: date });
       } else if (selectedDates.end == null) {
         setSelectedDates(({ start }) =>
-          start.getTime() < date.getTime()
+          start && start.getTime() < date.getTime()
             ? { start, end: date }
             : { start: date, end: start },
         );
