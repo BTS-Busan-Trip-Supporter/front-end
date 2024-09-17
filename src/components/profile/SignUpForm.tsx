@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
 import {
+  useCheckCode,
   useEmailDuplicationCheck,
   useSendEmailCheckingCode,
 } from '@/features/member';
@@ -12,6 +13,8 @@ interface Input {
   type: string;
   id: string;
   label: string;
+  email?: string;
+  setEmail?: (value: string) => void;
   onRequestCode?: () => void;
   isTimerActive?: boolean;
   setErrorMessage?: (msg: string | null) => void;
@@ -20,22 +23,20 @@ interface Input {
 export function SignUpForm() {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [, setErrorMessage] = useState<string | null>(null);
+  const [email, setEmail] = useState('');
 
   return (
     <styles.container>
       <styles.formWrapper>
         <InputField type='text' id='name' label='닉네임' />
-        <InputField
-          type='text'
-          id='email'
-          label='이메일'
+        <EmailField
+          email={email}
+          setEmail={setEmail}
           onRequestCode={() => setIsTimerActive(true)}
           setErrorMessage={setErrorMessage}
         />
-        <InputField
-          type='text'
-          id='authentication'
-          label='인증번호'
+        <AuthenticationField
+          email={email}
           isTimerActive={isTimerActive}
           setErrorMessage={setErrorMessage}
         />
@@ -46,14 +47,7 @@ export function SignUpForm() {
   );
 }
 
-function InputField({
-  type,
-  id,
-  label,
-  onRequestCode,
-  isTimerActive,
-  setErrorMessage,
-}: Input) {
+function InputField({ type, id, label }: Input) {
   const [value, setValue] = useState('');
 
   return (
@@ -61,103 +55,106 @@ function InputField({
       <styles.inputField
         type={type}
         id={id}
+        value={value}
         placeholder=' '
         onChange={(e) => setValue(e.target.value)}
       />
       <styles.inputLabel htmlFor={id}>{label}</styles.inputLabel>
-      {id === 'email' && (
-        <CheckEmailButton
-          email={value}
-          onRequestCode={onRequestCode}
-          setErrorMessage={setErrorMessage}
-        />
-      )}
-      {id === 'authentication' && (
-        <Authentication
-          isActive={isTimerActive}
-          setErrorMessage={setErrorMessage}
-        />
-      )}
     </styles.inputWrapper>
   );
 }
 
-function CheckEmailButton({
+function EmailField({
   email,
+  setEmail,
   onRequestCode,
   setErrorMessage,
 }: {
   email: string;
-  onRequestCode?: () => void;
-  setErrorMessage?: (msg: string | null) => void;
+  setEmail: (value: string) => void;
+  onRequestCode: () => void;
+  setErrorMessage: (msg: string | null) => void;
 }) {
   const { isEmailChecked, handleCheckButton } = useEmailDuplicationCheck(email);
   const { refetch: sendCode } = useSendEmailCheckingCode(email, false);
 
   useEffect(() => {
-    if (!setErrorMessage) return;
-
-    if (isEmailChecked && onRequestCode) {
-      onRequestCode();
+    if (!isEmailChecked) {
+      setErrorMessage('이미 존재하는 이메일입니다.');
+    } else {
       setErrorMessage(null);
       sendCode();
-    } else if (!isEmailChecked) {
-      setErrorMessage('이미 존재하는 이메일입니다.');
+      onRequestCode();
     }
-  }, [isEmailChecked, onRequestCode, setErrorMessage]);
+  }, [isEmailChecked, onRequestCode, setErrorMessage, sendCode]);
 
   return (
-    <styles.button
-      onClick={() => {
-        handleCheckButton();
-      }}
-    >
-      인증번호 받기
-    </styles.button>
+    <styles.inputWrapper>
+      <styles.inputField
+        type='text'
+        id='email'
+        placeholder=' '
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <styles.inputLabel htmlFor='email'>이메일</styles.inputLabel>
+      <styles.button onClick={handleCheckButton}>인증번호 받기</styles.button>
+    </styles.inputWrapper>
   );
 }
 
-function Authentication({
-  isActive,
+function AuthenticationField({
+  email,
+  isTimerActive,
   setErrorMessage,
 }: {
-  isActive?: boolean;
-  setErrorMessage?: (msg: string | null) => void;
+  email: string;
+  isTimerActive: boolean;
+  setErrorMessage: (msg: string | null) => void;
 }) {
+  const [uuid, setUuid] = useState('');
   const [time, setTime] = useState(0);
+  const { mutate: checkCode, data: result } = useCheckCode(email, uuid);
 
-  useEffect(() => {
-    if (!isActive) return;
-    setTime(180);
-
-    const intervalId = setInterval(() => {
-      if (!setErrorMessage) return;
-
-      setTime((prevTime) =>
-        prevTime > 1
-          ? prevTime - 1
-          : (clearInterval(intervalId),
-            () => {
-              setErrorMessage('시간초과되었습니다.');
-            },
-            0),
-      );
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [isActive]);
-
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  const handleTimeOut = () => {
+    if (!result) setErrorMessage('시간초과되었습니다.');
   };
 
+  useEffect(() => {
+    if (isTimerActive) {
+      setTime(600);
+      const intervalId = setInterval(() => {
+        setTime((prevTime) =>
+          prevTime > 1
+            ? prevTime - 1
+            : (clearInterval(intervalId), handleTimeOut, 0),
+        );
+      }, 1000);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [isTimerActive, setErrorMessage]);
+
+  useEffect(() => {
+    if (!result) setErrorMessage('인증번호가 틀렸습니다.');
+    else setTime(0);
+  }, [result, setErrorMessage]);
+
   return (
-    <>
-      {time !== 0 && <styles.time>{formatTime(time)}</styles.time>}
-      <styles.button>확인</styles.button>
-    </>
+    <styles.inputWrapper>
+      <styles.inputField
+        type='text'
+        id='authentication'
+        placeholder=' '
+        value={uuid}
+        onChange={(e) => setUuid(e.target.value)}
+      />
+      <styles.inputLabel htmlFor='authentication'>인증번호</styles.inputLabel>
+      {time !== 0 && (
+        <styles.time>{`${Math.floor(time / 60)}:${String(time % 60).padStart(2, '0')}`}</styles.time>
+      )}
+      <styles.button onClick={() => checkCode()}>확인</styles.button>
+    </styles.inputWrapper>
   );
 }
 

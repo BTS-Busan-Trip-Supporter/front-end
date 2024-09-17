@@ -1,7 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { useState, useCallback } from 'react';
 
-import { getDuplicateCheck, getSendEmailCheckingCode } from './member.api';
+import {
+  postCheckCode,
+  getDuplicateCheck,
+  getSendEmailCheckingCode,
+} from './member.api';
 
 export const useCheckingEmailDuplication = (email: string, enabled: boolean) =>
   useQuery({
@@ -17,22 +21,24 @@ export const useSendEmailCheckingCode = (email: string, enabled: boolean) =>
     enabled,
   });
 
+export const useCheckCode = (email: string, uuid: string) =>
+  useMutation({
+    mutationFn: () => postCheckCode(email, uuid),
+    onSuccess: (data) => data.data,
+  });
+
 export const useEmailDuplicationCheck = (email: string) => {
   const [isEmailChecked, setIsEmailChecked] = useState(false);
 
-  const { data: duplicateResult, refetch: checkingEmail } =
-    useCheckingEmailDuplication(email, false);
+  const { refetch: checkingEmail } = useCheckingEmailDuplication(email, false);
 
-  useEffect(() => {
-    if (duplicateResult == null) return;
+  const handleCheckButton = useCallback(() => {
+    checkingEmail().then((data) => {
+      if (data == null) return;
 
-    if (duplicateResult.data) setIsEmailChecked(true);
-    else setIsEmailChecked(false);
-  }, [duplicateResult]);
-
-  const handleCheckButton = () => {
-    checkingEmail();
-  };
+      setIsEmailChecked(data.data?.data ?? false);
+    });
+  }, [checkingEmail]);
 
   return { isEmailChecked, handleCheckButton };
 };
