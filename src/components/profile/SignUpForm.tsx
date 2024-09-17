@@ -3,6 +3,8 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
+import { useEmailDuplicationCheck } from '@/features/member';
+
 interface Input {
   type: string;
   id: string;
@@ -37,15 +39,62 @@ export function SignUpForm() {
 }
 
 function InputField({ type, id, label, onRequestCode, isTimerActive }: Input) {
+  const [value, setValue] = useState('');
+  const [isClick, setIsClick] = useState(false);
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    if (isClick) {
+      setEmail(value);
+    }
+  }, [isClick, value]);
+
   return (
     <styles.inputWrapper>
-      <styles.inputField type={type} id={id} placeholder=' ' />
+      <styles.inputField
+        type={type}
+        id={id}
+        placeholder=' '
+        onChange={(e) => setValue(e.target.value)}
+      />
       <styles.inputLabel htmlFor={id}>{label}</styles.inputLabel>
       {id === 'email' && (
-        <styles.button onClick={onRequestCode}>인증번호 받기</styles.button>
+        <CheckEmailButton
+          email={email}
+          onRequestCode={onRequestCode}
+          setIsClick={setIsClick}
+        />
       )}
       {id === 'authentication' && <Authentication isActive={isTimerActive} />}
     </styles.inputWrapper>
+  );
+}
+
+function CheckEmailButton({
+  email,
+  onRequestCode,
+  setIsClick,
+}: {
+  email: string;
+  onRequestCode?: () => void;
+  setIsClick: (isClick: boolean) => void;
+}) {
+  const { isEmailChecked } = useEmailDuplicationCheck(email);
+
+  useEffect(() => {
+    if (isEmailChecked && onRequestCode) {
+      onRequestCode();
+    }
+  }, [isEmailChecked, onRequestCode]);
+
+  return (
+    <styles.button
+      onClick={() => {
+        setIsClick(true);
+      }}
+    >
+      인증번호 받기
+    </styles.button>
   );
 }
 
