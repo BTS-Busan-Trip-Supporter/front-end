@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useReducer, useState } from 'react';
+import { useReducer, useState } from 'react';
 
 import { TravelComponent } from '@/components';
 import { ChoiceList } from '@/components/travel';
 import {
-  TravelModeLogo,
   TravelerActivitySelection,
   TravelerAddDays,
   TravelerHeaderText,
@@ -14,11 +13,14 @@ import {
   TravelerTimeSelection,
   TravelerTravelArrange,
   TravelerTravelReview,
+  TravelModeLogo,
 } from '@/components/travel/traveler';
+import { TravelerScheduleSelection } from '@/components/travel/traveler/TravelerScheduleSelection';
 import { useTravelScheduleStore } from '@/providers';
 
 type UIState =
   | 'traveler-main'
+  | 'traveler-schedule-selection'
   | 'traveler-add-days'
   | 'traveler-time-selection'
   | 'traveler-activity-selection'
@@ -30,10 +32,14 @@ type UIAction = { type: 'NEXT' } | { type: 'PREV' };
 
 const transitionMap: { [key in UIState]: { NEXT?: UIState; PREV?: UIState } } =
   {
-    'traveler-main': { NEXT: 'traveler-add-days' },
+    'traveler-main': { NEXT: 'traveler-schedule-selection' },
+    'traveler-schedule-selection': {
+      NEXT: 'traveler-add-days',
+      PREV: 'traveler-main',
+    },
     'traveler-add-days': {
       NEXT: 'traveler-time-selection',
-      PREV: 'traveler-main',
+      PREV: 'traveler-schedule-selection',
     },
     'traveler-time-selection': {
       NEXT: 'traveler-activity-selection',
@@ -64,9 +70,6 @@ export function TravelerPage() {
   const addDaySchedule = useTravelScheduleStore(
     (state) => state.addDaySchedule,
   );
-  const addDestination = useTravelScheduleStore(
-    (state) => state.addDestination,
-  );
   const removeDestination = useTravelScheduleStore(
     (state) => state.removeDestination,
   );
@@ -83,6 +86,7 @@ export function TravelerPage() {
     switch (uiState) {
       case 'traveler-main':
         return <TravelModeLogo />;
+      case 'traveler-schedule-selection':
       case 'traveler-add-days':
       case 'traveler-time-selection':
       case 'traveler-activity-selection':
@@ -102,6 +106,12 @@ export function TravelerPage() {
     switch (uiState) {
       case 'traveler-main':
         return <TravelerMain onClick={() => dispatch({ type: 'NEXT' })} />;
+      case 'traveler-schedule-selection':
+        return (
+          <TravelerScheduleSelection
+            onNextPage={() => dispatch({ type: 'NEXT' })}
+          />
+        );
       case 'traveler-add-days':
         return (
           <TravelerAddDays
@@ -195,35 +205,6 @@ export function TravelerPage() {
         return 'edit';
     }
   };
-
-  useEffect(() => {
-    if (uiState === 'traveler-add-days') {
-      addDaySchedule();
-      addDaySchedule();
-    }
-    if (uiState === 'traveler-travel-schedule-confirm') {
-      addDestination({
-        day: 1,
-        destination: {
-          id: 'test',
-          name: 'test',
-          endDate: new Date(),
-          startDate: new Date(),
-          timeToDestination: 10,
-        },
-      });
-      addDestination({
-        day: 2,
-        destination: {
-          id: 'test',
-          name: 'test',
-          endDate: new Date(),
-          startDate: new Date(),
-          timeToDestination: 10,
-        },
-      });
-    }
-  }, [addDaySchedule, addDestination, uiState]);
 
   return (
     <TravelComponent
