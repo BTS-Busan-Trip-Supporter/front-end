@@ -3,7 +3,10 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
-import { useEmailDuplicationCheck } from '@/features/member';
+import {
+  useEmailDuplicationCheck,
+  useSendEmailCheckingCode,
+} from '@/features/member';
 
 interface Input {
   type: string;
@@ -11,10 +14,13 @@ interface Input {
   label: string;
   onRequestCode?: () => void;
   isTimerActive?: boolean;
+  setErrorMessage?: (msg: string | null) => void;
 }
 
 export function SignUpForm() {
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [, setErrorMessage] = useState<string | null>(null);
+
   return (
     <styles.container>
       <styles.formWrapper>
@@ -24,12 +30,14 @@ export function SignUpForm() {
           id='email'
           label='이메일'
           onRequestCode={() => setIsTimerActive(true)}
+          setErrorMessage={setErrorMessage}
         />
         <InputField
           type='text'
           id='authentication'
           label='인증번호'
           isTimerActive={isTimerActive}
+          setErrorMessage={setErrorMessage}
         />
         <InputField type='password' id='password' label='비밀번호' />
       </styles.formWrapper>
@@ -38,16 +46,15 @@ export function SignUpForm() {
   );
 }
 
-function InputField({ type, id, label, onRequestCode, isTimerActive }: Input) {
+function InputField({
+  type,
+  id,
+  label,
+  onRequestCode,
+  isTimerActive,
+  setErrorMessage,
+}: Input) {
   const [value, setValue] = useState('');
-  const [isClick, setIsClick] = useState(false);
-  const [email, setEmail] = useState('');
-
-  useEffect(() => {
-    if (isClick) {
-      setEmail(value);
-    }
-  }, [isClick, value]);
 
   return (
     <styles.inputWrapper>
@@ -60,12 +67,17 @@ function InputField({ type, id, label, onRequestCode, isTimerActive }: Input) {
       <styles.inputLabel htmlFor={id}>{label}</styles.inputLabel>
       {id === 'email' && (
         <CheckEmailButton
-          email={email}
+          email={value}
           onRequestCode={onRequestCode}
-          setIsClick={setIsClick}
+          setErrorMessage={setErrorMessage}
         />
       )}
-      {id === 'authentication' && <Authentication isActive={isTimerActive} />}
+      {id === 'authentication' && (
+        <Authentication
+          isActive={isTimerActive}
+          setErrorMessage={setErrorMessage}
+        />
+      )}
     </styles.inputWrapper>
   );
 }
@@ -73,24 +85,31 @@ function InputField({ type, id, label, onRequestCode, isTimerActive }: Input) {
 function CheckEmailButton({
   email,
   onRequestCode,
-  setIsClick,
+  setErrorMessage,
 }: {
   email: string;
   onRequestCode?: () => void;
-  setIsClick: (isClick: boolean) => void;
+  setErrorMessage?: (msg: string | null) => void;
 }) {
-  const { isEmailChecked } = useEmailDuplicationCheck(email);
+  const { isEmailChecked, handleCheckButton } = useEmailDuplicationCheck(email);
+  const { refetch: sendCode } = useSendEmailCheckingCode(email, false);
 
   useEffect(() => {
+    if (!setErrorMessage) return;
+
     if (isEmailChecked && onRequestCode) {
       onRequestCode();
+      setErrorMessage(null);
+      sendCode();
+    } else if (!isEmailChecked) {
+      setErrorMessage('이미 존재하는 이메일입니다.');
     }
-  }, [isEmailChecked, onRequestCode]);
+  }, [isEmailChecked, onRequestCode, setErrorMessage]);
 
   return (
     <styles.button
       onClick={() => {
-        setIsClick(true);
+        handleCheckButton();
       }}
     >
       인증번호 받기
@@ -98,7 +117,13 @@ function CheckEmailButton({
   );
 }
 
-function Authentication({ isActive }: { isActive?: boolean }) {
+function Authentication({
+  isActive,
+  setErrorMessage,
+}: {
+  isActive?: boolean;
+  setErrorMessage?: (msg: string | null) => void;
+}) {
   const [time, setTime] = useState(0);
 
   useEffect(() => {
@@ -106,13 +131,17 @@ function Authentication({ isActive }: { isActive?: boolean }) {
     setTime(180);
 
     const intervalId = setInterval(() => {
-      setTime((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(intervalId);
-          return 0;
-        }
-        return prevTime - 1;
-      });
+      if (!setErrorMessage) return;
+
+      setTime((prevTime) =>
+        prevTime > 1
+          ? prevTime - 1
+          : (clearInterval(intervalId),
+            () => {
+              setErrorMessage('시간초과되었습니다.');
+            },
+            0),
+      );
     }, 1000);
 
     return () => clearInterval(intervalId);

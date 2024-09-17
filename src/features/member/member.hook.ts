@@ -3,34 +3,36 @@ import { useState, useEffect } from 'react';
 
 import { getDuplicateCheck, getSendEmailCheckingCode } from './member.api';
 
-export const useCheckingEmailDuplication = (email: string) =>
+export const useCheckingEmailDuplication = (email: string, enabled: boolean) =>
   useQuery({
     queryKey: ['/duplicate/email', email],
     queryFn: () => getDuplicateCheck(email),
+    enabled,
   });
 
-export const useSendEmailCheckingCode = (email: string) =>
+export const useSendEmailCheckingCode = (email: string, enabled: boolean) =>
   useQuery({
     queryKey: ['/send/mail', email],
     queryFn: () => getSendEmailCheckingCode(email),
+    enabled,
   });
 
 export const useEmailDuplicationCheck = (email: string) => {
   const [isEmailChecked, setIsEmailChecked] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { data } = useCheckingEmailDuplication(email);
+  const { data: duplicateResult, refetch: checkingEmail } =
+    useCheckingEmailDuplication(email, false);
 
   useEffect(() => {
-    if (data == null) return;
-    if (data.data) {
-      setIsEmailChecked(true);
-      setErrorMessage(null);
-    } else {
-      setIsEmailChecked(false);
-      setErrorMessage('이미 존재하는 이메일입니다.');
-    }
-  }, [data]);
+    if (duplicateResult == null) return;
 
-  return { isEmailChecked, errorMessage };
+    if (duplicateResult.data) setIsEmailChecked(true);
+    else setIsEmailChecked(false);
+  }, [duplicateResult]);
+
+  const handleCheckButton = () => {
+    checkingEmail();
+  };
+
+  return { isEmailChecked, handleCheckButton };
 };
