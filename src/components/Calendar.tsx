@@ -56,7 +56,7 @@ export function Calendar({
             setNow(new Date(now.getFullYear(), now.getMonth() - 1));
           }}
         >
-          <img src='calendar-prev-next.svg' alt='to select previous month' />
+          <img src='/calendar-prev-next.svg' alt='to select previous month' />
         </button>
         <button
           type='button'
@@ -65,7 +65,7 @@ export function Calendar({
           }}
         >
           <img
-            src='calendar-prev-next.svg'
+            src='/calendar-prev-next.svg'
             alt='to select next month'
             style={{ rotate: '180deg' }}
           />
@@ -176,7 +176,6 @@ const styles = {
     .selected-range {
       background: #2383e280;
       color: #fff;
-      border-radius: 3px;
     }
   `,
 };
