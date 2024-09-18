@@ -3,27 +3,41 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 
+import { InputField } from '../InputField';
+
 import {
-  useCheckCode,
+  useAuthenticationCode,
+  useAuthenticationTimer,
   useEmailDuplicationCheck,
   useSendEmailCheckingCode,
 } from '@/features/member';
-
-interface Input {
-  type: string;
-  id: string;
-  label: string;
-  email?: string;
-  setEmail?: (value: string) => void;
-  onRequestCode?: () => void;
-  isTimerActive?: boolean;
-  setErrorMessage?: (msg: string | null) => void;
-}
 
 export function SignUpForm() {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [, setErrorMessage] = useState<string | null>(null);
   const [email, setEmail] = useState('');
+  const [time, setTime] = useState(0);
+
+  const { isEmailChecked, handleCheckButton, update } =
+    useEmailDuplicationCheck(email);
+  const { refetch: sendCode } = useSendEmailCheckingCode(email, false);
+
+  useEffect(() => {
+    if (email) {
+      setTime(0);
+      setIsTimerActive(false);
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (!isEmailChecked) {
+      setErrorMessage('이미 존재하는 이메일입니다.');
+    } else {
+      setErrorMessage(null);
+      sendCode();
+      setIsTimerActive(true);
+    }
+  }, [isEmailChecked, update]);
 
   return (
     <styles.container>
@@ -32,12 +46,14 @@ export function SignUpForm() {
         <EmailField
           email={email}
           setEmail={setEmail}
-          onRequestCode={() => setIsTimerActive(true)}
-          setErrorMessage={setErrorMessage}
+          handleCheckButton={handleCheckButton}
         />
         <AuthenticationField
           email={email}
           isTimerActive={isTimerActive}
+          setIsTimerActive={setIsTimerActive}
+          time={time}
+          setTime={setTime}
           setErrorMessage={setErrorMessage}
         />
         <InputField type='password' id='password' label='비밀번호' />
@@ -47,47 +63,15 @@ export function SignUpForm() {
   );
 }
 
-function InputField({ type, id, label }: Input) {
-  const [value, setValue] = useState('');
-
-  return (
-    <styles.inputWrapper>
-      <styles.inputField
-        type={type}
-        id={id}
-        value={value}
-        placeholder=' '
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <styles.inputLabel htmlFor={id}>{label}</styles.inputLabel>
-    </styles.inputWrapper>
-  );
-}
-
 function EmailField({
   email,
   setEmail,
-  onRequestCode,
-  setErrorMessage,
+  handleCheckButton,
 }: {
   email: string;
   setEmail: (value: string) => void;
-  onRequestCode: () => void;
-  setErrorMessage: (msg: string | null) => void;
+  handleCheckButton: () => void;
 }) {
-  const { isEmailChecked, handleCheckButton } = useEmailDuplicationCheck(email);
-  const { refetch: sendCode } = useSendEmailCheckingCode(email, false);
-
-  useEffect(() => {
-    if (!isEmailChecked) {
-      setErrorMessage('이미 존재하는 이메일입니다.');
-    } else {
-      setErrorMessage(null);
-      sendCode();
-      onRequestCode();
-    }
-  }, [isEmailChecked, onRequestCode, setErrorMessage, sendCode]);
-
   return (
     <styles.inputWrapper>
       <styles.inputField
@@ -106,39 +90,32 @@ function EmailField({
 function AuthenticationField({
   email,
   isTimerActive,
+  setIsTimerActive,
+  time,
+  setTime,
   setErrorMessage,
 }: {
   email: string;
   isTimerActive: boolean;
+  setIsTimerActive: (f: boolean) => void;
+  time: number;
+  setTime: React.Dispatch<React.SetStateAction<number>>;
   setErrorMessage: (msg: string | null) => void;
 }) {
   const [uuid, setUuid] = useState('');
-  const [time, setTime] = useState(0);
-  const { mutate: checkCode, data: result } = useCheckCode(email, uuid);
-
-  const handleTimeOut = () => {
-    if (!result) setErrorMessage('시간초과되었습니다.');
-  };
-
-  useEffect(() => {
-    if (isTimerActive) {
-      setTime(600);
-      const intervalId = setInterval(() => {
-        setTime((prevTime) =>
-          prevTime > 1
-            ? prevTime - 1
-            : (clearInterval(intervalId), handleTimeOut, 0),
-        );
-      }, 1000);
-
-      return () => clearInterval(intervalId);
-    }
-  }, [isTimerActive, setErrorMessage]);
-
-  useEffect(() => {
-    if (!result) setErrorMessage('인증번호가 틀렸습니다.');
-    else setTime(0);
-  }, [result, setErrorMessage]);
+  useAuthenticationTimer(setTime, isTimerActive, () => {
+    setErrorMessage('시간초과되었습니다.');
+    setIsTimerActive(false);
+  });
+  const { checkCode } = useAuthenticationCode(
+    email,
+    uuid,
+    setErrorMessage,
+    () => {
+      setTime(0);
+      setUuid('');
+    },
+  );
 
   return (
     <styles.inputWrapper>

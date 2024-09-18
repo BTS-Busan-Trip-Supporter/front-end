@@ -9,3 +9,4 @@ export * from './TimeCard';
 export * from './LoadingCard';
 export * from './RecentSearch';
 export * from './DropBox';
+export * from './InputField';
