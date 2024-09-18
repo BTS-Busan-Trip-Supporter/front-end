@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer, useState } from 'react';
+import { useReducer } from 'react';
 
 import { TravelComponent } from '@/components';
 import { ChoiceList } from '@/components/travel';
@@ -10,11 +10,11 @@ import {
   TravelerHeaderText,
   TravelerMain,
   TravelerScheduleConfirm,
+  TravelerScheduleSelection,
   TravelerTravelArrange,
   TravelerTravelReview,
   TravelModeLogo,
 } from '@/components/travel/traveler';
-import { TravelerScheduleSelection } from '@/components/travel/traveler/TravelerScheduleSelection';
 import { useTravelScheduleStore } from '@/providers';
 
 type UIState =
@@ -69,9 +69,6 @@ export function TravelerPage() {
     (state) => state.updateDestination,
   );
 
-  const [selectedDay, setSelectedDay] = useState<number>();
-  const [, setSelectedTimeRange] = useState<Set<number>>();
-
   const [uiState, dispatch] = useReducer(uiReducer, 'traveler-main');
 
   const backgroundNode = () => {
@@ -118,8 +115,7 @@ export function TravelerPage() {
           <TravelerAddDays
             schedules={schedules}
             onAddDaySchedule={addDaySchedule}
-            onNextPage={(day) => {
-              setSelectedDay(day);
+            onNextPage={() => {
               dispatch({ type: 'NEXT' });
             }}
           />
