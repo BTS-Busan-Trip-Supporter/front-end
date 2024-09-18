@@ -10,7 +10,6 @@ import {
   TravelerHeaderText,
   TravelerMain,
   TravelerScheduleConfirm,
-  TravelerTimeSelection,
   TravelerTravelArrange,
   TravelerTravelReview,
   TravelModeLogo,
@@ -22,7 +21,6 @@ type UIState =
   | 'traveler-main'
   | 'traveler-schedule-selection'
   | 'traveler-add-days'
-  | 'traveler-time-selection'
   | 'traveler-activity-selection'
   | 'traveler-travel-schedule-confirm'
   | 'traveler-travel-schedule-arrange'
@@ -38,16 +36,10 @@ const transitionMap: { [key in UIState]: { NEXT?: UIState; PREV?: UIState } } =
       PREV: 'traveler-main',
     },
     'traveler-add-days': {
-      NEXT: 'traveler-time-selection',
       PREV: 'traveler-schedule-selection',
-    },
-    'traveler-time-selection': {
-      NEXT: 'traveler-activity-selection',
-      PREV: 'traveler-add-days',
     },
     'traveler-activity-selection': {
       NEXT: 'traveler-travel-schedule-confirm',
-      PREV: 'traveler-time-selection',
     },
     'traveler-travel-schedule-confirm': {
       NEXT: 'traveler-travel-schedule-arrange',
@@ -88,7 +80,6 @@ export function TravelerPage() {
         return <TravelModeLogo />;
       case 'traveler-schedule-selection':
       case 'traveler-add-days':
-      case 'traveler-time-selection':
       case 'traveler-activity-selection':
         return <ChoiceList choiceList={{ where: '부산광역시 (Busan)' }} />;
       case 'traveler-travel-schedule-confirm':
@@ -129,16 +120,6 @@ export function TravelerPage() {
             onAddDaySchedule={addDaySchedule}
             onNextPage={(day) => {
               setSelectedDay(day);
-              dispatch({ type: 'NEXT' });
-            }}
-          />
-        );
-      case 'traveler-time-selection':
-        return (
-          <TravelerTimeSelection
-            day={selectedDay ?? 1}
-            onNextPage={(range) => {
-              setSelectedTimeRange(range);
               dispatch({ type: 'NEXT' });
             }}
           />
@@ -208,7 +189,6 @@ export function TravelerPage() {
     switch (uiState) {
       case 'traveler-main':
       case 'traveler-add-days':
-      case 'traveler-time-selection':
       case 'traveler-activity-selection':
         return 'traveler';
       default:
