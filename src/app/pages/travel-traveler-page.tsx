@@ -105,11 +105,21 @@ export function TravelerPage() {
   const childNode = () => {
     switch (uiState) {
       case 'traveler-main':
-        return <TravelerMain onClick={() => dispatch({ type: 'NEXT' })} />;
+        return <TravelerMain onNextPage={() => dispatch({ type: 'NEXT' })} />;
       case 'traveler-schedule-selection':
         return (
           <TravelerScheduleSelection
-            onNextPage={() => dispatch({ type: 'NEXT' })}
+            onNextPage={(dates) => {
+              const { start, end } = dates;
+              if (start && end) {
+                const DAY = 24 * 60 * 60 * 1000;
+                Array.from({
+                  length:
+                    Math.round((end.getTime() - start.getTime()) / DAY) + 1,
+                }).forEach(() => addDaySchedule());
+                dispatch({ type: 'NEXT' });
+              }
+            }}
           />
         );
       case 'traveler-add-days':
@@ -117,7 +127,7 @@ export function TravelerPage() {
           <TravelerAddDays
             schedules={schedules}
             onAddDaySchedule={addDaySchedule}
-            onChangeNextUI={(day) => {
+            onNextPage={(day) => {
               setSelectedDay(day);
               dispatch({ type: 'NEXT' });
             }}
@@ -127,7 +137,7 @@ export function TravelerPage() {
         return (
           <TravelerTimeSelection
             day={selectedDay ?? 1}
-            onChangeNextUI={(range) => {
+            onNextPage={(range) => {
               setSelectedTimeRange(range);
               dispatch({ type: 'NEXT' });
             }}
@@ -148,7 +158,7 @@ export function TravelerPage() {
               removeDestination({ day, destination })
             }
             onAddDestination={() => {}}
-            onConfirm={() => dispatch({ type: 'NEXT' })}
+            onNextPage={() => dispatch({ type: 'NEXT' })}
           />
         );
       case 'traveler-travel-schedule-arrange':
@@ -156,7 +166,7 @@ export function TravelerPage() {
           <TravelerTravelArrange
             where='부산광역시 (Busan)'
             schedules={schedules}
-            onRecord={() => dispatch({ type: 'NEXT' })}
+            onNextPage={() => dispatch({ type: 'NEXT' })}
           />
         );
       case 'traveler-travel-review':

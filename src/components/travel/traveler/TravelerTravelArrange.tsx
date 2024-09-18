@@ -7,11 +7,11 @@ import { DaySchedule, Destination } from '@/features/travel-schedule';
 export function TravelerTravelArrange({
   schedules,
   where,
-  onRecord,
+  onNextPage,
 }: {
   schedules: DaySchedule[];
   where: string;
-  onRecord: () => void;
+  onNextPage: () => void;
 }) {
   return (
     <styles.container>
@@ -23,7 +23,7 @@ export function TravelerTravelArrange({
           destinations={schedule.destinations}
         />
       ))}
-      <button type='button' onClick={onRecord}>
+      <button type='button' onClick={onNextPage}>
         <div>
           <img src='/traveler-write-record.svg' alt='button to write review' />
           <p>기록하기</p>

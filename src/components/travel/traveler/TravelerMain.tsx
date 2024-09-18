@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 
 import { CustomButton, SearchBox } from '@/components';
 
-export function TravelerMain({ onClick }: { onClick: () => void }) {
+export function TravelerMain({ onNextPage }: { onNextPage: () => void }) {
   const user = {
     name: '최보윤',
   };
@@ -20,7 +20,7 @@ export function TravelerMain({ onClick }: { onClick: () => void }) {
       <CustomButton
         color='#FF75C8'
         text='내 주변에서 알아서 해줘'
-        onClick={onClick}
+        onClick={onNextPage}
         grow
       />
     </styles.container>

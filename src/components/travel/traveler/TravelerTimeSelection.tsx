@@ -7,10 +7,10 @@ const range = Array.from({ length: 23 - 9 + 1 }, (_, index) => index + 9);
 
 export function TravelerTimeSelection({
   day,
-  onChangeNextUI,
+  onNextPage,
 }: {
   day: number;
-  onChangeNextUI: (range: Set<number>) => void;
+  onNextPage: (range: Set<number>) => void;
 }) {
   const [selectedRange, setSelectedRange] = useState<
     Record<number, boolean | undefined>
@@ -94,7 +94,7 @@ export function TravelerTimeSelection({
       ))}
       <styles.confirmButton
         onClick={() =>
-          onChangeNextUI(new Set(Object.keys(selectedRange).map(parseInt)))
+          onNextPage(new Set(Object.keys(selectedRange).map(parseInt)))
         }
       >
         선택완료

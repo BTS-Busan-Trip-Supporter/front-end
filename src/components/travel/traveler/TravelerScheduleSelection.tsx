@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
 import { CustomButton } from '@/components';
 import { Calendar } from '@/components/Calendar';
@@ -8,16 +9,18 @@ import { Calendar } from '@/components/Calendar';
 export function TravelerScheduleSelection({
   onNextPage,
 }: {
-  onNextPage: () => void;
+  onNextPage: ({ start, end }: { start?: Date; end?: Date }) => void;
 }) {
+  const [dates, setDates] = useState<{ start?: Date; end?: Date }>({});
+
   return (
     <styles.container>
       <h1>언제 가시나요?</h1>
-      <Calendar selectedMode='multiple' />
+      <Calendar selectedMode='multiple' onSelect={setDates} />
       <styles.CustomButton
         color='linear-gradient(90deg, #6B67F9 0%, #423FB3 100%)'
         text='확인'
-        onClick={() => onNextPage()}
+        onClick={() => onNextPage(dates)}
       />
     </styles.container>
   );

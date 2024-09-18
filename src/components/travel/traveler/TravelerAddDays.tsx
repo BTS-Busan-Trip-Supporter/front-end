@@ -2,16 +2,16 @@
 
 import styled from '@emotion/styled';
 
-import { DaySchedule } from '@/features/travel-schedule';
+import { DaySchedule, Destination } from '@/features/travel-schedule';
 
 export function TravelerAddDays({
   schedules,
   onAddDaySchedule,
-  onChangeNextUI,
+  onNextPage,
 }: {
   schedules: DaySchedule[];
   onAddDaySchedule: () => void;
-  onChangeNextUI: (day: number) => void;
+  onNextPage: (day: number) => void;
 }) {
   return (
     <styles.container>

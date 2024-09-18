@@ -9,13 +9,13 @@ export function TravelerScheduleConfirm({
   where,
   onRemoveDestination,
   onAddDestination,
-  onConfirm,
+  onNextPage,
 }: {
   schedules: DaySchedule[];
   where: string;
   onRemoveDestination: (day: number, destination: Destination) => void;
   onAddDestination: () => void;
-  onConfirm: () => void;
+  onNextPage: () => void;
 }) {
   return (
     <styles.container>
@@ -29,7 +29,9 @@ export function TravelerScheduleConfirm({
           onAddDestination={onAddDestination}
         />
       ))}
-      <styles.confirmButton onClick={onConfirm}>여행 완성</styles.confirmButton>
+      <styles.confirmButton onClick={onNextPage}>
+        여행 완성
+      </styles.confirmButton>
     </styles.container>
   );
 }
