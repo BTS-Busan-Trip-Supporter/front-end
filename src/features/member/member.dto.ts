@@ -12,3 +12,8 @@ export interface PostCheckCodeDTO {
   status: string;
   data: boolean;
 }
+
+export interface PostRegisterDTO {
+  status: string;
+  data: string;
+}

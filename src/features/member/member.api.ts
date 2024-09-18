@@ -4,6 +4,7 @@ import {
   type GetSendEmailCodeDTO,
   type GetDuplicateEmailDTO,
   type PostCheckCodeDTO,
+  type PostRegisterDTO,
 } from './member.dto';
 
 export const getDuplicateCheck = (email: string) =>
@@ -25,5 +26,18 @@ export const postCheckCode = (email: string, uuid: string) =>
     .post<PostCheckCodeDTO>(`/p-travel-log/check/mail`, {
       email,
       uuid,
+    })
+    .then((res) => res.data);
+
+export const postRegisterMember = (
+  email: string,
+  password: string,
+  name: string,
+) =>
+  axios
+    .post<PostRegisterDTO>(`/p-travel-log/register/member/local`, {
+      email,
+      password,
+      name,
     })
     .then((res) => res.data);

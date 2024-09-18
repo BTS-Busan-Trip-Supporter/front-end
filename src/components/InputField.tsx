@@ -1,17 +1,16 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState } from 'react';
 
 interface Input {
   type: string;
   id: string;
   label: string;
+  value: string;
+  set: (v: string) => void;
 }
 
-export function InputField({ type, id, label }: Input) {
-  const [value, setValue] = useState('');
-
+export function InputField({ type, id, label, value, set }: Input) {
   return (
     <styles.inputWrapper>
       <styles.inputField
@@ -19,7 +18,7 @@ export function InputField({ type, id, label }: Input) {
         id={id}
         value={value}
         placeholder=' '
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => set(e.target.value)}
       />
       <styles.inputLabel htmlFor={id}>{label}</styles.inputLabel>
     </styles.inputWrapper>

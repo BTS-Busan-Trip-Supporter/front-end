@@ -9,18 +9,24 @@ import {
   useAuthenticationCode,
   useAuthenticationTimer,
   useEmailDuplicationCheck,
+  useRegisterMember,
   useSendEmailCheckingCode,
 } from '@/features/member';
 
 export function SignUpForm() {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [, setErrorMessage] = useState<string | null>(null);
-  const [email, setEmail] = useState('');
   const [time, setTime] = useState(0);
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const { isEmailChecked, handleCheckButton, update } =
     useEmailDuplicationCheck(email);
   const { refetch: sendCode } = useSendEmailCheckingCode(email, false);
+
+  const { mutate: registerMember } = useRegisterMember(email, password, name);
 
   useEffect(() => {
     if (email) {
@@ -42,7 +48,13 @@ export function SignUpForm() {
   return (
     <styles.container>
       <styles.formWrapper>
-        <InputField type='text' id='name' label='닉네임' />
+        <InputField
+          type='text'
+          id='name'
+          label='닉네임'
+          value={name}
+          set={setName}
+        />
         <EmailField
           email={email}
           setEmail={setEmail}
@@ -56,9 +68,21 @@ export function SignUpForm() {
           setTime={setTime}
           setErrorMessage={setErrorMessage}
         />
-        <InputField type='password' id='password' label='비밀번호' />
+        <InputField
+          type='password'
+          id='password'
+          label='비밀번호'
+          value={password}
+          set={setPassword}
+        />
       </styles.formWrapper>
-      <styles.submitButton>완료</styles.submitButton>
+      <styles.submitButton
+        onClick={() => {
+          registerMember();
+        }}
+      >
+        완료
+      </styles.submitButton>
     </styles.container>
   );
 }

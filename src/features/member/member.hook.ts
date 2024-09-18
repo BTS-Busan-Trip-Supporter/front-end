@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from 'react';
 
 import {
   postCheckCode,
+  postRegisterMember,
   getDuplicateCheck,
   getSendEmailCheckingCode,
 } from './member.api';
@@ -24,6 +25,16 @@ export const useSendEmailCheckingCode = (email: string, enabled: boolean) =>
 export const useCheckCode = (email: string, uuid: string) =>
   useMutation({
     mutationFn: () => postCheckCode(email, uuid),
+    onSuccess: (data) => data.data,
+  });
+
+export const useRegisterMember = (
+  email: string,
+  password: string,
+  name: string,
+) =>
+  useMutation({
+    mutationFn: () => postRegisterMember(email, password, name),
     onSuccess: (data) => data.data,
   });
 
