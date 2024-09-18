@@ -3,12 +3,15 @@
 import styled from '@emotion/styled';
 
 import { Background } from '@/components';
+import { useToast } from '@/features/toast';
 
 interface ButtonProps {
   $type?: string;
 }
 
 export function LoginPage() {
+  const { createToast } = useToast();
+
   return (
     <>
       <Background page='login' />
@@ -21,7 +24,12 @@ export function LoginPage() {
           <styles.bubble>간편 로그인 시작하기</styles.bubble>
           <styles.kakaoLoginBtn />
         </styles.socialSection>
-        <styles.customBtn $type='login'>
+        <styles.customBtn
+          $type='login'
+          onClick={() => {
+            createToast('info', '클릭');
+          }}
+        >
           <span>이메일로 로그인</span>
         </styles.customBtn>
         <styles.customBtn $type='sign'>

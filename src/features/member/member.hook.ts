@@ -7,6 +7,7 @@ import {
   getDuplicateCheck,
   getSendEmailCheckingCode,
 } from './member.api';
+import { useToast } from '../toast';
 
 export const useCheckingEmailDuplication = (email: string, enabled: boolean) =>
   useQuery({
@@ -39,7 +40,7 @@ export const useRegisterMember = (
   });
 
 export const useEmailDuplicationCheck = (email: string) => {
-  const [isEmailChecked, setIsEmailChecked] = useState(false);
+  const [isEmailChecked, setIsEmailChecked] = useState<boolean | null>(null);
   const [update, setUpdate] = useState(false);
 
   const { refetch: checkingEmail } = useCheckingEmailDuplication(email, false);
@@ -76,15 +77,15 @@ export const useAuthenticationTimer = (
 export const useAuthenticationCode = (
   email: string,
   uuid: string,
-  setErrorMessage: (msg: string | null) => void,
   onSuccess: () => void,
 ) => {
+  const { createToast } = useToast();
   const { mutate: checkCode, data: result } = useCheckCode(email, uuid);
 
   useEffect(() => {
-    if (result?.data === false) setErrorMessage('인증번호가 틀렸습니다.');
+    if (result?.data === false) createToast('error', '인증번호가 틀렸습니다.');
     else if (result?.data === true) onSuccess();
-  }, [result, setErrorMessage]);
+  }, [result]);
 
   return { checkCode, result };
 };

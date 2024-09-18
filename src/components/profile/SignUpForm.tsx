@@ -12,10 +12,10 @@ import {
   useRegisterMember,
   useSendEmailCheckingCode,
 } from '@/features/member';
+import { useToast } from '@/features/toast';
 
 export function SignUpForm() {
   const [isTimerActive, setIsTimerActive] = useState(false);
-  const [, setErrorMessage] = useState<string | null>(null);
   const [time, setTime] = useState(0);
 
   const [name, setName] = useState('');
@@ -28,6 +28,8 @@ export function SignUpForm() {
 
   const { mutate: registerMember } = useRegisterMember(email, password, name);
 
+  const { createToast } = useToast();
+
   useEffect(() => {
     if (email) {
       setTime(0);
@@ -36,10 +38,10 @@ export function SignUpForm() {
   }, [email]);
 
   useEffect(() => {
-    if (!isEmailChecked) {
-      setErrorMessage('이미 존재하는 이메일입니다.');
-    } else {
-      setErrorMessage(null);
+    if (isEmailChecked === false) {
+      createToast('error', '이미 등록된 이메일입니다.');
+    } else if (isEmailChecked) {
+      createToast('info', '인증번호가 이메일로 발송되었습니다.');
       sendCode();
       setIsTimerActive(true);
     }
@@ -66,7 +68,6 @@ export function SignUpForm() {
           setIsTimerActive={setIsTimerActive}
           time={time}
           setTime={setTime}
-          setErrorMessage={setErrorMessage}
         />
         <InputField
           type='password'
@@ -117,29 +118,29 @@ function AuthenticationField({
   setIsTimerActive,
   time,
   setTime,
-  setErrorMessage,
 }: {
   email: string;
   isTimerActive: boolean;
   setIsTimerActive: (f: boolean) => void;
   time: number;
   setTime: React.Dispatch<React.SetStateAction<number>>;
-  setErrorMessage: (msg: string | null) => void;
 }) {
+  const { createToast } = useToast();
+
   const [uuid, setUuid] = useState('');
+
   useAuthenticationTimer(setTime, isTimerActive, () => {
-    setErrorMessage('시간초과되었습니다.');
     setIsTimerActive(false);
+    setTimeout(() => {
+      createToast('error', '시간초과되었습니다.');
+    }, 100);
   });
-  const { checkCode } = useAuthenticationCode(
-    email,
-    uuid,
-    setErrorMessage,
-    () => {
-      setTime(0);
-      setUuid('');
-    },
-  );
+
+  const { checkCode } = useAuthenticationCode(email, uuid, () => {
+    setTime(0);
+    setUuid('');
+    createToast('success', '인증이 완료되었습니다.');
+  });
 
   return (
     <styles.inputWrapper>

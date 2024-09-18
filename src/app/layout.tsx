@@ -3,8 +3,11 @@ import { Inter } from 'next/font/google';
 
 import './globals.css';
 import { NavigationBar, Header } from '@/components';
-import { TravelScheduleStoreProvider } from '@/providers';
-import { TanStackQueryProvider } from '@/providers/TanStackQueryProvider';
+import {
+  TravelScheduleStoreProvider,
+  TanStackQueryProvider,
+  ToastProvider,
+} from '@/providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -34,6 +37,7 @@ export default function RootLayout({
               <Header />
               {children}
             </main>
+            <ToastProvider />
             <NavigationBar />
           </TravelScheduleStoreProvider>
         </TanStackQueryProvider>
