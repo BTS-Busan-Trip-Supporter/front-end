@@ -4,14 +4,12 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 
 import { Background } from '@/components';
-import { useToast } from '@/features/toast';
 
 interface ButtonProps {
   $type?: string;
 }
 
 export function LoginPage() {
-  const { createToast } = useToast();
   const router = useRouter();
 
   return (
@@ -29,7 +27,7 @@ export function LoginPage() {
         <styles.customBtn
           $type='login'
           onClick={() => {
-            createToast('info', '클릭');
+            router.replace('/login/email');
           }}
         >
           <span>이메일로 로그인</span>
