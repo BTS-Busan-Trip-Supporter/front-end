@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
 
 import { Background } from '@/components';
 import { useToast } from '@/features/toast';
@@ -11,6 +12,7 @@ interface ButtonProps {
 
 export function LoginPage() {
   const { createToast } = useToast();
+  const router = useRouter();
 
   return (
     <>
@@ -32,7 +34,12 @@ export function LoginPage() {
         >
           <span>이메일로 로그인</span>
         </styles.customBtn>
-        <styles.customBtn $type='sign'>
+        <styles.customBtn
+          $type='sign'
+          onClick={() => {
+            router.replace('/sign-up');
+          }}
+        >
           <span>회원가입</span>
         </styles.customBtn>
         <styles.loginMenuContainer>
