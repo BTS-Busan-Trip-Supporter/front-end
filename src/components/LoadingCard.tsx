@@ -8,17 +8,15 @@ interface Loading {
 }
 
 export function LoadingCard({
-  dataLoading,
   imageUrl,
   onClick,
   isSelected,
 }: {
-  dataLoading: boolean;
   imageUrl: string;
   onClick: () => void;
   isSelected: boolean;
 }) {
-  const [imageLoading, setImageLoading] = useState(dataLoading);
+  const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
     const img = new Image();
@@ -33,7 +31,7 @@ export function LoadingCard({
   }, [imageUrl]);
 
   return (
-    <styles.card $isLoading={dataLoading || imageLoading} onClick={onClick}>
+    <styles.card $isLoading={imageLoading} onClick={onClick}>
       <styles.checkIcon
         src={`/check${isSelected ? '' : '-non'}.svg`}
         alt='check-icon'

@@ -11,7 +11,7 @@ import {
   CustomButton,
   LoadingCard,
 } from '@/components';
-import { ChoiceList, DetailCard } from '@/components/travel';
+import { ChoiceList, DetailCard, Loading } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
 import { useIntersectionObserver } from '@/shared';
 
@@ -60,6 +60,12 @@ export function TravelAutoPage() {
 
   const [isLoading] = useState<boolean>(true);
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 5000);
+  // }, []);
+
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -94,21 +100,14 @@ export function TravelAutoPage() {
         <InputWhat where={searchContent} setContent={setEvent} />
         <InputWhen selectedTime={time} setContent={setTime} />
         <div ref={inputWhenRef}>
-          {!isDetailVisible ? (
-            <Results
-              isLoading={isLoading}
-              locations={dummyLocations}
-              nextLocations={dummyLocations}
-              onCardClick={handleCardClick}
-              selectedIds={selectedIds}
-            />
-          ) : (
-            <DetailCard
-              name={dummyLocations[selectedId ?? 1].name}
-              src={dummyLocations[selectedId ?? 1].imageUrl}
-              onSelect={handleSelectInDetail}
-            />
-          )}
+          <ResultWrapper
+            isLoading={isLoading}
+            isDetailVisible={isDetailVisible}
+            selectedId={selectedId}
+            selectedIds={selectedIds}
+            handleCardClick={handleCardClick}
+            handleSelectInDetail={handleSelectInDetail}
+          />
         </div>
         {!isResultVisible && <ScrollMotion />}
       </styles.wrapper>
@@ -182,13 +181,11 @@ function InputWhen({
 }
 
 function Results({
-  isLoading,
   locations,
   nextLocations,
   onCardClick,
   selectedIds,
 }: {
-  isLoading: boolean;
   locations: Location[];
   nextLocations: Location[];
   onCardClick: (id: number) => void;
@@ -202,7 +199,6 @@ function Results({
           {locations.map((location) => (
             <LoadingCard
               key={location.id}
-              dataLoading={isLoading}
               imageUrl={location.imageUrl}
               onClick={() => onCardClick(location.id)}
               isSelected={selectedIds.includes(location.id)}
@@ -216,7 +212,6 @@ function Results({
           {nextLocations.map((location) => (
             <LoadingCard
               key={location.id}
-              dataLoading={isLoading}
               imageUrl={location.imageUrl}
               onClick={() => onCardClick(location.id)}
               isSelected={selectedIds.includes(location.id)}
@@ -225,6 +220,47 @@ function Results({
         </styles.cardList>
       </styles.resultCon>
     </styles.container>
+  );
+}
+
+interface AutoProps {
+  isLoading: boolean;
+  isDetailVisible: boolean;
+  selectedId: number | null;
+  selectedIds: number[];
+  handleCardClick: (id: number) => void;
+  handleSelectInDetail: () => void;
+}
+
+function ResultWrapper({
+  isLoading,
+  isDetailVisible,
+  selectedId,
+  selectedIds,
+  handleCardClick,
+  handleSelectInDetail,
+}: AutoProps) {
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!isDetailVisible) {
+    return (
+      <Results
+        locations={dummyLocations}
+        nextLocations={dummyLocations}
+        onCardClick={handleCardClick}
+        selectedIds={selectedIds}
+      />
+    );
+  }
+
+  return (
+    <DetailCard
+      name={dummyLocations[selectedId ?? 1].name}
+      src={dummyLocations[selectedId ?? 1].imageUrl}
+      onSelect={handleSelectInDetail}
+    />
   );
 }
 
