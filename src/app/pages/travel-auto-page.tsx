@@ -10,6 +10,7 @@ import {
   CustomButton,
   LoadingCard,
   SearchWrapper,
+  SearchBox,
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
@@ -57,6 +58,7 @@ export function TravelAutoPage() {
 
   const [event, setEvent] = useState('');
   const [time, setTime] = useState<Times>('기본');
+  const [, setPlace] = useState('');
 
   const [isLoading] = useState<boolean>(true);
 
@@ -97,6 +99,7 @@ export function TravelAutoPage() {
     ),
     childNode: (
       <styles.wrapper>
+        <InputPlace setContent={setPlace} />
         <InputWhat where={searchContent} setContent={setEvent} />
         <InputWhen selectedTime={time} setContent={setTime} />
         <div ref={inputWhenRef}>
@@ -117,6 +120,15 @@ export function TravelAutoPage() {
   return <TravelComponent contents={Contents} />;
 }
 
+function InputPlace({ setContent }: { setContent: (value: string) => void }) {
+  return (
+    <styles.container>
+      <styles.description>가고싶은 장소를 입력하세요</styles.description>
+      <SearchWrapper setContent={setContent} />
+    </styles.container>
+  );
+}
+
 function InputWhat({
   where,
   setContent,
@@ -130,7 +142,7 @@ function InputWhat({
         {where} 에서
         <br /> 뭐하고 싶으세요?
       </styles.description>
-      <SearchWrapper setContent={setContent} />
+      <SearchBox setContent={setContent} />
     </styles.container>
   );
 }

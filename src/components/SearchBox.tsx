@@ -8,7 +8,7 @@ export function SearchBox({
   handleAddSearch,
 }: {
   setContent: (value: string) => void;
-  handleAddSearch: (value: string) => void;
+  handleAddSearch?: (value: string) => void;
 }) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setContent(e.target.value);
@@ -17,7 +17,7 @@ export function SearchBox({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       const { value } = e.currentTarget;
-      handleAddSearch(value);
+      if (handleAddSearch) handleAddSearch(value);
     }
   };
 
