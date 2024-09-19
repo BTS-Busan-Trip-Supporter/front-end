@@ -5,11 +5,11 @@ import { useState, useEffect, useRef } from 'react';
 
 import {
   TravelComponent,
-  SearchBox,
   ScrollMotion,
   TimeCard,
   CustomButton,
   LoadingCard,
+  SearchWrapper,
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
@@ -130,7 +130,7 @@ function InputWhat({
         {where} 에서
         <br /> 뭐하고 싶으세요?
       </styles.description>
-      <SearchBox setContent={setContent} />
+      <SearchWrapper setContent={setContent} />
     </styles.container>
   );
 }

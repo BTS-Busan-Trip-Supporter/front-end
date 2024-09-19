@@ -5,18 +5,28 @@ import { ChangeEvent } from 'react';
 
 export function SearchBox({
   setContent,
+  handleAddSearch,
 }: {
   setContent: (value: string) => void;
+  handleAddSearch: (value: string) => void;
 }) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setContent(e.target.value);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const { value } = e.currentTarget;
+      handleAddSearch(value);
+    }
+  };
+
   return (
     <styles.container>
-      <input
+      <styles.searchInput
         placeholder='키워드나 활동을 찾아보세요.'
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
       />
     </styles.container>
   );
@@ -33,28 +43,6 @@ const styles = {
     align-items: center;
     justify-content: space-between;
 
-    input {
-      width: 90%;
-      height: 100%;
-      color: #505050;
-      font-family: 'Noto Sans KR';
-      font-size: 1rem;
-      font-style: normal;
-      font-weight: 400;
-      line-height: normal;
-      letter-spacing: -0.03rem;
-      border: none;
-      margin-left: 0.5rem;
-
-      &:focus {
-        outline: none;
-      }
-
-      &::placeholder {
-        color: #e2e2e2;
-      }
-    }
-
     &::before {
       content: '';
       display: inline-block;
@@ -70,6 +58,28 @@ const styles = {
       height: 100%;
       background: url('/search-icon.svg') no-repeat center;
       background-size: 90%;
+    }
+  `,
+
+  searchInput: styled.input`
+    width: 90%;
+    height: 100%;
+    color: #505050;
+    font-family: 'Noto Sans KR';
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: -0.03rem;
+    border: none;
+    margin-left: 0.5rem;
+
+    &:focus {
+      outline: none;
+    }
+
+    &::placeholder {
+      color: #e2e2e2;
     }
   `,
 };
