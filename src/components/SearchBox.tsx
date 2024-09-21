@@ -1,33 +1,49 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { ChangeEvent } from 'react';
+import { useState } from 'react';
+
+import { DropBox } from './DropBox';
 
 export function SearchBox({
   setContent,
-  handleAddSearch,
+  dropBoxType,
 }: {
   setContent: (value: string) => void;
-  handleAddSearch?: (value: string) => void;
+  dropBoxType?: string;
 }) {
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setContent(e.target.value);
-  };
+  const [value, setValue] = useState<string | null>(null);
+  const [dropBoxVisible, setDropBoxVisible] = useState(false);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      const { value } = e.currentTarget;
-      if (handleAddSearch) handleAddSearch(value);
-    }
+  const handleChange = (content: string) => {
+    setContent(content);
+    setValue(content);
   };
 
   return (
-    <styles.container>
+    <styles.container
+      onClick={() => {
+        if (dropBoxType !== undefined) setDropBoxVisible(true);
+      }}
+    >
       <styles.searchInput
         placeholder='키워드나 활동을 찾아보세요.'
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
+        value={value ?? ''}
+        onChange={
+          dropBoxType === undefined
+            ? (e) => {
+                handleChange(e.target.value);
+              }
+            : () => {}
+        }
       />
+      {dropBoxVisible && (
+        <DropBox
+          type='travelType'
+          setContent={handleChange}
+          setDropBoxVisible={setDropBoxVisible}
+        />
+      )}
     </styles.container>
   );
 }
@@ -42,6 +58,7 @@ const styles = {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 
     &::before {
       content: '';

@@ -185,6 +185,7 @@ const styles = {
     object-fit: content;
     height: 16rem;
     border-radius: 8px;
+    margin-top: 0.8rem;
   `,
 
   xIcon: styled.img`

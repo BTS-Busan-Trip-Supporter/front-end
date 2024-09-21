@@ -115,7 +115,7 @@ function InputWhat({
         {where} 에서
         <br /> 뭐하고 싶으세요?
       </styles.description>
-      <SearchBox setContent={setContent} />
+      <SearchBox setContent={setContent} dropBoxType='travelType' />
     </styles.container>
   );
 }
