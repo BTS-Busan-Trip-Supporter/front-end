@@ -8,6 +8,7 @@ import {
   ScrollMotion,
   LoadingCard,
   SearchBox,
+  CustomButton,
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
@@ -158,6 +159,7 @@ function Results({
           ))}
         </styles.cardList>
       </styles.resultCon>
+      <CustomButton text='여행 완성' color='#5E5BDA' onClick={() => {}} />
     </styles.container>
   );
 }
