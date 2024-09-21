@@ -8,13 +8,15 @@ interface Loading {
 }
 
 export function LoadingCard({
-  dataLoading,
   imageUrl,
+  onClick,
+  isSelected,
 }: {
-  dataLoading: boolean;
   imageUrl: string;
+  onClick: () => void;
+  isSelected: boolean;
 }) {
-  const [imageLoading, setImageLoading] = useState(dataLoading);
+  const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
     const img = new Image();
@@ -29,7 +31,11 @@ export function LoadingCard({
   }, [imageUrl]);
 
   return (
-    <styles.card $isLoading={dataLoading || imageLoading}>
+    <styles.card $isLoading={imageLoading} onClick={onClick}>
+      <styles.checkIcon
+        src={`/check${isSelected ? '' : '-non'}.svg`}
+        alt='check-icon'
+      />
       <styles.contents
         $isLoading={imageLoading}
         src={imageUrl}
@@ -44,6 +50,7 @@ const styles = {
     width: 6.875rem;
     height: 7.6875rem;
     flex-shrink: 0;
+    position: relative;
     border-radius: 14px;
     overflow: hidden;
     background-color: ${(props) => (props.$isLoading ? '#f9f9f9' : '#fff')};
@@ -73,5 +80,14 @@ const styles = {
     width: 100%;
     height: 100%;
     display: ${(props) => (props.$isLoading ? 'none' : 'block')};
+  `,
+
+  checkIcon: styled.img`
+    width: 1.25rem;
+    height: 1.25rem;
+    object-fit: content;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.3rem;
   `,
 };

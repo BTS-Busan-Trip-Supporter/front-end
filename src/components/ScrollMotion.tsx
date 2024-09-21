@@ -17,6 +17,7 @@ const styles = {
     position: fixed;
     height: 100px;
     bottom: 4rem;
+    left: 50%;
   `,
 
   scrollMotionBtn: styled.span`
