@@ -7,3 +7,5 @@ export * from './CustomButton';
 export * from './ScrollMotion';
 export * from './TimeCard';
 export * from './LoadingCard';
+export * from './RecentSearch';
+export * from './DropBox';

@@ -5,13 +5,12 @@ import { useState, useEffect, useRef } from 'react';
 
 import {
   TravelComponent,
-  SearchBox,
   ScrollMotion,
-  TimeCard,
-  CustomButton,
   LoadingCard,
+  SearchBox,
+  CustomButton,
 } from '@/components';
-import { ChoiceList } from '@/components/travel';
+import { ChoiceList, DetailCard, Loading } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
 import { useIntersectionObserver } from '@/shared';
 
@@ -19,6 +18,8 @@ interface Location {
   id: number;
   imageUrl: string;
   name: string;
+  selected?: boolean;
+  time?: Times;
 }
 
 const dummyLocations: Location[] = [
@@ -56,11 +57,19 @@ export function TravelAutoPage() {
   }, []);
 
   const [event, setEvent] = useState('');
-  const [time, setTime] = useState<Times>('기본');
-  const [isLoading] = useState<boolean>(true);
+  const [isLoading] = useState<boolean>(false);
 
-  const inputWhenRef = useRef<HTMLDivElement | null>(null);
-  const isResultVisible = useIntersectionObserver(inputWhenRef);
+  const [isDetailVisible, setIsDetailVisible] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState<Location | null>(null);
+  const [selectedPlaces, setSelectedPlaces] = useState<Location[]>([]);
+
+  const handleCardClick = (place: Location) => {
+    setSelectedPlace(place);
+    setIsDetailVisible(true);
+  };
+
+  const ResultsRef = useRef<HTMLDivElement | null>(null);
+  const isResultVisible = useIntersectionObserver(ResultsRef);
 
   const Contents = {
     backgroundNode: (
@@ -68,25 +77,25 @@ export function TravelAutoPage() {
         choiceList={{
           where: searchContent,
           what: event,
-          when: time === '기본' ? undefined : time,
         }}
       />
     ),
     childNode: (
-      <>
-        <styles.wrapper>
-          <InputWhat where={searchContent} setContent={setEvent} />
-          <InputWhen selectedTime={time} setContent={setTime} />
-          <div ref={inputWhenRef}>
-            <Results
-              isLoading={isLoading}
-              locations={dummyLocations}
-              nextLocations={dummyLocations}
-            />
-          </div>
-        </styles.wrapper>
+      <styles.wrapper>
+        <InputWhat where={searchContent} setContent={setEvent} />
+        <div ref={ResultsRef}>
+          <ResultWrapper
+            isLoading={isLoading}
+            isDetailVisible={isDetailVisible}
+            selectedPlace={selectedPlace}
+            selectedPlaces={selectedPlaces}
+            setSelectedPlaces={setSelectedPlaces}
+            setIsDetailVisible={setIsDetailVisible}
+            handleCardClick={handleCardClick}
+          />
+        </div>
         {!isResultVisible && <ScrollMotion />}
-      </>
+      </styles.wrapper>
     ),
     type: 'auto' as const,
   };
@@ -106,64 +115,21 @@ function InputWhat({
         {where} 에서
         <br /> 뭐하고 싶으세요?
       </styles.description>
-      <SearchBox setContent={setContent} />
-    </styles.container>
-  );
-}
-
-function InputWhen({
-  selectedTime,
-  setContent,
-}: {
-  selectedTime: Times;
-  setContent: (value: Times) => void;
-}) {
-  const handleTimeCardClick = (time: Times) => {
-    setContent(time);
-  };
-
-  return (
-    <styles.container>
-      <styles.description>언제 가시나요?</styles.description>
-      <styles.timeCardCon>
-        <TimeCard
-          time='오전'
-          selected={selectedTime === '오전'}
-          onClick={() => handleTimeCardClick('오전')}
-        />
-        <TimeCard
-          time='오후'
-          selected={selectedTime === '오후'}
-          onClick={() => handleTimeCardClick('오후')}
-        />
-        <TimeCard
-          time='저녁'
-          selected={selectedTime === '저녁'}
-          onClick={() => handleTimeCardClick('저녁')}
-        />
-        <TimeCard
-          time='밤'
-          selected={selectedTime === '밤'}
-          onClick={() => handleTimeCardClick('밤')}
-        />
-      </styles.timeCardCon>
-      <CustomButton
-        color='linear-gradient(90deg, #6B67F9 0%, #423FB3 100%)'
-        text='오늘이 아니야'
-        onClick={() => {}}
-      />
+      <SearchBox setContent={setContent} dropBoxType='travelType' />
     </styles.container>
   );
 }
 
 function Results({
-  isLoading,
   locations,
   nextLocations,
+  onCardClick,
+  selectedPlaces,
 }: {
-  isLoading: boolean;
   locations: Location[];
   nextLocations: Location[];
+  onCardClick: (place: Location) => void;
+  selectedPlaces: Location[];
 }) {
   return (
     <styles.container>
@@ -173,8 +139,9 @@ function Results({
           {locations.map((location) => (
             <LoadingCard
               key={location.id}
-              dataLoading={isLoading}
               imageUrl={location.imageUrl}
+              onClick={() => onCardClick(location)}
+              isSelected={selectedPlaces.some((p) => p.id === location.id)}
             />
           ))}
         </styles.cardList>
@@ -185,13 +152,59 @@ function Results({
           {nextLocations.map((location) => (
             <LoadingCard
               key={location.id}
-              dataLoading={isLoading}
               imageUrl={location.imageUrl}
+              onClick={() => onCardClick(location)}
+              isSelected={selectedPlaces.some((p) => p.id === location.id)}
             />
           ))}
         </styles.cardList>
       </styles.resultCon>
+      <CustomButton text='여행 완성' color='#5E5BDA' onClick={() => {}} />
     </styles.container>
+  );
+}
+
+interface AutoProps {
+  isLoading: boolean;
+  isDetailVisible: boolean;
+  selectedPlace: Location | null;
+  selectedPlaces: Location[];
+  setSelectedPlaces: (updateFn: (places: Location[]) => Location[]) => void;
+  setIsDetailVisible: (i: boolean) => void;
+  handleCardClick: (place: Location) => void;
+}
+
+function ResultWrapper({
+  isLoading,
+  isDetailVisible,
+  selectedPlace,
+  selectedPlaces,
+  setSelectedPlaces,
+  setIsDetailVisible,
+  handleCardClick,
+}: AutoProps) {
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!isDetailVisible) {
+    return (
+      <Results
+        locations={dummyLocations}
+        nextLocations={dummyLocations}
+        onCardClick={handleCardClick}
+        selectedPlaces={selectedPlaces}
+      />
+    );
+  }
+
+  return (
+    <DetailCard
+      place={selectedPlace ?? { id: 1, imageUrl: '', name: '' }}
+      selectedPlaces={selectedPlaces}
+      onSelect={setSelectedPlaces}
+      setIsDetailVisible={setIsDetailVisible}
+    />
   );
 }
 
