@@ -6,10 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import {
   TravelComponent,
   ScrollMotion,
-  TimeCard,
-  CustomButton,
   LoadingCard,
-  SearchWrapper,
   SearchBox,
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
@@ -20,6 +17,8 @@ interface Location {
   id: number;
   imageUrl: string;
   name: string;
+  selected?: boolean;
+  time?: Times;
 }
 
 const dummyLocations: Location[] = [
@@ -57,35 +56,19 @@ export function TravelAutoPage() {
   }, []);
 
   const [event, setEvent] = useState('');
-  const [time, setTime] = useState<Times>('기본');
-  const [, setPlace] = useState('');
-
-  const [isLoading] = useState<boolean>(true);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 5000);
-  // }, []);
+  const [isLoading] = useState<boolean>(false);
 
   const [isDetailVisible, setIsDetailVisible] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedPlace, setSelectedPlace] = useState<Location | null>(null);
+  const [selectedPlaces, setSelectedPlaces] = useState<Location[]>([]);
 
-  const handleCardClick = (id: number) => {
-    setSelectedId(id);
+  const handleCardClick = (place: Location) => {
+    setSelectedPlace(place);
     setIsDetailVisible(true);
   };
 
-  const handleSelectInDetail = () => {
-    if (selectedId !== null) {
-      setSelectedIds((prevIds) => [...prevIds, selectedId]);
-      setIsDetailVisible(false);
-    }
-  };
-
-  const inputWhenRef = useRef<HTMLDivElement | null>(null);
-  const isResultVisible = useIntersectionObserver(inputWhenRef);
+  const ResultsRef = useRef<HTMLDivElement | null>(null);
+  const isResultVisible = useIntersectionObserver(ResultsRef);
 
   const Contents = {
     backgroundNode: (
@@ -93,23 +76,21 @@ export function TravelAutoPage() {
         choiceList={{
           where: searchContent,
           what: event,
-          when: time === '기본' ? undefined : time,
         }}
       />
     ),
     childNode: (
       <styles.wrapper>
-        <InputPlace setContent={setPlace} />
         <InputWhat where={searchContent} setContent={setEvent} />
-        <InputWhen selectedTime={time} setContent={setTime} />
-        <div ref={inputWhenRef}>
+        <div ref={ResultsRef}>
           <ResultWrapper
             isLoading={isLoading}
             isDetailVisible={isDetailVisible}
-            selectedId={selectedId}
-            selectedIds={selectedIds}
+            selectedPlace={selectedPlace}
+            selectedPlaces={selectedPlaces}
+            setSelectedPlaces={setSelectedPlaces}
+            setIsDetailVisible={setIsDetailVisible}
             handleCardClick={handleCardClick}
-            handleSelectInDetail={handleSelectInDetail}
           />
         </div>
         {!isResultVisible && <ScrollMotion />}
@@ -118,15 +99,6 @@ export function TravelAutoPage() {
     type: 'auto' as const,
   };
   return <TravelComponent contents={Contents} />;
-}
-
-function InputPlace({ setContent }: { setContent: (value: string) => void }) {
-  return (
-    <styles.container>
-      <styles.description>가고싶은 장소를 입력하세요</styles.description>
-      <SearchWrapper setContent={setContent} />
-    </styles.container>
-  );
 }
 
 function InputWhat({
@@ -147,61 +119,16 @@ function InputWhat({
   );
 }
 
-function InputWhen({
-  selectedTime,
-  setContent,
-}: {
-  selectedTime: Times;
-  setContent: (value: Times) => void;
-}) {
-  const handleTimeCardClick = (time: Times) => {
-    setContent(time);
-  };
-
-  return (
-    <styles.container>
-      <styles.description>언제 가시나요?</styles.description>
-      <styles.timeCardCon>
-        <TimeCard
-          time='오전'
-          selected={selectedTime === '오전'}
-          onClick={() => handleTimeCardClick('오전')}
-        />
-        <TimeCard
-          time='오후'
-          selected={selectedTime === '오후'}
-          onClick={() => handleTimeCardClick('오후')}
-        />
-        <TimeCard
-          time='저녁'
-          selected={selectedTime === '저녁'}
-          onClick={() => handleTimeCardClick('저녁')}
-        />
-        <TimeCard
-          time='밤'
-          selected={selectedTime === '밤'}
-          onClick={() => handleTimeCardClick('밤')}
-        />
-      </styles.timeCardCon>
-      <CustomButton
-        color='linear-gradient(90deg, #6B67F9 0%, #423FB3 100%)'
-        text='오늘이 아니야'
-        onClick={() => {}}
-      />
-    </styles.container>
-  );
-}
-
 function Results({
   locations,
   nextLocations,
   onCardClick,
-  selectedIds,
+  selectedPlaces,
 }: {
   locations: Location[];
   nextLocations: Location[];
-  onCardClick: (id: number) => void;
-  selectedIds: number[];
+  onCardClick: (place: Location) => void;
+  selectedPlaces: Location[];
 }) {
   return (
     <styles.container>
@@ -212,8 +139,8 @@ function Results({
             <LoadingCard
               key={location.id}
               imageUrl={location.imageUrl}
-              onClick={() => onCardClick(location.id)}
-              isSelected={selectedIds.includes(location.id)}
+              onClick={() => onCardClick(location)}
+              isSelected={selectedPlaces.some((p) => p.id === location.id)}
             />
           ))}
         </styles.cardList>
@@ -225,8 +152,8 @@ function Results({
             <LoadingCard
               key={location.id}
               imageUrl={location.imageUrl}
-              onClick={() => onCardClick(location.id)}
-              isSelected={selectedIds.includes(location.id)}
+              onClick={() => onCardClick(location)}
+              isSelected={selectedPlaces.some((p) => p.id === location.id)}
             />
           ))}
         </styles.cardList>
@@ -238,19 +165,21 @@ function Results({
 interface AutoProps {
   isLoading: boolean;
   isDetailVisible: boolean;
-  selectedId: number | null;
-  selectedIds: number[];
-  handleCardClick: (id: number) => void;
-  handleSelectInDetail: () => void;
+  selectedPlace: Location | null;
+  selectedPlaces: Location[];
+  setSelectedPlaces: (updateFn: (places: Location[]) => Location[]) => void;
+  setIsDetailVisible: (i: boolean) => void;
+  handleCardClick: (place: Location) => void;
 }
 
 function ResultWrapper({
   isLoading,
   isDetailVisible,
-  selectedId,
-  selectedIds,
+  selectedPlace,
+  selectedPlaces,
+  setSelectedPlaces,
+  setIsDetailVisible,
   handleCardClick,
-  handleSelectInDetail,
 }: AutoProps) {
   if (isLoading) {
     return <Loading />;
@@ -262,16 +191,17 @@ function ResultWrapper({
         locations={dummyLocations}
         nextLocations={dummyLocations}
         onCardClick={handleCardClick}
-        selectedIds={selectedIds}
+        selectedPlaces={selectedPlaces}
       />
     );
   }
 
   return (
     <DetailCard
-      name={dummyLocations[selectedId ?? 1].name}
-      src={dummyLocations[selectedId ?? 1].imageUrl}
-      onSelect={handleSelectInDetail}
+      place={selectedPlace ?? { id: 1, imageUrl: '', name: '' }}
+      selectedPlaces={selectedPlaces}
+      onSelect={setSelectedPlaces}
+      setIsDetailVisible={setIsDetailVisible}
     />
   );
 }
