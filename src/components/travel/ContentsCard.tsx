@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export function ContentsCard({
   child,

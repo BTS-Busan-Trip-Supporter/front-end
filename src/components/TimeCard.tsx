@@ -2,9 +2,10 @@
 
 import styled from '@emotion/styled';
 
+import type {
+  Times} from '@/features/travel-schedule/travel-schedule.type';
 import {
-  TIME_STRINGS,
-  Times,
+  TIME_STRINGS
 } from '@/features/travel-schedule/travel-schedule.type';
 
 interface Color {

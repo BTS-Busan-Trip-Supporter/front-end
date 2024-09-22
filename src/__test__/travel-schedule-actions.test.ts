@@ -28,8 +28,7 @@ describe('여행 관련 일정 로직 테스트', () => {
       id: 'test-id',
       name: 'test-name',
       timeToDestination: -1,
-      startDate: new Date(),
-      endDate: new Date(),
+      time: 'morning',
     };
     const { addDaySchedule, addDestination } = store.getState();
     addDaySchedule();
@@ -51,8 +50,7 @@ describe('여행 관련 일정 로직 테스트', () => {
       id: 'test-id',
       name: 'test-name',
       timeToDestination: -1,
-      startDate: new Date(),
-      endDate: new Date(),
+      time: 'morning',
     };
     const { addDaySchedule, addDestination, removeDestination } =
       store.getState();
@@ -76,8 +74,7 @@ describe('여행 관련 일정 로직 테스트', () => {
       id: 'test-id',
       name: 'test-name',
       timeToDestination: -1,
-      startDate: new Date(),
-      endDate: new Date(),
+      time: 'morning',
     };
     const { addDaySchedule, addDestination, updateDestination } =
       store.getState();

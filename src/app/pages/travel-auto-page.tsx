@@ -11,8 +11,8 @@ import {
   CustomButton,
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
+import type { Times } from '@/features/travel-schedule/travel-schedule.type';
 import { useToast } from '@/features/toast';
-import { Times } from '@/features/travel-schedule/travel-schedule.type';
 import {
   useRecommendDayTrip,
   useCreateTripSchedule,

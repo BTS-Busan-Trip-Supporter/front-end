@@ -108,6 +108,8 @@ export default [
 
       'no-return-await': 'off',
       '@typescript-eslint/return-await': ['error', 'in-try-catch'],
+
+      '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
   {

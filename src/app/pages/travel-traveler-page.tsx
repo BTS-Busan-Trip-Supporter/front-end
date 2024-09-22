@@ -36,6 +36,7 @@ const transitionMap: { [key in UIState]: { NEXT?: UIState; PREV?: UIState } } =
       PREV: 'traveler-main',
     },
     'traveler-add-days': {
+      NEXT: 'traveler-activity-selection',
       PREV: 'traveler-schedule-selection',
     },
     'traveler-activity-selection': {
@@ -61,6 +62,9 @@ export function TravelerPage() {
   const schedules = useTravelScheduleStore((state) => state.schedules);
   const addDaySchedule = useTravelScheduleStore(
     (state) => state.addDaySchedule,
+  );
+  const addDestination = useTravelScheduleStore(
+    (state) => state.addDestination,
   );
   const removeDestination = useTravelScheduleStore(
     (state) => state.removeDestination,
@@ -99,11 +103,15 @@ export function TravelerPage() {
           <TravelerScheduleSelection
             onNextPage={(dates) => {
               const { start, end } = dates;
-              if (start && end) {
+              if (start) {
                 const DAY = 24 * 60 * 60 * 1000;
                 Array.from({
                   length:
-                    Math.round((end.getTime() - start.getTime()) / DAY) + 1,
+                    Math.round(
+                      ((end ? end.getTime() : start.getTime()) -
+                        start.getTime()) /
+                        DAY,
+                    ) + 1,
                 }).forEach(() => addDaySchedule());
                 dispatch({ type: 'NEXT' });
               }
@@ -114,6 +122,9 @@ export function TravelerPage() {
         return (
           <TravelerAddDays
             schedules={schedules}
+            onAddDestination={(day, destination) =>
+              addDestination({ day, destination })
+            }
             onAddDaySchedule={addDaySchedule}
             onNextPage={() => {
               dispatch({ type: 'NEXT' });

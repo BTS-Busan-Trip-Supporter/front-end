@@ -1,9 +1,10 @@
 import { createStore } from 'zustand';
 
-import {
-  DaySchedule,
+import type {
   Destination,
-  TravelSchedule,
+  TravelSchedule} from './travel-schedule.model';
+import {
+  DaySchedule
 } from './travel-schedule.model';
 
 export type TravelScheduleState = TravelSchedule;

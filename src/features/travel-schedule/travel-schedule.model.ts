@@ -1,11 +1,17 @@
 export interface Destination {
   id: string;
   name: string;
-  timeToDestination?: number;
-  startDate: Date;
-  endDate: Date;
+  timeToDestination: number;
+  time: 'morning' | 'afternoon' | 'evening' | 'night';
   selected?: 'like' | 'unlike';
 }
+
+const TIME_ORDER: Record<Destination['time'], number> = {
+  morning: 0,
+  afternoon: 1,
+  evening: 2,
+  night: 3,
+};
 
 export class DaySchedule {
   destinations: Destination[];
@@ -41,15 +47,9 @@ export class DaySchedule {
   }
 
   sortByStartTime() {
-    this.destinations.sort((lhs, rhs) => {
-      const [lhsStartTime, rhsStartTime] = [
-        lhs.startDate.getTime(),
-        rhs.startDate.getTime(),
-      ];
-      if (lhsStartTime < rhsStartTime) return -1;
-      if (lhsStartTime === rhsStartTime) return 0;
-      return 1;
-    });
+    this.destinations.sort(
+      (lhs, rhs) => TIME_ORDER[lhs.time] - TIME_ORDER[rhs.time],
+    );
   }
 }
 

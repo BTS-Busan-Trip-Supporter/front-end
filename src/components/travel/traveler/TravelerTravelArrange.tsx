@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 
-import { DaySchedule, Destination } from '@/features/travel-schedule';
+import type { DaySchedule, Destination } from '@/features/travel-schedule';
 
 export function TravelerTravelArrange({
   schedules,

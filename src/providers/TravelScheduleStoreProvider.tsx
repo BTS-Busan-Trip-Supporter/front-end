@@ -1,11 +1,13 @@
 'use client';
 
-import { createContext, ReactNode, useContext, useRef } from 'react';
+import type { ReactNode} from 'react';
+import { createContext, useContext, useRef } from 'react';
 import { useStore } from 'zustand';
 
+import type {
+  TravelScheduleStore} from '@/features/travel-schedule';
 import {
-  createTravelScheduleStore,
-  TravelScheduleStore,
+  createTravelScheduleStore
 } from '@/features/travel-schedule';
 
 export type TravelScheduleStoreApi = ReturnType<
