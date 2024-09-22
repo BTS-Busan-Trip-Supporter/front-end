@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useContext } from 'react';
 
 import {
   postCheckCode,
@@ -9,14 +9,22 @@ import {
 } from './member.api';
 import { useToast } from '../toast';
 
-export const useCheckingEmailDuplication = (email: string, enabled: boolean) =>
+import { AuthContext } from '@/providers';
+
+export const useCheckingEmailDuplication = (
+  email: string,
+  enabled: boolean = false,
+) =>
   useQuery({
     queryKey: ['/duplicate/email', email],
     queryFn: () => getDuplicateCheck(email),
     enabled,
   });
 
-export const useSendEmailCheckingCode = (email: string, enabled: boolean) =>
+export const useSendEmailCheckingCode = (
+  email: string,
+  enabled: boolean = false,
+) =>
   useQuery({
     queryKey: ['/send/mail', email],
     queryFn: () => getSendEmailCheckingCode(email),
@@ -38,6 +46,14 @@ export const useRegisterMember = (
     mutationFn: () => postRegisterMember(email, password, name),
     onSuccess: (data) => data.data,
   });
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('AuthProvider Error');
+  }
+  return context;
+};
 
 export const useEmailDuplicationCheck = (email: string) => {
   const [isEmailChecked, setIsEmailChecked] = useState<boolean | null>(null);

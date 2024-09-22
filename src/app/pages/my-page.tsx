@@ -4,6 +4,8 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { useAuth } from '@/features/member';
+
 interface Travel {
   name: string;
   date: string;
@@ -59,6 +61,7 @@ export function MyPage() {
   };
 
   const router = useRouter();
+  const { logout } = useAuth();
 
   return (
     <styles.container>
@@ -76,6 +79,14 @@ export function MyPage() {
         <styles.profileSection>
           <styles.profileImg />
           <p>{user.name}</p>
+          <button
+            type='button'
+            onClick={() => {
+              logout();
+            }}
+          >
+            로그아웃
+          </button>
         </styles.profileSection>
       </styles.top>
       <styles.tabContainer>

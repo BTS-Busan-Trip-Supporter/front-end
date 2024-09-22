@@ -22,7 +22,11 @@ export function LoginPage() {
         </h2>
         <styles.socialSection>
           <styles.bubble>간편 로그인 시작하기</styles.bubble>
-          <styles.kakaoLoginBtn />
+          <styles.kakaoLoginBtn
+            onClick={() => {
+              window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth2/authorization/kakao`;
+            }}
+          />
         </styles.socialSection>
         <styles.customBtn
           $type='login'

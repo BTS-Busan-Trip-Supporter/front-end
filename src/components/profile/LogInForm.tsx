@@ -5,9 +5,14 @@ import { useState } from 'react';
 
 import { InputField } from '../InputField';
 
+import { useAuth } from '@/features/member';
+
 export function LogInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { login } = useAuth();
+
   return (
     <styles.container>
       <styles.formWrapper>
@@ -26,7 +31,13 @@ export function LogInForm() {
           set={setPassword}
         />
       </styles.formWrapper>
-      <styles.logInButton>로그인</styles.logInButton>
+      <styles.logInButton
+        onClick={() => {
+          login(email, password);
+        }}
+      >
+        로그인
+      </styles.logInButton>
     </styles.container>
   );
 }
@@ -62,5 +73,6 @@ const styles = {
     width: 100%;
     border-radius: 7px;
     border: none;
+    margin-top: 2.5rem;
   `,
 };

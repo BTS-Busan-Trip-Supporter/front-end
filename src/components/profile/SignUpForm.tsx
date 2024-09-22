@@ -236,6 +236,7 @@ const styles = {
     width: 100%;
     border-radius: 7px;
     border: none;
+    margin-top: 2.5rem;
   `,
 
   button: styled.button`
@@ -253,7 +254,7 @@ const styles = {
 
     position: absolute;
     right: 0;
-    transform: translateY(50%);
+    transform: translateY(75%);
   `,
 
   time: styled.span`

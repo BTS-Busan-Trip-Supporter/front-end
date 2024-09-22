@@ -9,7 +9,7 @@ import {
   EditProfileSection,
   EditPasswordSection,
 } from '@/components/profile';
-import { type User } from '@/features/profile';
+import { type User } from '@/features/member';
 
 const dummyUser: User = {
   tag: 123,
