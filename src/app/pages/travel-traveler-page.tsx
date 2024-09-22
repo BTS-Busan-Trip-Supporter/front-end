@@ -15,6 +15,7 @@ import {
   TravelerTravelReview,
   TravelModeLogo,
 } from '@/components/travel/traveler';
+import { TravelerActivityRecommendation } from '@/components/travel/traveler/TravelerActivityRecommendation';
 import { useTravelScheduleStore } from '@/providers';
 
 type UIState =
@@ -22,6 +23,7 @@ type UIState =
   | 'traveler-schedule-selection'
   | 'traveler-add-days'
   | 'traveler-activity-selection'
+  | 'traveler-activity-recommendation'
   | 'traveler-travel-schedule-confirm'
   | 'traveler-travel-schedule-arrange'
   | 'traveler-travel-review';
@@ -40,7 +42,12 @@ const transitionMap: { [key in UIState]: { NEXT?: UIState; PREV?: UIState } } =
       PREV: 'traveler-schedule-selection',
     },
     'traveler-activity-selection': {
+      NEXT: 'traveler-activity-recommendation',
+      PREV: 'traveler-add-days',
+    },
+    'traveler-activity-recommendation': {
       NEXT: 'traveler-travel-schedule-confirm',
+      PREV: 'traveler-activity-selection',
     },
     'traveler-travel-schedule-confirm': {
       NEXT: 'traveler-travel-schedule-arrange',
@@ -137,6 +144,8 @@ export function TravelerPage() {
             onClick={() => dispatch({ type: 'NEXT' })}
           />
         );
+      case 'traveler-activity-recommendation':
+        return <TravelerActivityRecommendation />;
       case 'traveler-travel-schedule-confirm':
         return (
           <TravelerScheduleConfirm
