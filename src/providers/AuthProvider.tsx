@@ -124,11 +124,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useLayoutEffect(() => {
     const token = localStorage.getItem('accessToken');
 
-    if (pathname.startsWith('/login') || token == null) return;
+    if (pathname.startsWith('/login')) return;
 
     const isValid = checkTokenValidity();
-    if (!isValid) {
-      refreshAccessToken();
+    if (!isValid || token == null) {
+      router.replace('/login');
     } else {
       scheduleTokenRefresh(token);
     }
