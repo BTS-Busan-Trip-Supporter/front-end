@@ -5,6 +5,7 @@ import {
   type GetDuplicateEmailDTO,
   type PostCheckCodeDTO,
   type PostRegisterDTO,
+  type GetUserDataDTO,
 } from './member.dto';
 
 export const getDuplicateCheck = (email: string) =>
@@ -40,4 +41,26 @@ export const postRegisterMember = (
       password,
       name,
     })
+    .then((res) => res.data);
+
+export const getUserData = (token: string | null) =>
+  axios
+    .get<GetUserDataDTO>(`/p-travel-log/mypage`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => res.data);
+
+export const putUserName = (token: string | null, newName: string) =>
+  axios
+    .put(
+      `/p-travel-log/namechange`,
+      { newName },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
     .then((res) => res.data);

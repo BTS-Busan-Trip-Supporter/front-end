@@ -2,13 +2,7 @@
 
 import axios from 'axios';
 import { useRouter, usePathname } from 'next/navigation';
-import {
-  createContext,
-  useLayoutEffect,
-  useCallback,
-  useState,
-  useMemo,
-} from 'react';
+import { createContext, useLayoutEffect, useCallback, useState } from 'react';
 
 import { useToast } from '@/features/toast';
 
@@ -25,9 +19,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { createToast } = useToast();
 
-  const login = useCallback(async (email: string, password: string) => {
+  const login = async (email: string, password: string) => {
     try {
       const response = await axios.post('/p-travel-log/login', {
         email,
@@ -36,14 +31,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const token = response.headers.authorization?.split(' ')[1];
 
       localStorage.setItem('accessToken', token);
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
 
       router.replace('/');
     } catch (error) {
       createToast('error', '로그인에 실패하였습니다.');
     }
-  }, []);
+  };
 
-  const logout = useCallback(async () => {
+  const logout = async () => {
     const token = localStorage.getItem('accessToken');
     try {
       await axios.get('/p-travel-log/logout', {
@@ -58,7 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       createToast('error', '로그아웃에 실패하였습니다.');
     }
-  }, []);
+  };
 
   const getTokenExpiration = (token: string) => {
     const base64Url = token.split('.')[1];
@@ -73,24 +69,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsRefreshing(true);
     const token = localStorage.getItem('accessToken');
     try {
-      const response = await axios
-        .get('/p-travel-log/reissue', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        })
-        .catch(() => {
-          router.replace('/login');
-          return null;
-        });
+      const response = await axios.get('/p-travel-log/reissue', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
 
       if (response && response.data) {
         const newToken = response.data.data.accessToken.split(' ')[1];
         localStorage.setItem('accessToken', newToken);
       }
     } catch (error) {
-      createToast('error', '인증에 실패하였습니다.');
       router.replace('/login');
     } finally {
       setIsRefreshing(false);
@@ -129,20 +119,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useLayoutEffect(() => {
     const token = localStorage.getItem('accessToken');
 
-    if (pathname.startsWith('/login') || token == null) return;
+    if (pathname === '/' && token == null) {
+      router.replace('/login');
+      return;
+    }
+
+    if (pathname.startsWith('/login') || token == null) {
+      setLoading(false);
+      return;
+    }
 
     const isValid = checkTokenValidity();
     if (!isValid) {
-      refreshAccessToken();
+      refreshAccessToken().finally(() => setLoading(false));
     } else {
       scheduleTokenRefresh(token);
+      setLoading(false);
     }
-  }, [pathname, checkTokenValidity, refreshAccessToken, scheduleTokenRefresh]);
+  }, [pathname, checkTokenValidity, refreshAccessToken]);
+
+  if (loading) {
+    return null;
+  }
 
   return (
-    <AuthContext.Provider
-      value={useMemo(() => ({ login, logout }), [login, logout])}
-    >
+    <AuthContext.Provider value={{ login, logout }}>
       {children}
     </AuthContext.Provider>
   );

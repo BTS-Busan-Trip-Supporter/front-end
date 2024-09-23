@@ -1,7 +1,4 @@
 export interface User {
-  tag: number;
-  nickname: string;
-  password: string;
+  name: string;
   email: string;
-  profileImage: string;
 }

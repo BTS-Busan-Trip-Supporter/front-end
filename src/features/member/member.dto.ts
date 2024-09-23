@@ -1,3 +1,5 @@
+import { User } from './member.type';
+
 export interface GetDuplicateEmailDTO {
   status: string;
   data: boolean;
@@ -16,4 +18,9 @@ export interface PostCheckCodeDTO {
 export interface PostRegisterDTO {
   status: string;
   data: string;
+}
+
+export interface GetUserDataDTO {
+  status: string;
+  data: User;
 }

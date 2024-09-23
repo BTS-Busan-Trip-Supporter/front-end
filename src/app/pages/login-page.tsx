@@ -44,11 +44,6 @@ export function LoginPage() {
         >
           <span>회원가입</span>
         </styles.customBtn>
-        <styles.loginMenuContainer>
-          <li>아이디 찾기</li>
-          <li>비밀번호 찾기</li>
-          <li>문의하기</li>
-        </styles.loginMenuContainer>
       </styles.container>
     </>
   );
@@ -142,37 +137,6 @@ const styles = {
         transform: translateY(0.2rem);
       }
     `}
-    }
-  `,
-  loginMenuContainer: styled.ul`
-    display: flex;
-    list-style: none;
-    margin-top: 0.94rem;
-    justify-content: center;
-
-    li {
-      color: #949494;
-
-      text-align: center;
-      font-family: 'Noto Sans KR';
-      font-size: 0.875rem;
-      font-style: normal;
-      font-weight: 400;
-      line-height: normal;
-      letter-spacing: -0.0175rem;
-      padding: 0 0.6rem;
-      position: relative;
-
-      &:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        width: 1px;
-        height: 0.875rem;
-        top: 50%;
-        right: 0;
-        transform: translateY(-40%);
-        background-color: #949494;
-      }
     }
   `,
 };

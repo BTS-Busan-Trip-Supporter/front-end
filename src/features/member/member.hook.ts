@@ -6,6 +6,8 @@ import {
   postRegisterMember,
   getDuplicateCheck,
   getSendEmailCheckingCode,
+  getUserData,
+  putUserName,
 } from './member.api';
 import { useToast } from '../toast';
 
@@ -44,6 +46,24 @@ export const useRegisterMember = (
 ) =>
   useMutation({
     mutationFn: () => postRegisterMember(email, password, name),
+    onSuccess: (data) => data.data,
+  });
+
+export const useUserData = (token: string | null) =>
+  useQuery({
+    queryKey: ['/mypage', token],
+    queryFn: () => getUserData(token),
+    enabled: token != null,
+  });
+
+export const useChangeUserName = (token: string | null) =>
+  useMutation({
+    mutationFn: (newName: string) => {
+      if (!token) {
+        return Promise.reject(new Error('Token does not exist'));
+      }
+      return putUserName(token, newName);
+    },
     onSuccess: (data) => data.data,
   });
 
