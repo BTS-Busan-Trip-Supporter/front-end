@@ -74,7 +74,7 @@ export const useEmailDuplicationCheck = (email: string) => {
 };
 
 export const useAuthenticationTimer = (
-  setTime: React.Dispatch<React.SetStateAction<number>>,
+  setTime: React.Dispatch<React.SetStateAction<number | null>>,
   isActive: boolean,
   onTimeout: () => void,
 ) => {
@@ -83,7 +83,11 @@ export const useAuthenticationTimer = (
 
     setTime(600);
     const intervalId = setInterval(() => {
-      setTime((prevTime) => (prevTime <= 1 ? (onTimeout(), 0) : prevTime - 1));
+      setTime((prevTime) => {
+        if (prevTime == null) return null;
+
+        return prevTime <= 1 ? (onTimeout(), 0) : prevTime - 1;
+      });
     }, 1000);
 
     return () => clearInterval(intervalId);

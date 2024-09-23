@@ -16,7 +16,7 @@ import { useToast } from '@/features/toast';
 
 export function SignUpForm() {
   const [isTimerActive, setIsTimerActive] = useState(false);
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState<number | null>(null);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -122,8 +122,8 @@ function AuthenticationField({
   email: string;
   isTimerActive: boolean;
   setIsTimerActive: (f: boolean) => void;
-  time: number;
-  setTime: React.Dispatch<React.SetStateAction<number>>;
+  time: number | null;
+  setTime: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
   const { createToast } = useToast();
 
@@ -137,7 +137,7 @@ function AuthenticationField({
   });
 
   const { checkCode } = useAuthenticationCode(email, uuid, () => {
-    setTime(0);
+    setTime(null);
     setUuid('');
     createToast('success', '인증이 완료되었습니다.');
   });
@@ -152,7 +152,7 @@ function AuthenticationField({
         onChange={(e) => setUuid(e.target.value)}
       />
       <styles.inputLabel htmlFor='authentication'>인증번호</styles.inputLabel>
-      {time !== 0 && (
+      {time != null && time !== 0 && (
         <styles.time>{`${Math.floor(time / 60)}:${String(time % 60).padStart(2, '0')}`}</styles.time>
       )}
       <styles.button onClick={() => checkCode()}>확인</styles.button>
@@ -186,7 +186,7 @@ const styles = {
   `,
 
   inputField: styled.input`
-    width: 100%;
+    width: 75%;
     padding: 1rem 0.3rem;
     color: #505050;
     font-family: 'Noto Sans KR';
@@ -267,6 +267,6 @@ const styles = {
     letter-spacing: -0.0125rem;
     position: absolute;
     right: 2.5rem;
-    transform: translateY(80%);
+    transform: translateY(125%);
   `,
 };

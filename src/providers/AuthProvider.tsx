@@ -2,7 +2,13 @@
 
 import axios from 'axios';
 import { useRouter, usePathname } from 'next/navigation';
-import { createContext, useLayoutEffect, useCallback, useState } from 'react';
+import {
+  createContext,
+  useLayoutEffect,
+  useCallback,
+  useState,
+  useMemo,
+} from 'react';
 
 import { useToast } from '@/features/toast';
 
@@ -21,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { createToast } = useToast();
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     try {
       const response = await axios.post('/p-travel-log/login', {
         email,
@@ -35,7 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       createToast('error', '로그인에 실패하였습니다.');
     }
-  };
+  }, []);
 
   const logout = useCallback(async () => {
     const token = localStorage.getItem('accessToken');
@@ -52,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       createToast('error', '로그아웃에 실패하였습니다.');
     }
-  }, [router, createToast]);
+  }, []);
 
   const getTokenExpiration = (token: string) => {
     const base64Url = token.split('.')[1];
@@ -76,9 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (response.data) {
         const newToken = response.data.data.accessToken.split(' ')[1];
-        const newRefreshToken = response.data.data.refreshToken;
         localStorage.setItem('accessToken', newToken);
-        document.cookie = `RefreshToken=${newRefreshToken}; path=/; HttpOnly; max-age=2592000`;
       }
     } catch (error) {
       createToast('error', '인증에 실패하였습니다.');
@@ -86,7 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsRefreshing(false);
     }
-  }, [isRefreshing, createToast, router]);
+  }, [isRefreshing]);
 
   const scheduleTokenRefresh = useCallback(
     (token: string) => {
@@ -131,7 +135,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [pathname, checkTokenValidity, refreshAccessToken, scheduleTokenRefresh]);
 
   return (
-    <AuthContext.Provider value={{ login, logout }}>
+    <AuthContext.Provider
+      value={useMemo(() => ({ login, logout }), [login, logout])}
+    >
       {children}
     </AuthContext.Provider>
   );
