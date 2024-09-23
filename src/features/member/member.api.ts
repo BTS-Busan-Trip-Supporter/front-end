@@ -64,3 +64,20 @@ export const putUserName = (token: string | null, newName: string) =>
       },
     )
     .then((res) => res.data);
+
+export const putPassword = (
+  token: string | null,
+  oldPassword: string,
+  newPassword: string,
+) =>
+  axios
+    .put(
+      `/p-travel-log/pwchange`,
+      { oldPassword, newPassword },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+    .then((res) => res.data);

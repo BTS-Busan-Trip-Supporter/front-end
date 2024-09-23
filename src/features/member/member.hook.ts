@@ -8,6 +8,7 @@ import {
   getSendEmailCheckingCode,
   getUserData,
   putUserName,
+  putPassword,
 } from './member.api';
 import { useToast } from '../toast';
 
@@ -63,6 +64,23 @@ export const useChangeUserName = (token: string | null) =>
         return Promise.reject(new Error('Token does not exist'));
       }
       return putUserName(token, newName);
+    },
+    onSuccess: (data) => data.data,
+  });
+
+export const useChangePassword = (token: string | null) =>
+  useMutation({
+    mutationFn: ({
+      oldPassword,
+      newPassword,
+    }: {
+      oldPassword: string;
+      newPassword: string;
+    }) => {
+      if (!token) {
+        return Promise.reject(new Error('Token does not exist'));
+      }
+      return putPassword(token, oldPassword, newPassword);
     },
     onSuccess: (data) => data.data,
   });

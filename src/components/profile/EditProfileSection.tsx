@@ -5,21 +5,43 @@ import { useState } from 'react';
 
 import { useChangeUserName, type User } from '@/features/member';
 
-export function EditProfileSection({ user }: { user?: User }) {
+export function EditProfileSection({
+  user,
+  handlingEditPWD,
+}: {
+  user?: User;
+  handlingEditPWD: (i: boolean) => void;
+}) {
   return (
     <styles.container>
       <styles.infoSection>
-        <ProfileInfo user={user} />
+        <ProfileInfo user={user} handlingEditPWD={handlingEditPWD} />
       </styles.infoSection>
     </styles.container>
   );
 }
 
-function ProfileInfo({ user }: { user?: User }) {
+function ProfileInfo({
+  user,
+  handlingEditPWD,
+}: {
+  user?: User;
+  handlingEditPWD: (i: boolean) => void;
+}) {
   return (
     <styles.infoList>
       <ListItem menu='닉네임' content={user?.name} />
       <ListItem menu='이메일' content={user?.email} />
+      <li>
+        <p>비밀번호</p>
+        <styles.changeButton
+          onClick={() => {
+            handlingEditPWD(true);
+          }}
+        >
+          변경하기
+        </styles.changeButton>
+      </li>
     </styles.infoList>
   );
 }
