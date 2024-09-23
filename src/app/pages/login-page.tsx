@@ -104,7 +104,7 @@ const styles = {
   kakaoLoginBtn: styled.button`
     width: 3.25rem;
     height: 3.25rem;
-    background: url('/kakao.svg') no-repeat center;
+    background: url('/kakaotalk.png') no-repeat center;
     background-size: 100%;
     border: none;
   `,

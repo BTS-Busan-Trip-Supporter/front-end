@@ -73,14 +73,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsRefreshing(true);
     const token = localStorage.getItem('accessToken');
     try {
-      const response = await axios.get('/p-travel-log/reissue', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
+      const response = await axios
+        .get('/p-travel-log/reissue', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
+        .catch(() => {
+          router.replace('/login');
+          return null;
+        });
 
-      if (response.data) {
+      if (response && response.data) {
         const newToken = response.data.data.accessToken.split(' ')[1];
         localStorage.setItem('accessToken', newToken);
       }
@@ -124,11 +129,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useLayoutEffect(() => {
     const token = localStorage.getItem('accessToken');
 
-    if (pathname.startsWith('/login')) return;
+    if (pathname.startsWith('/login') || token == null) return;
 
     const isValid = checkTokenValidity();
-    if (!isValid || token == null) {
-      router.replace('/login');
+    if (!isValid) {
+      refreshAccessToken();
     } else {
       scheduleTokenRefresh(token);
     }

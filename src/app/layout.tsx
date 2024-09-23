@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import './globals.css';
-import { NavigationBar, Header } from '@/components';
+import { NavigationBar } from '@/components';
 import {
   TravelScheduleStoreProvider,
   TanStackQueryProvider,
@@ -35,10 +35,7 @@ export default function RootLayout({
         <TanStackQueryProvider>
           <TravelScheduleStoreProvider>
             <AuthProvider>
-              <main>
-                <Header />
-                {children}
-              </main>
+              <main>{children}</main>
               <ToastProvider />
               <NavigationBar />
             </AuthProvider>
