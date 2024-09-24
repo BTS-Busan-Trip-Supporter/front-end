@@ -1,23 +1,19 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
-import { type User } from '@/features/profile';
+import { useChangeUserName, type User } from '@/features/member';
 
 export function EditProfileSection({
   user,
   handlingEditPWD,
 }: {
-  user: User;
-  handlingEditPWD: (value: boolean) => void;
+  user?: User;
+  handlingEditPWD: (i: boolean) => void;
 }) {
   return (
     <styles.container>
-      <styles.infoEditSection>
-        <EditProfileImage imgSrc={user.profileImage} />
-        <styles.nickname>{`${user.nickname} #${user.tag}`}</styles.nickname>
-      </styles.infoEditSection>
       <styles.infoSection>
         <ProfileInfo user={user} handlingEditPWD={handlingEditPWD} />
       </styles.infoSection>
@@ -25,77 +21,55 @@ export function EditProfileSection({
   );
 }
 
-function EditProfileImage({ imgSrc }: { imgSrc: string }) {
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [img, setImgSrc] = useState<string>(imgSrc);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const objectUrl = URL.createObjectURL(file);
-      setImgSrc(URL.createObjectURL(file));
-
-      return () => URL.revokeObjectURL(objectUrl);
-    }
-  };
-
-  return (
-    <styles.imageWrapper
-      onClick={() => {
-        fileInputRef.current?.click();
-      }}
-    >
-      <input type='file' ref={fileInputRef} onChange={handleFileChange} />
-      <styles.profileImg src={img ?? imgSrc} alt='profile-img' />
-      <styles.cameraIcon />
-    </styles.imageWrapper>
-  );
-}
-
 function ProfileInfo({
   user,
   handlingEditPWD,
 }: {
-  user: User;
-  handlingEditPWD: (value: boolean) => void;
+  user?: User;
+  handlingEditPWD: (i: boolean) => void;
 }) {
   return (
     <styles.infoList>
-      <ListItem menu='닉네임' content={user.nickname} onClick={() => {}} />
-      <ListItem
-        menu='비밀번호'
-        content={user.password.replace(/./g, '•')}
-        onClick={() => {
-          handlingEditPWD(true);
-        }}
-      />
-      <ListItem menu='이메일' content={user.email} onClick={() => {}} />
+      <ListItem menu='닉네임' content={user?.name} />
+      <ListItem menu='이메일' content={user?.email} />
+      <li>
+        <p>비밀번호</p>
+        <styles.changeButton
+          onClick={() => {
+            handlingEditPWD(true);
+          }}
+        >
+          변경하기
+        </styles.changeButton>
+      </li>
     </styles.infoList>
   );
 }
 
-function ListItem({
-  menu,
-  content,
-  onClick,
-}: {
-  menu: string;
-  content: string;
-  onClick: () => void;
-}) {
+function ListItem({ menu, content }: { menu: string; content?: string }) {
   const [value, setValue] = useState<string>();
+  const { mutate: changeUserName } = useChangeUserName(
+    localStorage.getItem('accessToken'),
+  );
   return (
     <li>
       <p>{menu}</p>
       <input
         type='text'
         value={value ?? content}
-        readOnly={menu === '비밀번호'}
         onChange={(e) => {
           setValue(e.target.value);
         }}
       />
-      <styles.changeButton onClick={onClick}>변경하기</styles.changeButton>
+      {menu === '닉네임' && (
+        <styles.changeButton
+          onClick={() => {
+            if (value) changeUserName(value);
+          }}
+        >
+          변경하기
+        </styles.changeButton>
+      )}
     </li>
   );
 }

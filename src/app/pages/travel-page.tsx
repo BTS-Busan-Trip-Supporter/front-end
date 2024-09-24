@@ -5,12 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Background, SearchBox, CustomButton } from '@/components';
+import { useUserData } from '@/features/member';
 
 export function TravelPage() {
   const [searchContent, setSearchContent] = useState('');
-  const user = {
-    name: '최보윤',
-  };
 
   const router = useRouter();
 
@@ -19,12 +17,14 @@ export function TravelPage() {
     router.replace('/travel/auto');
   };
 
+  const { data: userData } = useUserData(localStorage.getItem('accessToken'));
+
   return (
     <>
       <Background page='travel' />
       <styles.container>
         <h2>
-          {user.name}님,
+          {userData?.data.name}님,
           <br />
           어디가실 계획인가요?
         </h2>

@@ -2,7 +2,8 @@
 
 import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+
+import { useAuth, useUserData } from '@/features/member';
 
 interface Travel {
   name: string;
@@ -43,22 +44,10 @@ export function MyPage() {
     scrap: {},
   };
 
-  const [activeTab, setActiveTab] = useState('travel');
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'travel':
-        return <TravelTab user={user} />;
-      case 'record':
-        return <RecordTab />;
-      case 'scrap':
-        return <ScrapTab />;
-      default:
-        return null;
-    }
-  };
+  const { data: userData } = useUserData(localStorage.getItem('accessToken'));
 
   const router = useRouter();
+  const { logout } = useAuth();
 
   return (
     <styles.container>
@@ -72,34 +61,26 @@ export function MyPage() {
           <button type='button' onClick={() => router.replace('/my/edit')}>
             프로필 편집
           </button>
+          <button
+            type='button'
+            onClick={() => {
+              logout();
+            }}
+          >
+            로그아웃
+          </button>
         </styles.header>
         <styles.profileSection>
-          <styles.profileImg />
-          <p>{user.name}</p>
+          <p>{userData?.data.name}님의 여행</p>
         </styles.profileSection>
       </styles.top>
       <styles.tabContainer>
         <styles.tabList>
-          <styles.tabItem
-            $active={activeTab === 'travel'}
-            onClick={() => setActiveTab('travel')}
-          >
+          <styles.tabItem>
             내 여행 {Object.keys(user.travel).length}
           </styles.tabItem>
-          <styles.tabItem
-            $active={activeTab === 'record'}
-            onClick={() => setActiveTab('record')}
-          >
-            내 기록
-          </styles.tabItem>
-          <styles.tabItem
-            $active={activeTab === 'scrap'}
-            onClick={() => setActiveTab('scrap')}
-          >
-            내 저장
-          </styles.tabItem>
         </styles.tabList>
-        {renderTabContent()}
+        <TravelTab user={user} />
       </styles.tabContainer>
     </styles.container>
   );
@@ -116,19 +97,10 @@ function TravelTab({ user }: { user: User }) {
             <p>{travel.date}</p>
             <p>{travel.with}</p>
           </section>
-          <styles.ellipsisBtn />
         </styles.list>
       ))}
     </styles.tabContents>
   );
-}
-
-function RecordTab() {
-  return <></>;
-}
-
-function ScrapTab() {
-  return <></>;
 }
 
 const styles = {
@@ -142,7 +114,7 @@ const styles = {
   top: styled.div`
     display: flex;
     flex-direction: column;
-    padding: 1.7rem 0 3.5rem 0;
+    padding: 1.7rem 0 5.5rem 0;
     width: 100%;
     align-items: center;
     gap: 4.375rem;
@@ -150,8 +122,10 @@ const styles = {
   `,
   header: styled.div`
     display: flex;
+    position: relative;
     padding: 0rem 1.17188rem;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap: 2rem;
     align-items: center;
     align-self: stretch;
 
@@ -176,6 +150,8 @@ const styles = {
     width: 1.06069rem;
     height: 1.06069rem;
     cursor: pointer;
+    position: absolute;
+    left: 1.17188rem;
   `,
 
   profileSection: styled.section`
@@ -215,13 +191,12 @@ const styles = {
   tabList: styled.ul`
     display: flex;
     width: 100%;
-    justify-content: space-around;
-    padding: 1.12rem 0;
+    padding: 1.12rem 1.36rem;
     border-bottom: 1.2px solid #f1f1f1;
   `,
 
-  tabItem: styled.li<{ $active: boolean }>`
-    color: ${({ $active }) => ($active ? '#505050' : '#e6e6e6')};
+  tabItem: styled.li`
+    color: #505050;
 
     text-align: center;
     font-family: 'Noto Sans KR';
