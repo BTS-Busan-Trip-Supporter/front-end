@@ -78,7 +78,7 @@ export const useChangePassword = (token: string | null) =>
       newPassword: string;
     }) => {
       if (!token) {
-        return Promise.reject(new Error('Token does not exist'));
+        throw new Error('Token does not exist');
       }
       return putPassword(token, oldPassword, newPassword);
     },
