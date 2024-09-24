@@ -9,15 +9,7 @@ import {
   EditProfileSection,
   EditPasswordSection,
 } from '@/components/profile';
-import { type User } from '@/features/profile';
-
-const dummyUser: User = {
-  tag: 123,
-  nickname: 'P의 여행자',
-  password: '123456',
-  email: 'pop@naver.com',
-  profileImage: 'https://picsum.photos/50/50',
-};
+import { useUserData } from '@/features/member';
 
 export function ProfileEditPage() {
   const router = useRouter();
@@ -28,6 +20,8 @@ export function ProfileEditPage() {
     setIsEditPWD(false);
   };
 
+  const { data: userData } = useUserData(localStorage.getItem('accessToken'));
+
   return (
     <styles.container>
       {!isEditPWD ? (
@@ -36,7 +30,10 @@ export function ProfileEditPage() {
             h2='프로필 편집'
             prevButtonHandler={() => router.replace('/my')}
           />
-          <EditProfileSection user={dummyUser} handlingEditPWD={setIsEditPWD} />
+          <EditProfileSection
+            user={userData?.data}
+            handlingEditPWD={setIsEditPWD}
+          />
         </>
       ) : (
         <>
@@ -44,10 +41,7 @@ export function ProfileEditPage() {
             h2='비밀번호 변경하기'
             prevButtonHandler={() => returnToEditPage()}
           />
-          <EditPasswordSection
-            currentPWD={dummyUser.password}
-            onClick={() => returnToEditPage()}
-          />
+          <EditPasswordSection onClick={() => returnToEditPage()} />
         </>
       )}
     </styles.container>

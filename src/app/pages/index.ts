@@ -4,3 +4,5 @@ export * from './travel-auto-page';
 export * from './travel-traveler-page';
 export * from './travel-page';
 export * from './profile-edit-page';
+export * from './sign-up-page';
+export * from './email-login-page';

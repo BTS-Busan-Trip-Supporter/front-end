@@ -2,9 +2,13 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import './globals.css';
-import { NavigationBar, Header } from '@/components';
-import { TravelScheduleStoreProvider } from '@/providers';
-import { TanStackQueryProvider } from '@/providers/TanStackQueryProvider';
+import { NavigationBar } from '@/components';
+import {
+  TravelScheduleStoreProvider,
+  TanStackQueryProvider,
+  ToastProvider,
+  AuthProvider,
+} from '@/providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,11 +34,11 @@ export default function RootLayout({
       <body className={inter.className}>
         <TanStackQueryProvider>
           <TravelScheduleStoreProvider>
-            <main>
-              <Header />
-              {children}
-            </main>
-            <NavigationBar />
+            <AuthProvider>
+              <main>{children}</main>
+              <ToastProvider />
+              <NavigationBar />
+            </AuthProvider>
           </TravelScheduleStoreProvider>
         </TanStackQueryProvider>
       </body>

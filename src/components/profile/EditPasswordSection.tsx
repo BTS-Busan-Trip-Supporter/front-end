@@ -1,25 +1,50 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
-export function EditPasswordSection({
-  currentPWD,
-  onClick,
-}: {
-  currentPWD: string;
-  onClick: () => void;
-}) {
+import { useChangePassword } from '@/features/member';
+
+export function EditPasswordSection({ onClick }: { onClick: () => void }) {
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+
+  const { mutate: changePWD } = useChangePassword(
+    localStorage.getItem('accessToken'),
+  );
+
   return (
     <styles.container>
       <ul>
         <li>
-          현재 비밀번호 <span>{currentPWD}</span>
+          현재 비밀번호{' '}
+          <styles.inputPWD
+            type='password'
+            value={oldPassword}
+            onChange={(e) => {
+              setOldPassword(e.target.value);
+            }}
+          />
         </li>
         <li>
-          변경할 비밀번호 <styles.inputPWD type='password' />
+          변경할 비밀번호{' '}
+          <styles.inputPWD
+            type='password'
+            value={newPassword}
+            onChange={(e) => {
+              setNewPassword(e.target.value);
+            }}
+          />
         </li>
       </ul>
-      <styles.submitButton onClick={onClick}>확인</styles.submitButton>
+      <styles.submitButton
+        onClick={() => {
+          changePWD({ oldPassword, newPassword });
+          onClick();
+        }}
+      >
+        확인
+      </styles.submitButton>
     </styles.container>
   );
 }

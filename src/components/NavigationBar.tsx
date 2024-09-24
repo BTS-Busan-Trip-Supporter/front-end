@@ -11,7 +11,11 @@ export function NavigationBar() {
   const pathName = usePathname();
   const router = useRouter();
 
-  if (pathName === '/login' || pathName.startsWith('/my')) {
+  if (
+    pathName.startsWith('/login') ||
+    pathName.startsWith('/my') ||
+    pathName.startsWith('/sign-up')
+  ) {
     return null;
   }
 
@@ -20,10 +24,28 @@ export function NavigationBar() {
       <button
         type='button'
         onClick={() => {
-          router.replace('/travel');
+          router.replace('/my');
         }}
       >
-        {pathName.startsWith('/travel') ? (
+        {pathName === '/my' ? (
+          <styles.menu $active>
+            <styles.icon src='/user-active.svg' alt='user-active-menu' />
+            마이 페이지
+          </styles.menu>
+        ) : (
+          <styles.menu>
+            <styles.icon src='/user.svg' alt='user-menu' />
+            마이 페이지
+          </styles.menu>
+        )}
+      </button>
+      <button
+        type='button'
+        onClick={() => {
+          router.replace('/');
+        }}
+      >
+        {pathName.startsWith('/') ? (
           <styles.menu $active>
             <styles.icon src='/travel-active.png' alt='travel-active-menu' />
             여행하기
@@ -35,22 +57,7 @@ export function NavigationBar() {
           </styles.menu>
         )}
       </button>
-      <button
-        type='button'
-        onClick={() => {
-          router.replace('/');
-        }}
-      >
-        {pathName === '/' ? (
-          <styles.menu $active>
-            <styles.icon src='/home-active.png' alt='home-active-menu' />홈
-          </styles.menu>
-        ) : (
-          <styles.menu>
-            <styles.icon src='/home.png' alt='home-menu' />홈
-          </styles.menu>
-        )}
-      </button>
+
       <button
         type='button'
         onClick={() => {
