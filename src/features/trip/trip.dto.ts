@@ -17,7 +17,7 @@ export interface TourActivityDTO {
   recommend?: boolean;
   history?: boolean;
   dayNumber: number;
-  dayTime: 'MORNING' | 'MIDNOON' | 'AFTERNOON' | 'EVENING';
+  dayTime: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
   orderIndex: number;
 }
 
@@ -56,7 +56,7 @@ export interface PutTripScheduleRequestDTO {
     id: number;
     spotName: string;
     dayNumber: number;
-    dayTime: 'MORNING' | 'MIDNOON' | 'AFTERNOON' | 'EVENING';
+    dayTime: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
     orderIndex: number;
     tourSpotData: {
       contentId: string;
@@ -85,7 +85,7 @@ export interface TourActivity {
   id: number;
   spotName: string;
   dayNumber: number;
-  dayTime: 'MORNING' | 'MIDNOON' | 'AFTERNOON' | 'EVENING';
+  dayTime: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
   orderIndex: number;
   tourSpotData: {
     contentId: string;
@@ -120,7 +120,7 @@ export interface TripItem {
 export interface PostDayTripRequestDTO {
   contentTypeId: string;
   sigunguCode: string;
-  dayTimes: ('MORNING' | 'MIDNOON' | 'AFTERNOON' | 'EVENING')[];
+  dayTimes: ('MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT')[];
   tourDate: string;
 }
 

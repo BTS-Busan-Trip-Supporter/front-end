@@ -69,12 +69,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsRefreshing(true);
     const token = localStorage.getItem('accessToken');
     try {
-      const response = await axios.get('/p-travel-log/reissue', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
+      const response = await axios
+        .get('/p-travel-log/reissue', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        })
+        .catch(() => {
+          router.replace('/login');
+        });
 
       if (response && response.data) {
         const newToken = response.data.data.accessToken.split(' ')[1];
@@ -136,7 +140,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       scheduleTokenRefresh(token);
       setLoading(false);
     }
-  }, [pathname, checkTokenValidity, refreshAccessToken]);
+  }, [pathname, refreshAccessToken]);
 
   if (loading) {
     return null;

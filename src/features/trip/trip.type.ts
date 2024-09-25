@@ -1,8 +1,8 @@
 export type ScheduleTimeFromServer =
   | 'MORNING'
-  | 'MIDNOON'
   | 'AFTERNOON'
-  | 'EVENING';
+  | 'EVENING'
+  | 'NIGHT';
 
 export const TimeConversionMap = {
   fromServer: {

@@ -31,7 +31,7 @@ interface Location {
 
 function convertTime(
   time: Times | undefined,
-): 'MORNING' | 'MIDNOON' | 'AFTERNOON' | 'EVENING' {
+): 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT' {
   switch (time) {
     case '오전':
       return 'MORNING';
@@ -40,7 +40,7 @@ function convertTime(
     case '저녁':
       return 'EVENING';
     case '밤':
-      return 'MIDNOON';
+      return 'NIGHT';
     default:
       return 'MORNING';
   }
@@ -108,9 +108,9 @@ export function TravelAutoPage() {
       sigunguCode: sigungu?.id ?? '1',
       dayTimes: [
         'MORNING',
-        'MIDNOON',
         'AFTERNOON',
         'EVENING',
+        'NIGHT',
       ] as ScheduleTimeFromServer[],
       tourDate: new Date().toISOString().slice(0, 10),
     };
