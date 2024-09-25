@@ -29,7 +29,10 @@ export interface TourSpotDTO {
 }
 
 export interface GetTripSchedulesResponseDTO {
-  tourLogInfos: TourLogDTO[];
+  status: string;
+  data: {
+    tourLogInfos: TourLogDTO[];
+  };
 }
 
 export interface GetTripScheduleResponseDTO {

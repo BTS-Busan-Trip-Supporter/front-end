@@ -1,50 +1,39 @@
 'use client';
 
-import { TravelComponent } from '@/components';
-import {
-  TravelerHeaderText,
-  TravelerTravelReview,
-} from '@/components/travel/traveler';
-import { useTravelScheduleStore } from '@/providers';
+import { useState } from 'react';
+
+import { TravelComponent, TravelList, TravelLog } from '@/components';
+import { TravelerHeaderText } from '@/components/travel/traveler';
+
+interface Tour {
+  id: number;
+  name: string;
+  startTime: string;
+  endTime: string;
+}
 
 export function Record() {
-  const schedules = useTravelScheduleStore((state) => state.schedules);
+  const [selectedTravel, setSelectedTravel] = useState<Tour | null>(null);
 
-  const updateDestination = useTravelScheduleStore(
-    (state) => state.updateDestination,
-  );
+  const handleSelectTravel = (tour: Tour) => {
+    setSelectedTravel(tour);
+  };
+
+  const handlePrevButton = () => {
+    setSelectedTravel(null);
+  };
 
   const Contents = {
     backgroundNode: <TravelerHeaderText text='여행은 어땠나요?' />,
-    childNode: (
-      <TravelerTravelReview
-        when='2024.05.12-2024.05.13'
-        where='부산광역시 (Busan)'
-        schedules={schedules}
-        onLikeButtonClick={(day, destination) => {
-          updateDestination({
-            day,
-            target: destination,
-            updateValue: {
-              ...destination,
-              selected: destination.selected === 'like' ? undefined : 'like',
-            },
-          });
-        }}
-        onUnlikeButtonClick={(day, destination) => {
-          updateDestination({
-            day,
-            target: destination,
-            updateValue: {
-              ...destination,
-              selected:
-                destination.selected === 'unlike' ? undefined : 'unlike',
-            },
-          });
-        }}
+    childNode: selectedTravel ? (
+      <TravelLog
+        selectedTravel={selectedTravel}
+        handlePrevButton={handlePrevButton}
       />
+    ) : (
+      <TravelList onSelectTravel={handleSelectTravel} />
     ),
-    type: 'auto' as const,
+    type: 'edit' as const,
   };
   return <TravelComponent contents={Contents} />;
 }

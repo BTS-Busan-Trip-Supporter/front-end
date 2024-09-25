@@ -31,8 +31,12 @@ export function ReviewCard({
 function Likes() {
   return (
     <div className='likes'>
-      <styles.button src='/button/like.png' alt='like-button' />
-      <styles.button src='/button/unlike.png' alt='like-button' />
+      <styles.likeButton $active style={{ justifyContent: 'center' }}>
+        <img src='/button/like.png' alt='like-button' />
+      </styles.likeButton>
+      <styles.likeButton $active={false} style={{ justifyContent: 'center' }}>
+        <img src='/button/like.png' alt='like-button' data-unlike />
+      </styles.likeButton>
     </div>
   );
 }
@@ -100,10 +104,15 @@ function ReviewInput({
   );
 }
 
+interface LikeButtonProp {
+  $active: boolean;
+}
+
 const styles = {
   wrapper: styled.div`
     width: 100%;
     padding: 0.5rem;
+    scroll-snap-align: start;
   `,
   container: styled.div`
     width: 100%;
@@ -194,5 +203,28 @@ const styles = {
     width: 1.375rem;
     height: 1.375rem;
     object-fit: contain;
+  `,
+
+  likeButton: styled.div<LikeButtonProp>`
+    width: 1.375rem;
+    height: 1.375rem;
+    background-color: ${({ $active }) => ($active ? '#625ee3' : '#fff')};
+    border-radius: 50%;
+    border: ${({ $active }) => ($active ? 'none' : '0.5px solid #aaa')};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 0.6875rem;
+      height: 0.74481rem;
+      object-fit: content;
+      filter: ${({ $active }) =>
+        $active ? 'none' : 'grayscale(100%) brightness(0.5)'};
+    }
+
+    img[data-unlike] {
+      transform: rotate(180deg);
+    }
   `,
 };

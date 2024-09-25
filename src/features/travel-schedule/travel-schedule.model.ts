@@ -1,7 +1,7 @@
 export interface Destination {
   id: string;
   name: string;
-  timeToDestination: number;
+  timeToDestination?: number;
   startDate: Date;
   endDate: Date;
   selected?: 'like' | 'unlike';
