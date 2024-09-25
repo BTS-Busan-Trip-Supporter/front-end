@@ -158,6 +158,7 @@ export function TravelAutoPage() {
         <div ref={ResultsRef}>
           <ResultWrapper
             isLoading={status === 'pending'}
+            isError={status === 'error'}
             recommendData={recommendData}
             isDetailVisible={isDetailVisible}
             selectedPlace={selectedPlace}
@@ -195,11 +196,13 @@ function InputWhat({
 }
 
 function Results({
+  isError,
   locations,
   onCardClick,
   selectedPlaces,
   createSchedule,
 }: {
+  isError: boolean;
   locations: TripItem[];
   onCardClick: (place: Location) => void;
   selectedPlaces: Location[];
@@ -210,58 +213,74 @@ function Results({
       <styles.resultCon>
         <styles.description>이런 곳 어떠세요?</styles.description>
         <styles.cardList>
-          {locations.map((location) => (
-            <LoadingCard
-              key={location.contentId}
-              title={location.title}
-              imageUrl={location.imageUrl}
-              onClick={() => onCardClick({ item: location })}
-              isSelected={selectedPlaces.some(
-                (p) => p.item.contentId === location.contentId,
-              )}
-            />
-          ))}
+          {isError ? (
+            <styles.description
+              style={{ fontSize: '1rem', fontWeight: '500', marginTop: '3rem' }}
+            >
+              추천 데이터가 없습니다
+            </styles.description>
+          ) : (
+            locations.map((location) => (
+              <LoadingCard
+                key={location.contentId}
+                title={location.title}
+                imageUrl={location.imageUrl}
+                onClick={() => onCardClick({ item: location })}
+                isSelected={selectedPlaces.some(
+                  (p) => p.item.contentId === location.contentId,
+                )}
+              />
+            ))
+          )}
         </styles.cardList>
       </styles.resultCon>
-      <styles.travel>
-        <li>
-          <p>오전</p>
-          <span>
-            {selectedPlaces.find((p) => p.time === '오전')?.item.title ?? ''}
-          </span>
-        </li>
-        <li>
-          <p>오후</p>
-          <span>
-            {selectedPlaces.find((p) => p.time === '오후')?.item.title ?? ''}
-          </span>
-        </li>
-        <li>
-          <p>저녁</p>
-          <span>
-            {selectedPlaces.find((p) => p.time === '저녁')?.item.title ?? ''}
-          </span>
-        </li>
-        <li>
-          <p>밤</p>
-          <span>
-            {selectedPlaces.find((p) => p.time === '밤')?.item.title ?? ''}
-          </span>
-        </li>
-      </styles.travel>
-      <CustomButton
-        text='여행 완성'
-        color='#5E5BDA'
-        onClick={() => {
-          createSchedule();
-        }}
-      />
+      {!isError && (
+        <>
+          <styles.travel>
+            <li>
+              <p>오전</p>
+              <span>
+                {selectedPlaces.find((p) => p.time === '오전')?.item.title ??
+                  ''}
+              </span>
+            </li>
+            <li>
+              <p>오후</p>
+              <span>
+                {selectedPlaces.find((p) => p.time === '오후')?.item.title ??
+                  ''}
+              </span>
+            </li>
+            <li>
+              <p>저녁</p>
+              <span>
+                {selectedPlaces.find((p) => p.time === '저녁')?.item.title ??
+                  ''}
+              </span>
+            </li>
+            <li>
+              <p>밤</p>
+              <span>
+                {selectedPlaces.find((p) => p.time === '밤')?.item.title ?? ''}
+              </span>
+            </li>
+          </styles.travel>
+          <CustomButton
+            text='여행 완성'
+            color='#5E5BDA'
+            onClick={() => {
+              createSchedule();
+            }}
+          />
+        </>
+      )}
     </styles.container>
   );
 }
 
 interface AutoProps {
   isLoading: boolean;
+  isError: boolean;
   recommendData?: PostDayTripResponseDTO;
   isDetailVisible: boolean;
   selectedPlace: Location | null;
@@ -274,6 +293,7 @@ interface AutoProps {
 
 function ResultWrapper({
   isLoading,
+  isError,
   recommendData,
   isDetailVisible,
   selectedPlace,
@@ -290,6 +310,7 @@ function ResultWrapper({
   if (!isDetailVisible) {
     return (
       <Results
+        isError={isError}
         locations={recommendData?.data ?? []}
         onCardClick={handleCardClick}
         selectedPlaces={selectedPlaces}
