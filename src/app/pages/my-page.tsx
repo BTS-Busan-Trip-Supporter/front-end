@@ -26,17 +26,17 @@ export function MyPage() {
     travel: {
       1: {
         name: '부산 여행',
-        date: '2024.6.23 - 6.25',
+        date: '2024.6.23 - 2024.6.25',
         with: '친구들과 함께',
       },
       2: {
         name: '부산 여행',
-        date: '2024.6.23 - 6.25',
+        date: '2024.6.23 - 2024.6.25',
         with: '친구들과 함께',
       },
       3: {
         name: '부산 여행',
-        date: '2024.6.23 - 6.25',
+        date: '2024.6.23 - 2024.6.25',
         with: '친구들과 함께',
       },
     },
@@ -91,11 +91,9 @@ function TravelTab({ user }: { user: User }) {
     <styles.tabContents>
       {Object.values(user.travel).map((travel, id) => (
         <styles.list key={id}>
-          <styles.thumbnail />
           <section>
             <h3>{travel.name}</h3>
             <p>{travel.date}</p>
-            <p>{travel.with}</p>
           </section>
         </styles.list>
       ))}
@@ -224,11 +222,12 @@ const styles = {
   list: styled.div`
     display: flex;
     gap: 0.69rem;
+    padding: 0.5rem 0;
 
     section {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      justify-content: space-between;
+      align-items: center;
       width: 100%;
     }
 
