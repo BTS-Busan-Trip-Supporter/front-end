@@ -7,8 +7,8 @@ export interface TourLogDTO {
   id: number;
   name: string;
   locationName: string;
-  startDate: Date;
-  endTime: Date;
+  startDate: string;
+  endTime: string;
 }
 
 export interface TourActivityDTO {
@@ -81,31 +81,33 @@ export interface PutTripActivityHistoryDTO {
   history?: string;
 }
 
+export interface TourActivity {
+  id: number;
+  spotName: string;
+  dayNumber: number;
+  dayTime: 'MORNING' | 'MIDNOON' | 'AFTERNOON' | 'EVENING';
+  orderIndex: number;
+  tourSpotData: {
+    contentId: string;
+    contentTypeId: string;
+    title: string;
+    sigunguCode: string;
+  };
+  isNew: boolean;
+  isOrderChanged: boolean;
+  isTourSpotChanged: boolean;
+  isDeleted: boolean;
+}
+
 export interface PostTripScheduleDTO {
   tourLogData: {
     id: number;
     name: string;
     locationName: string;
-    startTime: Date;
-    endTime: Date;
+    startTime: string;
+    endTime: string;
   };
-  tourActivityDataList: Array<{
-    id: number;
-    spotName: string;
-    dayNumber: number;
-    dayTime: 'MORNING' | 'MIDNOON' | 'AFTERNOON' | 'EVENING';
-    orderIndex: number;
-    tourSpotData: {
-      contentId: string;
-      contentTypeId: string;
-      title: string;
-      sigunguCode: string;
-    };
-    isNew: boolean;
-    isOrderChanged: boolean;
-    isTourSpotChanged: boolean;
-    isDeleted: boolean;
-  }>;
+  tourActivityDataList: Array<TourActivity>;
 }
 
 export interface TripItem {
@@ -116,7 +118,7 @@ export interface TripItem {
 }
 
 export interface PostDayTripRequestDTO {
-  contentId: string;
+  contentTypeId: string;
   sigunguCode: string;
   dayTimes: ('MORNING' | 'MIDNOON' | 'AFTERNOON' | 'EVENING')[];
   tourDate: string;

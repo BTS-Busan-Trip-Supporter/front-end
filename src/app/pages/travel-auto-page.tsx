@@ -12,38 +12,62 @@ import {
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
+import {
+  useRecommendDayTrip,
+  useCreateTripSchedule,
+  DropBoxMenu,
+  ScheduleTimeFromServer,
+  type PostDayTripResponseDTO,
+  type TripItem,
+  type TourActivity,
+} from '@/features/trip';
 import { useIntersectionObserver } from '@/shared';
 
 interface Location {
-  id: number;
-  imageUrl: string;
-  name: string;
+  item: TripItem;
   selected?: boolean;
   time?: Times;
 }
 
-const dummyLocations: Location[] = [
-  {
-    id: 1,
-    imageUrl: 'https://picsum.photos/400/600',
-    name: 'hi',
-  },
-  {
-    id: 2,
-    imageUrl: 'https://picsum.photos/2600/2600',
-    name: 'hi',
-  },
-  {
-    id: 3,
-    imageUrl: 'https://picsum.photos/200/500',
-    name: 'hi',
-  },
-  {
-    id: 4,
-    imageUrl: 'https://picsum.photos/100/100',
-    name: 'hi',
-  },
-];
+function convertTime(
+  time: Times | undefined,
+): 'MORNING' | 'MIDNOON' | 'AFTERNOON' | 'EVENING' {
+  switch (time) {
+    case '오전':
+      return 'MORNING';
+    case '오후':
+      return 'AFTERNOON';
+    case '저녁':
+      return 'EVENING';
+    case '밤':
+      return 'MIDNOON';
+    default:
+      return 'MORNING';
+  }
+}
+
+function transformTourActivityData(
+  selectedPlaces: Location[],
+  regionCode: string,
+): TourActivity[] {
+  return selectedPlaces.map((place, index) => ({
+    id: Math.floor(Math.random() * Date.now()),
+    spotName: place.item.title,
+    dayNumber: 0,
+    dayTime: convertTime(place.time),
+    orderIndex: index,
+    tourSpotData: {
+      contentId: place.item.contentId,
+      contentTypeId: place.item.contentTypeId,
+      title: place.item.title,
+      sigunguCode: regionCode,
+    },
+    isNew: true,
+    isOrderChanged: false,
+    isTourSpotChanged: false,
+    isDeleted: false,
+  }));
+}
 
 export function TravelAutoPage() {
   const [searchContent, setSearchContent] = useState('');
@@ -57,7 +81,6 @@ export function TravelAutoPage() {
   }, []);
 
   const [event, setEvent] = useState('');
-  const [isLoading] = useState<boolean>(false);
 
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<Location | null>(null);
@@ -70,6 +93,55 @@ export function TravelAutoPage() {
 
   const ResultsRef = useRef<HTMLDivElement | null>(null);
   const isResultVisible = useIntersectionObserver(ResultsRef);
+
+  const parsingItem = () => {
+    const contentType = DropBoxMenu.travelType.find(
+      (item) => item.type === event,
+    );
+
+    const sigungu = DropBoxMenu.regionType.find(
+      (item) => item.type === searchContent,
+    );
+
+    return {
+      contentTypeId: contentType?.id ?? '12',
+      sigunguCode: sigungu?.id ?? '1',
+      dayTimes: [
+        'MORNING',
+        'MIDNOON',
+        'AFTERNOON',
+        'EVENING',
+      ] as ScheduleTimeFromServer[],
+      tourDate: new Date().toISOString().slice(0, 10),
+    };
+  };
+
+  const {
+    mutate: recommend,
+    status,
+    data: recommendData,
+  } = useRecommendDayTrip();
+
+  useEffect(() => {
+    recommend(parsingItem());
+  }, [event]);
+
+  const parsingSchedule = () => ({
+    tourLogData: {
+      id: Math.floor(Math.random() * Date.now()),
+      name: searchContent,
+      locationName: searchContent,
+      startTime: new Date().toISOString(),
+      endTime: new Date().toISOString(),
+    },
+    tourActivityDataList: transformTourActivityData(
+      selectedPlaces,
+      DropBoxMenu.regionType.find((item) => item.type === searchContent)?.id ??
+        '',
+    ),
+  });
+
+  const { mutate: createSchedule } = useCreateTripSchedule(parsingSchedule());
 
   const Contents = {
     backgroundNode: (
@@ -85,13 +157,15 @@ export function TravelAutoPage() {
         <InputWhat where={searchContent} setContent={setEvent} />
         <div ref={ResultsRef}>
           <ResultWrapper
-            isLoading={isLoading}
+            isLoading={status === 'pending'}
+            recommendData={recommendData}
             isDetailVisible={isDetailVisible}
             selectedPlace={selectedPlace}
             selectedPlaces={selectedPlaces}
             setSelectedPlaces={setSelectedPlaces}
             setIsDetailVisible={setIsDetailVisible}
             handleCardClick={handleCardClick}
+            createSchedule={createSchedule}
           />
         </div>
         {!isResultVisible && <ScrollMotion />}
@@ -122,14 +196,14 @@ function InputWhat({
 
 function Results({
   locations,
-  nextLocations,
   onCardClick,
   selectedPlaces,
+  createSchedule,
 }: {
-  locations: Location[];
-  nextLocations: Location[];
+  locations: TripItem[];
   onCardClick: (place: Location) => void;
   selectedPlaces: Location[];
+  createSchedule: () => void;
 }) {
   return (
     <styles.container>
@@ -138,50 +212,76 @@ function Results({
         <styles.cardList>
           {locations.map((location) => (
             <LoadingCard
-              key={location.id}
+              key={location.contentId}
+              title={location.title}
               imageUrl={location.imageUrl}
-              onClick={() => onCardClick(location)}
-              isSelected={selectedPlaces.some((p) => p.id === location.id)}
+              onClick={() => onCardClick({ item: location })}
+              isSelected={selectedPlaces.some(
+                (p) => p.item.contentId === location.contentId,
+              )}
             />
           ))}
         </styles.cardList>
       </styles.resultCon>
-      <styles.resultCon>
-        <styles.description>이후에 이 곳은 어떠세요?</styles.description>
-        <styles.cardList>
-          {nextLocations.map((location) => (
-            <LoadingCard
-              key={location.id}
-              imageUrl={location.imageUrl}
-              onClick={() => onCardClick(location)}
-              isSelected={selectedPlaces.some((p) => p.id === location.id)}
-            />
-          ))}
-        </styles.cardList>
-      </styles.resultCon>
-      <CustomButton text='여행 완성' color='#5E5BDA' onClick={() => {}} />
+      <styles.travel>
+        <li>
+          <p>오전</p>
+          <span>
+            {selectedPlaces.find((p) => p.time === '오전')?.item.title ?? ''}
+          </span>
+        </li>
+        <li>
+          <p>오후</p>
+          <span>
+            {selectedPlaces.find((p) => p.time === '오후')?.item.title ?? ''}
+          </span>
+        </li>
+        <li>
+          <p>저녁</p>
+          <span>
+            {selectedPlaces.find((p) => p.time === '저녁')?.item.title ?? ''}
+          </span>
+        </li>
+        <li>
+          <p>밤</p>
+          <span>
+            {selectedPlaces.find((p) => p.time === '밤')?.item.title ?? ''}
+          </span>
+        </li>
+      </styles.travel>
+      <CustomButton
+        text='여행 완성'
+        color='#5E5BDA'
+        onClick={() => {
+          createSchedule();
+        }}
+      />
     </styles.container>
   );
 }
 
 interface AutoProps {
   isLoading: boolean;
+  recommendData?: PostDayTripResponseDTO;
   isDetailVisible: boolean;
   selectedPlace: Location | null;
   selectedPlaces: Location[];
   setSelectedPlaces: (updateFn: (places: Location[]) => Location[]) => void;
   setIsDetailVisible: (i: boolean) => void;
   handleCardClick: (place: Location) => void;
+  createSchedule: () => void;
 }
 
 function ResultWrapper({
   isLoading,
+  recommendData,
   isDetailVisible,
   selectedPlace,
   selectedPlaces,
   setSelectedPlaces,
   setIsDetailVisible,
   handleCardClick,
+  createSchedule,
 }: AutoProps) {
   if (isLoading) {
     return <Loading />;
@@ -190,17 +290,21 @@ function ResultWrapper({
   if (!isDetailVisible) {
     return (
       <Results
-        locations={dummyLocations}
-        nextLocations={dummyLocations}
+        locations={recommendData?.data ?? []}
         onCardClick={handleCardClick}
         selectedPlaces={selectedPlaces}
+        createSchedule={createSchedule}
       />
     );
   }
 
   return (
     <DetailCard
-      place={selectedPlace ?? { id: 1, imageUrl: '', name: '' }}
+      place={
+        selectedPlace ?? {
+          item: { contentId: '1', imageUrl: '', title: '', contentTypeId: '1' },
+        }
+      }
       selectedPlaces={selectedPlaces}
       onSelect={setSelectedPlaces}
       setIsDetailVisible={setIsDetailVisible}
@@ -271,5 +375,40 @@ const styles = {
       display: none;
     }
     justify-content: flex-start;
+  `,
+
+  travel: styled.ul`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+
+    color: #505050;
+
+    text-align: center;
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: -0.02875rem;
+
+    li {
+      display: flex;
+      gap: 1rem;
+      border-bottom: 1px solid #e2e2e2;
+      padding: 0.3rem 0;
+      align-items: center;
+    }
+
+    p {
+      width: 20%;
+    }
+
+    span {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: start;
+    }
   `,
 };

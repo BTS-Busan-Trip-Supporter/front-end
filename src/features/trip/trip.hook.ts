@@ -16,6 +16,7 @@ import {
   PutTripActivityHistoryDTO,
   PutTripActivityRecommendDTO,
   PutTripScheduleRequestDTO,
+  PostDayTripResponseDTO,
 } from './trip.dto';
 
 export const useTripSchedules = () =>
@@ -53,9 +54,9 @@ export const useUpdateActivityHistory = (body: PutTripActivityHistoryDTO) =>
     mutationFn: () => putTripActivityHistory(body),
   });
 
-export const useRecommendDayTrip = (body: PostDayTripRequestDTO) =>
-  useMutation({
-    mutationFn: () => postDayTrip(body),
+export const useRecommendDayTrip = () =>
+  useMutation<PostDayTripResponseDTO, Error, PostDayTripRequestDTO>({
+    mutationFn: (body) => postDayTrip(body),
   });
 
 export const useCreateTripSchedule = (body: PostTripScheduleDTO) =>

@@ -8,10 +8,12 @@ interface Loading {
 }
 
 export function LoadingCard({
+  title,
   imageUrl,
   onClick,
   isSelected,
 }: {
+  title: string;
   imageUrl: string;
   onClick: () => void;
   isSelected: boolean;
@@ -31,21 +33,31 @@ export function LoadingCard({
   }, [imageUrl]);
 
   return (
-    <styles.card $isLoading={imageLoading} onClick={onClick}>
-      <styles.checkIcon
-        src={`/check${isSelected ? '' : '-non'}.svg`}
-        alt='check-icon'
-      />
-      <styles.contents
-        $isLoading={imageLoading}
-        src={imageUrl}
-        alt='card-contents'
-      />
-    </styles.card>
+    <styles.wrapper>
+      <styles.card $isLoading={imageLoading} onClick={onClick}>
+        <styles.checkIcon
+          src={`/check${isSelected ? '' : '-non'}.svg`}
+          alt='check-icon'
+        />
+        <styles.contents
+          $isLoading={imageLoading}
+          src={imageUrl}
+          alt='card-contents'
+        />
+      </styles.card>
+      <styles.description>{title}</styles.description>
+    </styles.wrapper>
   );
 }
 
 const styles = {
+  wrapper: styled.div`
+    width: 7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+  `,
   card: styled.div<Loading>`
     width: 6.875rem;
     height: 7.6875rem;
@@ -89,5 +101,22 @@ const styles = {
     position: absolute;
     top: 0.5rem;
     right: 0.3rem;
+  `,
+
+  description: styled.p`
+    width: 100%;
+    color: #505050;
+
+    text-align: center;
+    font-family: 'Noto Sans KR';
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.02875rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   `,
 };
