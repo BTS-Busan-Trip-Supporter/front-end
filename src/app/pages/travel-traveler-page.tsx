@@ -121,18 +121,12 @@ export function TravelerPage() {
       case 'traveler-travel-schedule-confirm':
         return (
           <TravelerScheduleConfirm
-            where='부산광역시 (Busan)'
-            schedules={[]}
-            onRemoveDestination={(day, destination) => {}}
-            onAddDestination={() => {}}
             onNextPage={() => dispatch({ type: 'NEXT' })}
           />
         );
       case 'traveler-travel-schedule-arrange':
         return (
           <TravelerTravelArrange
-            where='부산광역시 (Busan)'
-            schedules={[]}
             onNextPage={() => dispatch({ type: 'NEXT' })}
           />
         );

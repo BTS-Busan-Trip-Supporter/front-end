@@ -12,10 +12,8 @@ import type { Activity } from '@/features/trip/trip.slice';
 import { useTripStore } from '@/features/trip/trip.slice';
 
 export function TravelerScheduleConfirm({
-  where,
   onNextPage,
 }: {
-  where: string;
   onNextPage: () => void;
 }) {
   const [state, setState] = useState<{
@@ -32,7 +30,7 @@ export function TravelerScheduleConfirm({
     <>
       {state.ui === 'main' && (
         <styles.container>
-          <styles.location>{where}</styles.location>
+          <styles.location>{tourInfo.locationName}</styles.location>
           {activities.map((acts, index) => (
             <DayScheduleItem
               key={index}

@@ -2,24 +2,22 @@
 
 import styled from '@emotion/styled';
 
+import { TIME_STRING } from '@/features/trip';
+import type { Activity } from '@/features/trip/trip.slice';
+import { useTripStore } from '@/features/trip/trip.slice';
+
 export function TravelerTravelArrange({
-  schedules,
-  where,
   onNextPage,
 }: {
-  schedules: DaySchedule[];
-  where: string;
   onNextPage: () => void;
 }) {
+  const { tourInfo, activities } = useTripStore();
+
   return (
     <styles.container>
-      <styles.location>{where}</styles.location>
-      {schedules.map((schedule, index) => (
-        <DayScheduleItem
-          key={index}
-          day={index + 1}
-          destinations={schedule.destinations}
-        />
+      <styles.location>{tourInfo.locationName}</styles.location>
+      {activities.map((acts, index) => (
+        <DayScheduleItem key={index} day={index + 1} activities={acts} />
       ))}
       <button type='button' onClick={onNextPage}>
         <div>
@@ -33,24 +31,34 @@ export function TravelerTravelArrange({
 
 function DayScheduleItem({
   day,
-  destinations,
+  activities,
 }: {
   day: number;
-  destinations: Destination[];
+  activities: Activity[];
 }) {
   return (
     <styles.daySchedule>
       <h2>{day}일차</h2>
       <ul>
-        {destinations.map((destination) => (
-          <DestinationItem key={destination.id} destination={destination} />
+        {activities.map((activity) => (
+          <DestinationItem
+            key={`${activity.dayTime}-${activity.spotName}`}
+            day={day}
+            activity={activity}
+          />
         ))}
       </ul>
     </styles.daySchedule>
   );
 }
 
-function DestinationItem({ destination }: { destination: Destination }) {
+function DestinationItem({
+  day,
+  activity,
+}: {
+  day: number;
+  activity: Activity;
+}) {
   function DashedLine() {
     return (
       <svg>
@@ -63,11 +71,13 @@ function DestinationItem({ destination }: { destination: Destination }) {
     return (
       <div>
         {/* ICON */}
-        <p data-location>{destination.name}</p>
+        <p data-location>{activity.spotName}</p>
         <span className='dashed'>
           <DashedLine />
         </span>
-        <p data-time>{convertTimeString[destination.time]}</p>
+        <p data-time>
+          {day}일차 {TIME_STRING[activity.dayTime]}
+        </p>
       </div>
     );
   }
@@ -76,7 +86,7 @@ function DestinationItem({ destination }: { destination: Destination }) {
     return (
       <div style={{ width: '100%', gap: '6px' }}>
         <img src='/location-pin.svg' alt='location pin' />
-        <p data-timetodestination>{destination.timeToDestination}분</p>
+        {/* <p data-timetodestination>{activity.timeToDestination}분</p> */}
       </div>
     );
   }
@@ -90,16 +100,6 @@ function DestinationItem({ destination }: { destination: Destination }) {
     </styles.destinationItem>
   );
 }
-
-const convertTimeString: Record<
-  'morning' | 'afternoon' | 'evening' | 'night',
-  string
-> = {
-  morning: '오전',
-  afternoon: '오후',
-  evening: '저녁',
-  night: '밤',
-};
 
 const styles = {
   container: styled.div`
