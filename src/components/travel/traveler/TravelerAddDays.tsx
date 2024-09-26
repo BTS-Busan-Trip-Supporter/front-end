@@ -29,8 +29,8 @@ export function TravelerAddDays({
   const destinations = useCallback(
     (destination: Destination[]) => (
       <>
-        {destination.map((destination) => (
-          <Destination key={destination.id} destination={destination} />
+        {destination.map((des) => (
+          <Destination key={des.id} destination={des} />
         ))}
       </>
     ),

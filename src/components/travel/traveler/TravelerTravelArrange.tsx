@@ -1,7 +1,10 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
+import { TravelerLocationConfirm } from '@/components/travel/traveler/TravelerLocationConfirm';
+import { TravelerLocationSearch } from '@/components/travel/traveler/TravelerLocationSearch';
 import type { DaySchedule, Destination } from '@/features/travel-schedule';
 
 export function TravelerTravelArrange({
@@ -13,23 +16,67 @@ export function TravelerTravelArrange({
   where: string;
   onNextPage: () => void;
 }) {
+  const [state, setState] = useState<{
+    ui: 'main' | 'search' | 'confirm';
+    day?: number;
+    searchContent?: string;
+    location?: string;
+    time?: 'morning' | 'afternoon' | 'evening' | 'night';
+  }>({ ui: 'main' });
+
   return (
-    <styles.container>
-      <styles.location>{where}</styles.location>
-      {schedules.map((schedule, index) => (
-        <DayScheduleItem
-          key={index}
-          day={index + 1}
-          destinations={schedule.destinations}
+    <>
+      {state.ui === 'main' && (
+        <styles.container>
+          <styles.location>{where}</styles.location>
+          {schedules.map((schedule, index) => (
+            <DayScheduleItem
+              key={index}
+              day={index + 1}
+              destinations={schedule.destinations}
+            />
+          ))}
+          <button type='button' onClick={onNextPage}>
+            <div>
+              <img
+                src='/traveler-write-record.svg'
+                alt='button to write review'
+              />
+              <p>기록하기</p>
+            </div>
+          </button>
+        </styles.container>
+      )}
+      {state.ui === 'search' && (
+        <TravelerLocationSearch
+          onClick={() => setState((prev) => ({ ...prev, ui: 'confirm' }))}
+          onContentChange={(value) =>
+            setState((prev) => ({ ...prev, searchContent: value }))
+          }
         />
-      ))}
-      <button type='button' onClick={onNextPage}>
-        <div>
-          <img src='/traveler-write-record.svg' alt='button to write review' />
-          <p>기록하기</p>
-        </div>
-      </button>
-    </styles.container>
+      )}
+      {state.ui === 'confirm' && state.day && state.location && (
+        <TravelerLocationConfirm
+          location={state.location}
+          day={state.day}
+          selectedTime={state.time}
+          onTimeClicked={(time) => {
+            if (
+              state.day &&
+              !schedules[state.day - 1].destinations.find(
+                (destination) => destination.time === time,
+              )
+            ) {
+              setState((prev) => ({ ...prev, time }));
+            }
+          }}
+          onConfirm={() => {
+            // onAddDestination({});
+            setState(() => ({ ui: 'main' }));
+          }}
+        />
+      )}
+    </>
   );
 }
 
@@ -69,10 +116,7 @@ function DestinationItem({ destination }: { destination: Destination }) {
         <span className='dashed'>
           <DashedLine />
         </span>
-        <p data-time>
-          {convertTimeString(destination.startDate)} -
-          {convertTimeString(destination.endDate)}
-        </p>
+        <p data-time>{convertTimeString[destination.time]}</p>
       </div>
     );
   }
@@ -96,8 +140,15 @@ function DestinationItem({ destination }: { destination: Destination }) {
   );
 }
 
-const convertTimeString = (date: Date) =>
-  `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+const convertTimeString: Record<
+  'morning' | 'afternoon' | 'evening' | 'night',
+  string
+> = {
+  morning: '오전',
+  afternoon: '오후',
+  evening: '저녁',
+  night: '밤',
+};
 
 const styles = {
   container: styled.div`

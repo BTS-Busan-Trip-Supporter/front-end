@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { CustomButton, SearchBox } from '@/components';
 
 export function TravelerActivitySelection({
-  onClick,
+  onNextPage,
 }: {
-  onClick: () => void;
+  onNextPage: () => void;
 }) {
   const [, setSearchContent] = useState('');
 
@@ -21,7 +21,7 @@ export function TravelerActivitySelection({
         color='#FF75C8'
         text='알아서 해줘'
         onClick={() => {
-          onClick();
+          onNextPage();
         }}
       />
     </styles.container>

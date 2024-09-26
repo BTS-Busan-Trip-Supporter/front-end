@@ -31,7 +31,11 @@ const dummyLocations: Location[] = [
   },
 ];
 
-export function TravelerActivityRecommendation() {
+export function TravelerActivityRecommendation({
+  onNextPage,
+}: {
+  onNextPage: () => void;
+}) {
   return (
     <styles.container>
       <Results
@@ -39,7 +43,7 @@ export function TravelerActivityRecommendation() {
         locations={dummyLocations}
         nextLocations={dummyLocations}
       />
-      <CustomButton color='#FF75C8' text='여행 완성' onClick={() => {}} />
+      <CustomButton color='#FF75C8' text='여행 완성' onClick={onNextPage} />
     </styles.container>
   );
 }

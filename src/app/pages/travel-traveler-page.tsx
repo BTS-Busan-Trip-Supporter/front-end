@@ -141,11 +141,15 @@ export function TravelerPage() {
       case 'traveler-activity-selection':
         return (
           <TravelerActivitySelection
-            onClick={() => dispatch({ type: 'NEXT' })}
+            onNextPage={() => dispatch({ type: 'NEXT' })}
           />
         );
       case 'traveler-activity-recommendation':
-        return <TravelerActivityRecommendation />;
+        return (
+          <TravelerActivityRecommendation
+            onNextPage={() => dispatch({ type: 'NEXT' })}
+          />
+        );
       case 'traveler-travel-schedule-confirm':
         return (
           <TravelerScheduleConfirm
