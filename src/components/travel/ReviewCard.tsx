@@ -6,24 +6,28 @@ import { useState } from 'react';
 export function ReviewCard({
   name,
   date,
-  prevReview,
+  review,
   onReviewChange,
+  recommend,
+  onRecommendChange,
 }: {
   name: string;
   date: string;
-  prevReview: string | null;
+  review: string | null;
   onReviewChange: (newReview: string | null) => void;
+  recommend: boolean | null;
+  onRecommendChange: (newRecommend: boolean | null) => void;
 }) {
   return (
     <styles.wrapper>
       <styles.container>
         <div>
           <p className='name'>{name}</p>
-          <Likes />
+          <Likes recommend={recommend} onRecommendChange={onRecommendChange} />
         </div>
         <p className='dateTime'>{date}</p>
         <ReviewInput
-          review={prevReview}
+          review={review}
           setReview={(newReview) => {
             onReviewChange(newReview);
           }}
@@ -33,13 +37,35 @@ export function ReviewCard({
   );
 }
 
-function Likes() {
+function Likes({
+  recommend,
+  onRecommendChange,
+}: {
+  recommend: boolean | null;
+  onRecommendChange: (newRecommend: boolean | null) => void;
+}) {
   return (
     <div className='likes'>
-      <styles.likeButton $active style={{ justifyContent: 'center' }}>
+      <styles.likeButton
+        $active={recommend === true}
+        style={{ justifyContent: 'center' }}
+        onClick={() => {
+          onRecommendChange(
+            recommend == null || recommend === false ? true : null,
+          );
+        }}
+      >
         <img src='/button/like.png' alt='like-button' />
       </styles.likeButton>
-      <styles.likeButton $active={false} style={{ justifyContent: 'center' }}>
+      <styles.likeButton
+        $active={recommend === false}
+        style={{ justifyContent: 'center' }}
+        onClick={() => {
+          onRecommendChange(
+            recommend == null || recommend === true ? false : null,
+          );
+        }}
+      >
         <img src='/button/like.png' alt='like-button' data-unlike />
       </styles.likeButton>
     </div>
@@ -213,9 +239,11 @@ const styles = {
   likeButton: styled.div<LikeButtonProp>`
     width: 1.375rem;
     height: 1.375rem;
-    background-color: ${({ $active }) => ($active ? '#625ee3' : '#fff')};
+    background-color: ${({ $active }) =>
+      $active === true ? '#625ee3' : '#fff'};
     border-radius: 50%;
-    border: ${({ $active }) => ($active ? 'none' : '0.5px solid #aaa')};
+    border: ${({ $active }) =>
+      $active === true ? 'none' : '0.5px solid #aaa'};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -225,7 +253,7 @@ const styles = {
       height: 0.74481rem;
       object-fit: content;
       filter: ${({ $active }) =>
-        $active ? 'none' : 'grayscale(100%) brightness(0.5)'};
+        $active === true ? 'none' : 'grayscale(100%) brightness(0.5)'};
     }
 
     img[data-unlike] {

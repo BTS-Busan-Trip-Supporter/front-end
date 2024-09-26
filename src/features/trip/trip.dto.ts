@@ -76,7 +76,7 @@ export interface PutTripScheduleRequestDTO {
 
 export interface PutTripActivityRecommendDTO {
   tourActivityId: number;
-  recommend?: boolean;
+  recommend?: boolean | null;
 }
 
 export interface PutTripActivityHistoryDTO {

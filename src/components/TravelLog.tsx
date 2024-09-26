@@ -12,6 +12,7 @@ import {
   type TourSpotDTO,
   translateDayTime,
   useUpdateActivityHistory,
+  useUpdateActivityRecommend,
 } from '@/features/trip';
 import { convertDate, getDayOfWeek, getDateWithDaysAdded } from '@/shared';
 
@@ -23,10 +24,9 @@ const dummy: Array<
   {
     id: 0,
     spotName: '대저',
-    recommend: true,
     dayNumber: 0,
     dayTime: 'MORNING',
-    orderIndex: 0,
+    orderIndex: 1,
     tourSpotDto: {
       id: 'string',
       typeId: 'string',
@@ -41,7 +41,7 @@ const dummy: Array<
     history: 'string',
     dayNumber: 0,
     dayTime: 'MORNING',
-    orderIndex: 0,
+    orderIndex: 2,
     tourSpotDto: {
       id: 'string',
       typeId: 'string',
@@ -50,103 +50,13 @@ const dummy: Array<
     },
   },
   {
-    id: 1,
-    spotName: '전포 카페거리',
-    recommend: true,
-    history: 'string',
-    dayNumber: 1,
-    dayTime: 'MORNING',
-    orderIndex: 0,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 1,
-    spotName: '전포 카페거리',
-    recommend: true,
-    history: 'string',
-    dayNumber: 1,
-    dayTime: 'MORNING',
-    orderIndex: 0,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 1,
-    spotName: '전포 카페거리',
-    recommend: true,
-    history: 'string',
-    dayNumber: 1,
-    dayTime: 'MORNING',
-    orderIndex: 0,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 1,
-    spotName: '전포 카페거리',
-    recommend: true,
-    history: 'string',
-    dayNumber: 1,
-    dayTime: 'MORNING',
-    orderIndex: 0,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 1,
-    spotName: '전포 카페거리',
-    recommend: true,
-    history: 'string',
-    dayNumber: 1,
-    dayTime: 'MORNING',
-    orderIndex: 0,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 1,
-    spotName: '전포 카페거리',
-    recommend: true,
-    history: 'string',
-    dayNumber: 1,
-    dayTime: 'MORNING',
-    orderIndex: 0,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 1,
+    id: 6,
     spotName: '대저생태공원',
     recommend: true,
     history: 'string',
     dayNumber: 0,
     dayTime: 'MORNING',
-    orderIndex: 0,
+    orderIndex: 3,
     tourSpotDto: {
       id: 'string',
       typeId: 'string',
@@ -157,11 +67,11 @@ const dummy: Array<
   {
     id: 2,
     spotName: '대저생태공원',
-    recommend: true,
+    recommend: false,
     history: 'string',
     dayNumber: 0,
     dayTime: 'MORNING',
-    orderIndex: 0,
+    orderIndex: 4,
     tourSpotDto: {
       id: 'string',
       typeId: 'string',
@@ -172,11 +82,11 @@ const dummy: Array<
   {
     id: 3,
     spotName: '대저생태공원',
-    recommend: true,
+    recommend: false,
     history: 'string',
     dayNumber: 0,
     dayTime: 'MORNING',
-    orderIndex: 0,
+    orderIndex: 5,
     tourSpotDto: {
       id: 'string',
       typeId: 'string',
@@ -187,11 +97,10 @@ const dummy: Array<
   {
     id: 4,
     spotName: '대저생태공원',
-    recommend: true,
     history: 'string',
     dayNumber: 0,
     dayTime: 'MORNING',
-    orderIndex: 0,
+    orderIndex: 6,
     tourSpotDto: {
       id: 'string',
       typeId: 'string',
@@ -206,7 +115,7 @@ const dummy: Array<
     history: 'string',
     dayNumber: 0,
     dayTime: 'MORNING',
-    orderIndex: 0,
+    orderIndex: 7,
     tourSpotDto: {
       id: 'string',
       typeId: 'string',
@@ -231,7 +140,7 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
   const router = useRouter();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
-  // const { data: tripSchedule } = useTripSchedule(selectedTravel);
+  const { data: tripSchedule } = useTripSchedule(selectedTravel);
   const [groupedData, setGroupedData] = useState<
     Record<number, TourActivityDTO[]>
   >(groupByDayNumber(dummy));
@@ -240,7 +149,11 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
   const itemsPerPage = 1;
 
   const { mutate: updateReview } = useUpdateActivityHistory();
+  const { mutate: updateRecommend } = useUpdateActivityRecommend();
   const [reviews, setReviews] = useState<Record<number, string | null>>({});
+  const [recommends, setRecommends] = useState<Record<number, boolean | null>>(
+    {},
+  );
 
   const handleSetReview = (id: number, review: string | null) => {
     setReviews((prev) => ({
@@ -253,11 +166,22 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
     });
   };
 
-  // useEffect(() => {
-  //   if (tripSchedule?.data?.tourActivityInfos) {
-  //     setGroupedData(groupByDayNumber(tripSchedule.data.tourActivityInfos));
-  //   }
-  // }, [tripSchedule]);
+  const handleSetRecommend = (id: number, recommend: boolean | null) => {
+    setRecommends((prev) => ({
+      ...prev,
+      [id]: recommend,
+    }));
+    updateRecommend({
+      tourActivityId: id,
+      recommend,
+    });
+  };
+
+  useEffect(() => {
+    if (tripSchedule?.data?.tourActivityInfos) {
+      setGroupedData(groupByDayNumber(tripSchedule.data.tourActivityInfos));
+    }
+  }, [tripSchedule]);
 
   return (
     <styles.wrapper>
@@ -272,9 +196,9 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
               }}
             />
             <h3>
-              {/* {tripSchedule?.data.tourLogInfo.name},{' '}
+              {tripSchedule?.data.tourLogInfo.name},{' '}
               {convertDate(tripSchedule?.data.tourLogInfo.startTime ?? '')} -{' '}
-              {convertDate(tripSchedule?.data.tourLogInfo.endTime ?? '')} */}
+              {convertDate(tripSchedule?.data.tourLogInfo.endTime ?? '')}
             </h3>
           </styles.header>
           <styles.logs>
@@ -289,14 +213,14 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
                   <div className='dayNumCon'>
                     <p>{dayNumber}일차</p>
                     <span className='dates'>
-                      {/* {getDateWithDaysAdded(
+                      {getDateWithDaysAdded(
                         tripSchedule?.data.tourLogInfo.startTime ?? '',
                         dayNumber,
                       )}
                       {`(${getDayOfWeek(
                         tripSchedule?.data.tourLogInfo.startTime ?? '',
                         dayNumber,
-                      )})`} */}
+                      )})`}
                     </span>
                     <button
                       type='button'
@@ -366,9 +290,21 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
                   key={spot.id}
                   name={spot.spotName}
                   date={translateDayTime(spot.dayTime)}
-                  prevReview={reviews[spot.id] || (spot.history ?? null)}
+                  review={
+                    reviews[spot.id] !== undefined
+                      ? reviews[spot.id]
+                      : (spot.history ?? null)
+                  }
                   onReviewChange={(newReview) =>
                     handleSetReview(spot.id, newReview)
+                  }
+                  recommend={
+                    recommends[spot.id] !== undefined
+                      ? recommends[spot.id]
+                      : (spot.recommend ?? null)
+                  }
+                  onRecommendChange={(newRecommend) =>
+                    handleSetRecommend(spot.id, newRecommend)
                   }
                 />
               ))}

@@ -44,9 +44,10 @@ export const useRemoveTripSchedule = (logId: number) =>
     mutationFn: () => deleteTripSchedule(logId),
   });
 
-export const useUpdateActivityRecommend = (body: PutTripActivityRecommendDTO) =>
+export const useUpdateActivityRecommend = () =>
   useMutation({
-    mutationFn: () => putTripActivityRecommend(body),
+    mutationFn: (body: PutTripActivityRecommendDTO) =>
+      putTripActivityRecommend(body),
   });
 
 export const useUpdateActivityHistory = () =>
