@@ -49,9 +49,10 @@ export const useUpdateActivityRecommend = (body: PutTripActivityRecommendDTO) =>
     mutationFn: () => putTripActivityRecommend(body),
   });
 
-export const useUpdateActivityHistory = (body: PutTripActivityHistoryDTO) =>
+export const useUpdateActivityHistory = () =>
   useMutation({
-    mutationFn: () => putTripActivityHistory(body),
+    mutationFn: (body: PutTripActivityHistoryDTO) =>
+      putTripActivityHistory(body),
   });
 
 export const useRecommendDayTrip = () =>

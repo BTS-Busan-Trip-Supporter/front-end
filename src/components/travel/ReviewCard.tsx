@@ -7,13 +7,13 @@ export function ReviewCard({
   name,
   date,
   prevReview,
+  onReviewChange,
 }: {
   name: string;
   date: string;
-  prevReview?: string | null;
+  prevReview: string | null;
+  onReviewChange: (newReview: string | null) => void;
 }) {
-  const [review, setReview] = useState<string | null>(prevReview ?? null);
-
   return (
     <styles.wrapper>
       <styles.container>
@@ -22,7 +22,12 @@ export function ReviewCard({
           <Likes />
         </div>
         <p className='dateTime'>{date}</p>
-        <ReviewInput review={review} setReview={setReview} />
+        <ReviewInput
+          review={prevReview}
+          setReview={(newReview) => {
+            onReviewChange(newReview);
+          }}
+        />
       </styles.container>
     </styles.wrapper>
   );

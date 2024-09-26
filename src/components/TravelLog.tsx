@@ -11,6 +11,7 @@ import {
   type TourActivityDTO,
   type TourSpotDTO,
   translateDayTime,
+  useUpdateActivityHistory,
 } from '@/features/trip';
 import { convertDate, getDayOfWeek, getDateWithDaysAdded } from '@/shared';
 
@@ -139,7 +140,7 @@ const dummy: Array<
     },
   },
   {
-    id: 0,
+    id: 1,
     spotName: '대저생태공원',
     recommend: true,
     history: 'string',
@@ -154,7 +155,7 @@ const dummy: Array<
     },
   },
   {
-    id: 0,
+    id: 2,
     spotName: '대저생태공원',
     recommend: true,
     history: 'string',
@@ -169,7 +170,7 @@ const dummy: Array<
     },
   },
   {
-    id: 0,
+    id: 3,
     spotName: '대저생태공원',
     recommend: true,
     history: 'string',
@@ -184,7 +185,7 @@ const dummy: Array<
     },
   },
   {
-    id: 0,
+    id: 4,
     spotName: '대저생태공원',
     recommend: true,
     history: 'string',
@@ -199,7 +200,7 @@ const dummy: Array<
     },
   },
   {
-    id: 0,
+    id: 5,
     spotName: '대저생태공원대저생태공원대저생태공원대저생태공원',
     recommend: true,
     history: 'string',
@@ -230,7 +231,7 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
   const router = useRouter();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
-  const { data: tripSchedule } = useTripSchedule(selectedTravel);
+  // const { data: tripSchedule } = useTripSchedule(selectedTravel);
   const [groupedData, setGroupedData] = useState<
     Record<number, TourActivityDTO[]>
   >(groupByDayNumber(dummy));
@@ -238,11 +239,25 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 1;
 
-  useEffect(() => {
-    if (tripSchedule?.data?.tourActivityInfos) {
-      setGroupedData(groupByDayNumber(tripSchedule.data.tourActivityInfos));
-    }
-  }, [tripSchedule]);
+  const { mutate: updateReview } = useUpdateActivityHistory();
+  const [reviews, setReviews] = useState<Record<number, string | null>>({});
+
+  const handleSetReview = (id: number, review: string | null) => {
+    setReviews((prev) => ({
+      ...prev,
+      [id]: review,
+    }));
+    updateReview({
+      tourActivityId: id,
+      history: review,
+    });
+  };
+
+  // useEffect(() => {
+  //   if (tripSchedule?.data?.tourActivityInfos) {
+  //     setGroupedData(groupByDayNumber(tripSchedule.data.tourActivityInfos));
+  //   }
+  // }, [tripSchedule]);
 
   return (
     <styles.wrapper>
@@ -257,9 +272,9 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
               }}
             />
             <h3>
-              {tripSchedule?.data.tourLogInfo.name},{' '}
+              {/* {tripSchedule?.data.tourLogInfo.name},{' '}
               {convertDate(tripSchedule?.data.tourLogInfo.startTime ?? '')} -{' '}
-              {convertDate(tripSchedule?.data.tourLogInfo.endTime ?? '')}
+              {convertDate(tripSchedule?.data.tourLogInfo.endTime ?? '')} */}
             </h3>
           </styles.header>
           <styles.logs>
@@ -274,14 +289,14 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
                   <div className='dayNumCon'>
                     <p>{dayNumber}일차</p>
                     <span className='dates'>
-                      {getDateWithDaysAdded(
+                      {/* {getDateWithDaysAdded(
                         tripSchedule?.data.tourLogInfo.startTime ?? '',
                         dayNumber,
                       )}
                       {`(${getDayOfWeek(
                         tripSchedule?.data.tourLogInfo.startTime ?? '',
                         dayNumber,
-                      )})`}
+                      )})`} */}
                     </span>
                     <button
                       type='button'
@@ -351,14 +366,17 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
                   key={spot.id}
                   name={spot.spotName}
                   date={translateDayTime(spot.dayTime)}
-                  prevReview={spot.history}
+                  prevReview={reviews[spot.id] || (spot.history ?? null)}
+                  onReviewChange={(newReview) =>
+                    handleSetReview(spot.id, newReview)
+                  }
                 />
               ))}
           </styles.reviews>
           <styles.pagination>
             {groupedData[selectedDay].map((_, index) => (
               <styles.paginationButton
-                key={index}
+                key={groupedData[selectedDay][index].id}
                 onClick={() => setCurrentPage(index)}
                 $active={currentPage === index}
               />

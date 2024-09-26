@@ -81,7 +81,7 @@ export interface PutTripActivityRecommendDTO {
 
 export interface PutTripActivityHistoryDTO {
   tourActivityId: number;
-  history?: string;
+  history?: string | null;
 }
 
 export interface TourActivity {
