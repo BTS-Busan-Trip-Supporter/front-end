@@ -7,7 +7,7 @@ export interface TourLogDTO {
   id: number;
   name: string;
   locationName: string;
-  startDate: string;
+  startTime: string;
   endTime: string;
 }
 
@@ -15,7 +15,7 @@ export interface TourActivityDTO {
   id: number;
   spotName: string;
   recommend?: boolean;
-  history?: boolean;
+  history?: string;
   dayNumber: number;
   dayTime: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
   orderIndex: number;

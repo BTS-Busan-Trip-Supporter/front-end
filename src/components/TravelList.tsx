@@ -1,87 +1,27 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
 
-interface TourLog {
-  id: number;
-  name: string;
-  locationName: string;
-  startTime: string;
-  endTime: string;
-}
+import { useTripSchedules } from '@/features/trip';
+import { convertDate } from '@/shared';
 
-const dummy: TourLog[] = [
-  {
-    id: 1,
-    name: '부산 해운대',
-    locationName: '해운대 해수욕장',
-    startTime: '2024-09-25T08:00:00.000Z',
-    endTime: '2024-09-25T10:00:00.000Z',
-  },
-  {
-    id: 2,
-    name: '감천 문화 마을',
-    locationName: '부산 감천동',
-    startTime: '2024-09-25T11:00:00.000Z',
-    endTime: '2024-09-25T13:00:00.000Z',
-  },
-  {
-    id: 3,
-    name: '태종대',
-    locationName: '부산 태종대 공원',
-    startTime: '2024-09-25T14:00:00.000Z',
-    endTime: '2024-09-25T15:30:00.000Z',
-  },
-  {
-    id: 4,
-    name: '광안리 해변',
-    locationName: '광안리',
-    startTime: '2024-09-25T16:00:00.000Z',
-    endTime: '2024-09-25T18:00:00.000Z',
-  },
-  {
-    id: 5,
-    name: '송정 해수욕장',
-    locationName: '송정',
-    startTime: '2024-09-25T19:00:00.000Z',
-    endTime: '2024-09-25T21:00:00.000Z',
-  },
-  {
-    id: 6,
-    name: '송정 해수욕장',
-    locationName: '송정',
-    startTime: '2024-09-25T19:00:00.000Z',
-    endTime: '2024-09-25T21:00:00.000Z',
-  },
-];
+export function TravelList() {
+  const router = useRouter();
 
-function convertDate(isoString: string) {
-  const date = new Date(isoString);
-
-  return date
-    .toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-    })
-    .replace(/\.$/, '');
-}
-
-export function TravelList({
-  onSelectTravel,
-}: {
-  onSelectTravel: (tour: {
-    id: number;
-    name: string;
-    startTime: string;
-    endTime: string;
-  }) => void;
-}) {
+  const { data: logs } = useTripSchedules();
   return (
     <styles.wrapper>
       <h3>여행을 골라주세요</h3>
       <ul>
-        {dummy.map((tour) => (
+        {logs?.data.tourLogInfos.length === 0 && (
+          <p className='nonData'>
+            P의 여행과
+            <br />
+            함께 여행해보세요!
+          </p>
+        )}
+        {logs?.data.tourLogInfos.map((tour) => (
           <li key={tour.id}>
             <div className='contents'>
               <p className='name'>{tour.name}</p>
@@ -92,12 +32,7 @@ export function TravelList({
             <button
               type='button'
               onClick={() => {
-                onSelectTravel({
-                  id: tour.id,
-                  name: tour.name,
-                  startTime: convertDate(tour.startTime),
-                  endTime: convertDate(tour.endTime),
-                });
+                router.replace(`/record/${tour.id}`);
               }}
             >
               기록하기
@@ -131,6 +66,19 @@ const styles = {
       font-weight: 700;
       line-height: normal;
       letter-spacing: -0.02875rem;
+    }
+
+    .nonData {
+      color: #969696;
+
+      text-align: center;
+      font-family: 'Noto Sans KR';
+      font-size: 1.4375rem;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+      letter-spacing: -0.02875rem;
+      margin-top: 13rem;
     }
 
     &::-webkit-scrollbar {

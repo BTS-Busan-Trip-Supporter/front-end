@@ -1,5 +1,5 @@
-import { Record } from '@/app/pages';
+import { RecordList } from '@/app/pages';
 
-export default function RecordPage() {
-  return <Record />;
+export default function RecordListPage() {
+  return <RecordList />;
 }

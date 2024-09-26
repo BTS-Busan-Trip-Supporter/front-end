@@ -4,50 +4,16 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 
 import { useAuth, useUserData } from '@/features/member';
-
-interface Travel {
-  name: string;
-  date: string;
-  with: string;
-}
-
-interface User {
-  name: string;
-  travel: {
-    [id: number]: Travel;
-  };
-  record: { [id: number]: string };
-  scrap: { [id: number]: string };
-}
+import { useTripSchedules, type TourLogDTO } from '@/features/trip';
+import { convertDate } from '@/shared';
 
 export function MyPage() {
-  const user = {
-    name: 'P의 여행자님',
-    travel: {
-      1: {
-        name: '부산 여행',
-        date: '2024.6.23 - 2024.6.25',
-        with: '친구들과 함께',
-      },
-      2: {
-        name: '부산 여행',
-        date: '2024.6.23 - 2024.6.25',
-        with: '친구들과 함께',
-      },
-      3: {
-        name: '부산 여행',
-        date: '2024.6.23 - 2024.6.25',
-        with: '친구들과 함께',
-      },
-    },
-    record: {},
-    scrap: {},
-  };
-
   const { data: userData } = useUserData(localStorage.getItem('accessToken'));
 
   const router = useRouter();
   const { logout } = useAuth();
+
+  const { data: logs } = useTripSchedules();
 
   return (
     <styles.container>
@@ -77,23 +43,31 @@ export function MyPage() {
       <styles.tabContainer>
         <styles.tabList>
           <styles.tabItem>
-            내 여행 {Object.keys(user.travel).length}
+            내 여행 {logs?.data.tourLogInfos.length}
           </styles.tabItem>
         </styles.tabList>
-        <TravelTab user={user} />
+        {logs && <TravelTab logs={logs.data.tourLogInfos} />}
       </styles.tabContainer>
     </styles.container>
   );
 }
 
-function TravelTab({ user }: { user: User }) {
+function TravelTab({ logs }: { logs: TourLogDTO[] }) {
+  const router = useRouter();
   return (
     <styles.tabContents>
-      {Object.values(user.travel).map((travel, id) => (
-        <styles.list key={id}>
+      {logs.map((travel) => (
+        <styles.list
+          key={travel.id}
+          onClick={() => {
+            router.replace(`/record/${travel.id}`);
+          }}
+        >
           <section>
             <h3>{travel.name}</h3>
-            <p>{travel.date}</p>
+            <p>
+              {convertDate(travel.startTime)} - {convertDate(travel.endTime)}
+            </p>
           </section>
         </styles.list>
       ))}

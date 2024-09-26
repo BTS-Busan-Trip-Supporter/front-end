@@ -163,7 +163,7 @@ const styles = {
 
       color: #7d7d7d;
       font-family: 'Noto Sans KR';
-      font-size: 0.75rem;
+      font-size: 0.875rem;
       font-style: normal;
       font-weight: 400;
       line-height: normal;

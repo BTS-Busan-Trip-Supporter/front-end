@@ -1,49 +1,28 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { ReviewCard } from './travel/ReviewCard';
 
-import { ScheduleTimeFromServer } from '@/features/trip';
+import {
+  useTripSchedule,
+  type TourActivityDTO,
+  type TourSpotDTO,
+  translateDayTime,
+} from '@/features/trip';
+import { convertDate, getDayOfWeek, getDateWithDaysAdded } from '@/shared';
 
-interface TourActivity {
-  id: number;
-  spotName: string;
-  recommend: boolean;
-  history: string;
-  dayNumber: number;
-  dayTime: ScheduleTimeFromServer;
-  orderIndex: number;
-  tourSpotDto: {
-    id: string;
-    typeId: string;
-    title: string;
-    sigunguCode: string;
-  };
-}
-
-function translateDayTime(dayTime: string) {
-  switch (dayTime) {
-    case 'MORNING':
-      return '오전';
-    case 'AFTERNOON':
-      return '오후';
-    case 'EVENING':
-      return '저녁';
-    case 'NIGHT':
-      return '밤';
-    default:
-      return dayTime;
+const dummy: Array<
+  TourActivityDTO & {
+    tourSpotDto: TourSpotDTO;
   }
-}
-
-const dummy: TourActivity[] = [
+> = [
   {
     id: 0,
-    spotName: '대저생태공원',
+    spotName: '대저',
     recommend: true,
-    history: 'string',
     dayNumber: 0,
     dayTime: 'MORNING',
     orderIndex: 0,
@@ -236,35 +215,34 @@ const dummy: TourActivity[] = [
   },
 ];
 
-export function TravelLog({
-  selectedTravel,
-  handlePrevButton,
-}: {
-  selectedTravel: {
-    id: number;
-    name: string;
-    startTime: string;
-    endTime: string;
-  } | null;
-  handlePrevButton: () => void;
-}) {
+const groupByDayNumber = (
+  data: TourActivityDTO[],
+): Record<number, TourActivityDTO[]> =>
+  data.reduce((acc: Record<number, TourActivityDTO[]>, item) => {
+    if (!acc[item.dayNumber]) {
+      acc[item.dayNumber] = [];
+    }
+    acc[item.dayNumber].push(item);
+    return acc;
+  }, {});
+
+export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
+  const router = useRouter();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+
+  const { data: tripSchedule } = useTripSchedule(selectedTravel);
+  const [groupedData, setGroupedData] = useState<
+    Record<number, TourActivityDTO[]>
+  >(groupByDayNumber(dummy));
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 1;
 
-  const groupByDayNumber = (
-    data: TourActivity[],
-  ): Record<number, TourActivity[]> =>
-    data.reduce((acc: Record<number, TourActivity[]>, item) => {
-      if (!acc[item.dayNumber]) {
-        acc[item.dayNumber] = [];
-      }
-      acc[item.dayNumber].push(item);
-      return acc;
-    }, {});
-
-  const groupedData = groupByDayNumber(dummy);
+  useEffect(() => {
+    if (tripSchedule?.data?.tourActivityInfos) {
+      setGroupedData(groupByDayNumber(tripSchedule.data.tourActivityInfos));
+    }
+  }, [tripSchedule]);
 
   return (
     <styles.wrapper>
@@ -274,11 +252,14 @@ export function TravelLog({
             <styles.prevButton
               src='/chevron-left.svg'
               alt='chevron-left'
-              onClick={handlePrevButton}
+              onClick={() => {
+                router.replace('/record');
+              }}
             />
             <h3>
-              {selectedTravel?.name}, {selectedTravel?.startTime} -{' '}
-              {selectedTravel?.endTime}
+              {tripSchedule?.data.tourLogInfo.name},{' '}
+              {convertDate(tripSchedule?.data.tourLogInfo.startTime ?? '')} -{' '}
+              {convertDate(tripSchedule?.data.tourLogInfo.endTime ?? '')}
             </h3>
           </styles.header>
           <styles.logs>
@@ -292,6 +273,16 @@ export function TravelLog({
                 <styles.dayContainer key={dayNumber}>
                   <div className='dayNumCon'>
                     <p>{dayNumber}일차</p>
+                    <span className='dates'>
+                      {getDateWithDaysAdded(
+                        tripSchedule?.data.tourLogInfo.startTime ?? '',
+                        dayNumber,
+                      )}
+                      {`(${getDayOfWeek(
+                        tripSchedule?.data.tourLogInfo.startTime ?? '',
+                        dayNumber,
+                      )})`}
+                    </span>
                     <button
                       type='button'
                       onClick={() => {
@@ -314,10 +305,14 @@ export function TravelLog({
                           </p>
                         </div>
                         <div className='buttons'>
-                          <styles.likeButton $active>
+                          <styles.likeButton
+                            $active={activity.recommend === true}
+                          >
                             <img src='/button/like.png' alt='like' />
                           </styles.likeButton>
-                          <styles.likeButton $active={false}>
+                          <styles.likeButton
+                            $active={activity.recommend === false}
+                          >
                             <img
                               src='/button/like.png'
                               alt='unlike'
@@ -413,6 +408,7 @@ const styles = {
       display: flex;
       gap: 0.3rem;
       width: 100%;
+      align-items: center;
 
       p {
         color: #6864f1;
@@ -421,6 +417,15 @@ const styles = {
         font-size: 1.25rem;
         font-style: normal;
         font-weight: 700;
+        line-height: normal;
+      }
+
+      .dates {
+        color: #a2a2a2;
+        font-family: 'Noto Sans KR';
+        font-size: 0.875rem;
+        font-style: normal;
+        font-weight: 500;
         line-height: normal;
       }
 
