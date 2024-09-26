@@ -10,6 +10,8 @@ import { useTourSpotData } from '@/features/tour-spot';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
 import { TripItem } from '@/features/trip';
 
+type Times = '오전' | '오후' | '저녁' | '밤' | '기본';
+
 interface Location {
   item: TripItem;
   selected?: boolean;

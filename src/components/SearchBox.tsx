@@ -11,14 +11,14 @@ export function SearchBox({
   dropBoxType,
 }: {
   onClick?: () => void;
-  setContent: (value: string) => void;
+  setContent?: (value: string) => void;
   dropBoxType?: 'travelType' | 'regionType';
 }) {
   const [value, setValue] = useState<string | null>(null);
   const [dropBoxVisible, setDropBoxVisible] = useState(false);
 
   const handleChange = (content: string) => {
-    setContent(content);
+    if (setContent) setContent(content);
     setValue(content);
   };
 
@@ -81,6 +81,11 @@ const styles = {
       background: url('/search-icon.svg') no-repeat center;
       background-size: 90%;
     }
+
+    button {
+      all: unset;
+      cursor: pointer;
+    }
   `,
 
   searchInput: styled.input`
@@ -119,11 +124,6 @@ const styles = {
       height: 100%;
       background: url('/search-icon.svg') no-repeat center;
       background-size: 90%;
-    }
-
-    button {
-      all: unset;
-      cursor: pointer;
     }
   `,
 };

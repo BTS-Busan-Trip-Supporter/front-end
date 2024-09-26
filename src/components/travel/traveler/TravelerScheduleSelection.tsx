@@ -5,12 +5,14 @@ import { useState } from 'react';
 
 import { CustomButton } from '@/components';
 import { Calendar } from '@/components/Calendar';
+import { useTripStore } from '@/features/trip/trip.slice';
 
 export function TravelerScheduleSelection({
   onNextPage,
 }: {
   onNextPage: ({ start, end }: { start?: Date; end?: Date }) => void;
 }) {
+  const { setDates: setTourInfoDates } = useTripStore((state) => state);
   const [dates, setDates] = useState<{ start?: Date; end?: Date }>({});
 
   return (
@@ -20,7 +22,13 @@ export function TravelerScheduleSelection({
       <styles.CustomButton
         color='linear-gradient(90deg, #6B67F9 0%, #423FB3 100%)'
         text='확인'
-        onClick={() => onNextPage(dates)}
+        onClick={() => {
+          const { start, end } = dates;
+          if (start) {
+            setTourInfoDates({ start, end: end ?? start });
+            onNextPage(dates);
+          }
+        }}
       />
     </styles.container>
   );

@@ -16,7 +16,6 @@ import {
   TravelModeLogo,
 } from '@/components/travel/traveler';
 import { TravelerActivityRecommendation } from '@/components/travel/traveler/TravelerActivityRecommendation';
-import { useTravelScheduleStore } from '@/providers';
 
 type UIState =
   | 'traveler-main'
@@ -66,20 +65,6 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
 };
 
 export function TravelerPage() {
-  const schedules = useTravelScheduleStore((state) => state.schedules);
-  const addDaySchedule = useTravelScheduleStore(
-    (state) => state.addDaySchedule,
-  );
-  const addDestination = useTravelScheduleStore(
-    (state) => state.addDestination,
-  );
-  const removeDestination = useTravelScheduleStore(
-    (state) => state.removeDestination,
-  );
-  const updateDestination = useTravelScheduleStore(
-    (state) => state.updateDestination,
-  );
-
   const [uiState, dispatch] = useReducer(uiReducer, 'traveler-main');
 
   const backgroundNode = () => {
@@ -108,31 +93,14 @@ export function TravelerPage() {
       case 'traveler-schedule-selection':
         return (
           <TravelerScheduleSelection
-            onNextPage={(dates) => {
-              const { start, end } = dates;
-              if (start) {
-                const DAY = 24 * 60 * 60 * 1000;
-                Array.from({
-                  length:
-                    Math.round(
-                      ((end ? end.getTime() : start.getTime()) -
-                        start.getTime()) /
-                        DAY,
-                    ) + 1,
-                }).forEach(() => addDaySchedule());
-                dispatch({ type: 'NEXT' });
-              }
+            onNextPage={() => {
+              dispatch({ type: 'NEXT' });
             }}
           />
         );
       case 'traveler-add-days':
         return (
           <TravelerAddDays
-            schedules={schedules}
-            onAddDestination={(day, destination) =>
-              addDestination({ day, destination })
-            }
-            onAddDaySchedule={addDaySchedule}
             onNextPage={() => {
               dispatch({ type: 'NEXT' });
             }}
@@ -154,10 +122,8 @@ export function TravelerPage() {
         return (
           <TravelerScheduleConfirm
             where='부산광역시 (Busan)'
-            schedules={schedules}
-            onRemoveDestination={(day, destination) =>
-              removeDestination({ day, destination })
-            }
+            schedules={[]}
+            onRemoveDestination={(day, destination) => {}}
             onAddDestination={() => {}}
             onNextPage={() => dispatch({ type: 'NEXT' })}
           />
@@ -166,7 +132,7 @@ export function TravelerPage() {
         return (
           <TravelerTravelArrange
             where='부산광역시 (Busan)'
-            schedules={schedules}
+            schedules={[]}
             onNextPage={() => dispatch({ type: 'NEXT' })}
           />
         );
@@ -175,29 +141,9 @@ export function TravelerPage() {
           <TravelerTravelReview
             when='2024.05.12-2024.05.13'
             where='부산광역시 (Busan)'
-            schedules={schedules}
-            onLikeButtonClick={(day, destination) => {
-              updateDestination({
-                day,
-                target: destination,
-                updateValue: {
-                  ...destination,
-                  selected:
-                    destination.selected === 'like' ? undefined : 'like',
-                },
-              });
-            }}
-            onUnlikeButtonClick={(day, destination) => {
-              updateDestination({
-                day,
-                target: destination,
-                updateValue: {
-                  ...destination,
-                  selected:
-                    destination.selected === 'unlike' ? undefined : 'unlike',
-                },
-              });
-            }}
+            schedules={[]}
+            onLikeButtonClick={(day, destination) => {}}
+            onUnlikeButtonClick={(day, destination) => {}}
           />
         );
       default:

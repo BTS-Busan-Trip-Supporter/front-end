@@ -1,66 +1,57 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import { CustomButton } from '@/components';
 import { TravelerLocationConfirm } from '@/components/travel/traveler/TravelerLocationConfirm';
 import { TravelerLocationSearch } from '@/components/travel/traveler/TravelerLocationSearch';
-import type { DaySchedule, Destination } from '@/features/travel-schedule';
+import type { GetTourSpotsDTO } from '@/features/tour-spot';
+import { getTourSpots } from '@/features/tour-spot';
+import { TIME_STRING } from '@/features/trip';
+import { useTripStore } from '@/features/trip/trip.slice';
 
-export function TravelerAddDays({
-  schedules,
-  onAddDaySchedule,
-  onNextPage,
-}: {
-  schedules: DaySchedule[];
-  onAddDaySchedule: () => void;
-  onAddDestination: (day: number, destination: Destination) => void;
-  onNextPage: () => void;
-}) {
+export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
   const [state, setState] = useState<{
     ui: 'main' | 'search' | 'confirm';
     day?: number;
-    searchContent?: string;
     location?: string;
-    time?: 'morning' | 'afternoon' | 'evening' | 'night';
+    time?: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
+    tourSpotDto?: GetTourSpotsDTO;
   }>({ ui: 'main' });
 
-  const destinations = useCallback(
-    (destination: Destination[]) => (
-      <>
-        {destination.map((des) => (
-          <Destination key={des.id} destination={des} />
-        ))}
-      </>
-    ),
-    [],
-  );
+  const { tourInfo, activities, addTour, addActivity } = useTripStore();
 
   return (
     <>
       {state.ui === 'main' && (
         <styles.container>
           <styles.dayContainer>
-            {schedules.map((schedule, index) => (
+            {activities.map((acts, index) => (
               <styles.daySchedule key={index}>
                 <styles.dayTitle>{index + 1}일차</styles.dayTitle>
                 <styles.dayFrame>
-                  {schedule.destinations.length > 0 &&
-                    destinations(schedule.destinations)}
+                  {acts.length > 0 &&
+                    acts.map((activity) => (
+                      <Destination
+                        key={activity.spotName}
+                        destination={{
+                          time: activity.dayTime,
+                          name: activity.spotName,
+                        }}
+                      />
+                    ))}
                   {!(
-                    schedule.destinations.find(
-                      (destination) => destination.time === 'morning',
+                    acts.find(
+                      (destination) => destination.dayTime === 'MORNING',
                     ) &&
-                    schedule.destinations.find(
-                      (destination) => destination.time === 'afternoon',
+                    acts.find(
+                      (destination) => destination.dayTime === 'AFTERNOON',
                     ) &&
-                    schedule.destinations.find(
-                      (destination) => destination.time === 'evening',
+                    acts.find(
+                      (destination) => destination.dayTime === 'EVENING',
                     ) &&
-                    schedule.destinations.find(
-                      (destination) => destination.time === 'night',
-                    )
+                    acts.find((destination) => destination.dayTime === 'NIGHT')
                   ) && (
                     <AddButton
                       onClick={() =>
@@ -78,7 +69,7 @@ export function TravelerAddDays({
             <styles.addDayFrame>
               <p>1박</p>
               <p>추가하기</p>
-              <AddButton onClick={onAddDaySchedule} />
+              <AddButton onClick={addTour} />
             </styles.addDayFrame>
           </styles.dayContainer>
           <styles.CustomButton
@@ -90,41 +81,84 @@ export function TravelerAddDays({
       )}
       {state.ui === 'search' && (
         <TravelerLocationSearch
-          onClick={() => setState((prev) => ({ ...prev, ui: 'confirm' }))}
+          onClick={() => {
+            if (!state.location) return;
+
+            getTourSpots(state.location, tourInfo.locationName ?? '').then(
+              (res) => {
+                setState((prev) => ({
+                  ...prev,
+                  ui: 'confirm',
+                  tourSpotDto: res,
+                }));
+              },
+            );
+          }}
           onContentChange={(value) =>
-            setState((prev) => ({ ...prev, searchContent: value }))
+            setState((prev) => ({ ...prev, location: value }))
           }
         />
       )}
-      {state.ui === 'confirm' && state.day && state.location && (
-        <TravelerLocationConfirm
-          location={state.location}
-          day={state.day}
-          selectedTime={state.time}
-          onTimeClicked={(time) => {
-            if (
-              state.day &&
-              !schedules[state.day - 1].destinations.find(
-                (destination) => destination.time === time,
+      {state.ui === 'confirm' &&
+        state.tourSpotDto &&
+        state.day &&
+        state.location && (
+          <TravelerLocationConfirm
+            location={state.tourSpotDto.data.title}
+            day={state.day}
+            selectedTime={state.time}
+            onTimeClicked={(time) => {
+              if (
+                state.day &&
+                !activities[state.day - 1]?.find(
+                  (activity) => activity.dayTime === time,
+                )
+              ) {
+                setState((prev) => ({ ...prev, time }));
+              }
+            }}
+            onConfirm={() => {
+              if (
+                !state.day ||
+                !state.time ||
+                !state.tourSpotDto ||
+                !tourInfo.startTime ||
+                !tourInfo.endTime
               )
-            ) {
-              setState((prev) => ({ ...prev, time }));
-            }
-          }}
-          onConfirm={() => {
-            // onAddDestination({});
-            setState(() => ({ ui: 'main' }));
-          }}
-        />
-      )}
+                return;
+
+              addActivity(state.day, {
+                dayNumber: state.day,
+                dayTime: state.time,
+                spotName: state.tourSpotDto.data.title,
+                tourSpotDto: {
+                  id: state.tourSpotDto.data.contentId,
+                  typeId: state.tourSpotDto.data.contentTypeId,
+                  title: state.tourSpotDto.data.title,
+                  sigunguCode: state.tourSpotDto.data.sigunguCode,
+                },
+                orderIndex: 0,
+              });
+
+              setState(() => ({ ui: 'main' }));
+            }}
+          />
+        )}
     </>
   );
 }
 
-function Destination({ destination }: { destination: Destination }) {
+function Destination({
+  destination,
+}: {
+  destination: {
+    name: string;
+    time: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
+  };
+}) {
   return (
     <styles.destinationContainer>
-      <p>{destination.time}</p>
+      <p data-time>{TIME_STRING[destination.time]}</p>
       <p>{destination.name}</p>
     </styles.destinationContainer>
   );
@@ -189,12 +223,17 @@ const styles = {
     align-items: center;
 
     width: 136px;
-    height: 283px;
+    min-height: 283px;
+    max-height: 283px;
     border-radius: 10px;
 
     background: #ffffff;
 
+    gap: 2rem;
+
     box-shadow: 2px 4px 1px 0px #0000000f;
+
+    overflow-y: scroll;
   `,
 
   addDayFrame: styled.div`
@@ -239,8 +278,13 @@ const styles = {
   `,
 
   destinationContainer: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+
     width: 110px;
-    height: 78px;
+    min-height: 78px;
     border-radius: 14px;
 
     background: #ffffff;
@@ -253,5 +297,18 @@ const styles = {
     letter-spacing: -0.02em;
 
     color: #505050;
+
+    p {
+      padding: 0 0.5rem;
+    }
+
+    p[data-time] {
+      padding: 0;
+      align-self: flex-start;
+    }
+
+    padding: 0.5rem;
+
+    overflow: clip;
   `,
 };

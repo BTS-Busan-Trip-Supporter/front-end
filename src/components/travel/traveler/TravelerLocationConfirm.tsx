@@ -11,8 +11,8 @@ export function TravelerLocationConfirm({
 }: {
   location: string;
   day: number;
-  selectedTime?: 'morning' | 'afternoon' | 'evening' | 'night';
-  onTimeClicked: (time: 'morning' | 'afternoon' | 'evening' | 'night') => void;
+  selectedTime?: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
+  onTimeClicked: (time: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT') => void;
   onConfirm: () => void;
 }) {
   return (
@@ -22,23 +22,23 @@ export function TravelerLocationConfirm({
       <styles.timeCardCon>
         <TimeCard
           time='오전'
-          selected={selectedTime === 'morning'}
-          onClick={() => onTimeClicked('morning')}
+          selected={selectedTime === 'MORNING'}
+          onClick={() => onTimeClicked('MORNING')}
         />
         <TimeCard
           time='오후'
-          selected={selectedTime === 'afternoon'}
-          onClick={() => onTimeClicked('afternoon')}
+          selected={selectedTime === 'AFTERNOON'}
+          onClick={() => onTimeClicked('AFTERNOON')}
         />
         <TimeCard
           time='저녁'
-          selected={selectedTime === 'evening'}
-          onClick={() => onTimeClicked('evening')}
+          selected={selectedTime === 'EVENING'}
+          onClick={() => onTimeClicked('EVENING')}
         />
         <TimeCard
           time='밤'
-          selected={selectedTime === 'night'}
-          onClick={() => onTimeClicked('night')}
+          selected={selectedTime === 'NIGHT'}
+          onClick={() => onTimeClicked('NIGHT')}
         />
       </styles.timeCardCon>
       <p>일정으로 추가합니다.</p>

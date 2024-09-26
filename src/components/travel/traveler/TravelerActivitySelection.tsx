@@ -1,26 +1,108 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState } from 'react';
 
 import { CustomButton, SearchBox } from '@/components';
+import { postDayTrip } from '@/features/trip';
+import { useTripStore } from '@/features/trip/trip.slice';
+
+const types = {
+  travelType: [
+    { id: 12, type: '관광지' },
+    { id: 14, type: '문화시설' },
+    { id: 15, type: '축제공연행사' },
+    { id: 28, type: '레포츠' },
+    { id: 38, type: '쇼핑' },
+    { id: 39, type: '음식점' },
+  ],
+  regionType: [
+    { id: 1, type: '강서구' },
+    { id: 2, type: '금정구' },
+    { id: 3, type: '기장군' },
+    { id: 4, type: '남구' },
+    { id: 5, type: '동구' },
+    { id: 6, type: '동래구' },
+    { id: 7, type: '부산진구' },
+    { id: 8, type: '북구' },
+    { id: 9, type: '사상구' },
+    { id: 10, type: '사하구' },
+    { id: 11, type: '서구' },
+    { id: 12, type: '수영구' },
+    { id: 13, type: '연제구' },
+    { id: 14, type: '영도구' },
+    { id: 15, type: '중구' },
+    { id: 16, type: '해운대구' },
+  ],
+};
 
 export function TravelerActivitySelection({
   onNextPage,
 }: {
   onNextPage: () => void;
 }) {
-  const [, setSearchContent] = useState('');
+  const {
+    tourInfo,
+    recommendContent,
+    setIsRecommendLoading,
+    setRecommendContent,
+    setRecommendedItems,
+  } = useTripStore();
 
   return (
     <styles.container>
       <styles.caption>나머지 일정도 추천해드릴게요.</styles.caption>
       <styles.description>어떤 활동을 하고 싶으세요?</styles.description>
-      <SearchBox setContent={setSearchContent} />
+      <SearchBox
+        dropBoxType='travelType'
+        setContent={(value) => {
+          setRecommendContent(value);
+        }}
+        onClick={() => {
+          setIsRecommendLoading(true);
+          postDayTrip({
+            tourDate: new Date().toISOString(),
+            sigunguCode: String(
+              types.regionType.find(
+                (region) => region.type === tourInfo.locationName,
+              )?.id ?? '1',
+            ),
+            contentTypeId: String(
+              types.travelType.find(
+                (region) => region.type === recommendContent,
+              )?.id ?? '1',
+            ),
+            dayTimes: ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'],
+          }).then((res) => {
+            setRecommendedItems(res.data);
+            setIsRecommendLoading(false);
+          });
+
+          onNextPage();
+        }}
+      />
       <styles.CustomButton
         color='#FF75C8'
         text='알아서 해줘'
         onClick={() => {
+          setIsRecommendLoading(true);
+          postDayTrip({
+            tourDate: new Date().toISOString(),
+            sigunguCode: String(
+              types.regionType.find(
+                (region) => region.type === tourInfo.locationName,
+              )?.id ?? '1',
+            ),
+            contentTypeId: String(
+              types.travelType.find(
+                (region) => region.type === recommendContent,
+              )?.id ?? '1',
+            ),
+            dayTimes: ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'],
+          }).then((res) => {
+            setRecommendedItems(res.data);
+            setIsRecommendLoading(false);
+          });
+
           onNextPage();
         }}
       />

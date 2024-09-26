@@ -4,19 +4,18 @@ export type ScheduleTimeFromServer =
   | 'EVENING'
   | 'NIGHT';
 
-export const TimeConversionMap = {
-  fromServer: {
-    MORNING: 'morning',
-    MIDNOON: 'afternoon',
-    AFTERNOON: 'evening',
-    EVENING: 'night',
-  },
-  toServer: {
-    morning: 'MORNING',
-    afternoon: 'MIDNOON',
-    evening: 'AFTERNOON',
-    night: 'EVENING',
-  },
+export const TIME_ORDER = {
+  MORNING: 0,
+  AFTERNOON: 1,
+  EVENING: 2,
+  NIGHT: 3,
+} as const;
+
+export const TIME_STRING = {
+  MORNING: '오전',
+  AFTERNOON: '오후',
+  EVENING: '저녁',
+  NIGHT: '밤',
 } as const;
 
 export const DropBoxMenu = {

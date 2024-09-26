@@ -7,7 +7,6 @@ import {
   AuthProvider,
   TanStackQueryProvider,
   ToastProvider,
-  TravelScheduleStoreProvider,
 } from '@/providers';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -32,13 +31,11 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <TanStackQueryProvider>
-          <TravelScheduleStoreProvider>
-            <AuthProvider>
-              <main>{children}</main>
-              <ToastProvider />
-              <NavigationBar />
-            </AuthProvider>
-          </TravelScheduleStoreProvider>
+          <AuthProvider>
+            <main>{children}</main>
+            <ToastProvider />
+            <NavigationBar />
+          </AuthProvider>
         </TanStackQueryProvider>
       </body>
     </html>

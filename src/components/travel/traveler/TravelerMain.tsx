@@ -2,26 +2,16 @@
 
 import styled from '@emotion/styled';
 
-import { CustomButton, SearchBox } from '@/components';
+import { SearchBox } from '@/components';
 
 export function TravelerMain({ onNextPage }: { onNextPage: () => void }) {
-  const user = {
-    name: '최보윤',
-  };
-
   return (
     <styles.container>
-      <h2>
-        {user.name}님,
-        <br />
-        어디가실 계획인가요?
-      </h2>
-      <SearchBox setContent={() => {}} />
-      <CustomButton
-        color='#FF75C8'
-        text='내 주변에서 알아서 해줘'
+      <h2>어디가실 계획인가요?</h2>
+      <SearchBox
         onClick={onNextPage}
-        grow
+        setContent={() => {}}
+        dropBoxType='regionType'
       />
     </styles.container>
   );

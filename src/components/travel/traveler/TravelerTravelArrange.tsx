@@ -1,11 +1,6 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState } from 'react';
-
-import { TravelerLocationConfirm } from '@/components/travel/traveler/TravelerLocationConfirm';
-import { TravelerLocationSearch } from '@/components/travel/traveler/TravelerLocationSearch';
-import type { DaySchedule, Destination } from '@/features/travel-schedule';
 
 export function TravelerTravelArrange({
   schedules,
@@ -16,67 +11,23 @@ export function TravelerTravelArrange({
   where: string;
   onNextPage: () => void;
 }) {
-  const [state, setState] = useState<{
-    ui: 'main' | 'search' | 'confirm';
-    day?: number;
-    searchContent?: string;
-    location?: string;
-    time?: 'morning' | 'afternoon' | 'evening' | 'night';
-  }>({ ui: 'main' });
-
   return (
-    <>
-      {state.ui === 'main' && (
-        <styles.container>
-          <styles.location>{where}</styles.location>
-          {schedules.map((schedule, index) => (
-            <DayScheduleItem
-              key={index}
-              day={index + 1}
-              destinations={schedule.destinations}
-            />
-          ))}
-          <button type='button' onClick={onNextPage}>
-            <div>
-              <img
-                src='/traveler-write-record.svg'
-                alt='button to write review'
-              />
-              <p>기록하기</p>
-            </div>
-          </button>
-        </styles.container>
-      )}
-      {state.ui === 'search' && (
-        <TravelerLocationSearch
-          onClick={() => setState((prev) => ({ ...prev, ui: 'confirm' }))}
-          onContentChange={(value) =>
-            setState((prev) => ({ ...prev, searchContent: value }))
-          }
+    <styles.container>
+      <styles.location>{where}</styles.location>
+      {schedules.map((schedule, index) => (
+        <DayScheduleItem
+          key={index}
+          day={index + 1}
+          destinations={schedule.destinations}
         />
-      )}
-      {state.ui === 'confirm' && state.day && state.location && (
-        <TravelerLocationConfirm
-          location={state.location}
-          day={state.day}
-          selectedTime={state.time}
-          onTimeClicked={(time) => {
-            if (
-              state.day &&
-              !schedules[state.day - 1].destinations.find(
-                (destination) => destination.time === time,
-              )
-            ) {
-              setState((prev) => ({ ...prev, time }));
-            }
-          }}
-          onConfirm={() => {
-            // onAddDestination({});
-            setState(() => ({ ui: 'main' }));
-          }}
-        />
-      )}
-    </>
+      ))}
+      <button type='button' onClick={onNextPage}>
+        <div>
+          <img src='/traveler-write-record.svg' alt='button to write review' />
+          <p>기록하기</p>
+        </div>
+      </button>
+    </styles.container>
   );
 }
 

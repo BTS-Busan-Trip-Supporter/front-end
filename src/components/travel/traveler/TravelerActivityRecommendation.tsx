@@ -1,61 +1,168 @@
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
 import { CustomButton, LoadingCard } from '@/components';
+import { DetailCard, Loading } from '@/components/travel';
+import { useTripStore } from '@/features/trip/trip.slice';
+
+type Times = '오전' | '오후' | '저녁' | '밤' | '기본';
 
 interface Location {
-  id: number;
+  id: string;
   imageUrl: string;
   name: string;
+  selected?: boolean;
+  time?: Times;
 }
 
-const dummyLocations: Location[] = [
-  {
-    id: 1,
-    imageUrl: 'https://picsum.photos/400/600',
-    name: 'hi',
-  },
-  {
-    id: 2,
-    imageUrl: 'https://picsum.photos/2600/2600',
-    name: 'hi',
-  },
-  {
-    id: 3,
-    imageUrl: 'https://picsum.photos/200/500',
-    name: 'hi',
-  },
-  {
-    id: 4,
-    imageUrl: 'https://picsum.photos/100/100',
-    name: 'hi',
-  },
-];
+const types = {
+  travelType: [
+    { id: 12, type: '관광지' },
+    { id: 14, type: '문화시설' },
+    { id: 15, type: '축제공연행사' },
+    { id: 28, type: '레포츠' },
+    { id: 38, type: '쇼핑' },
+    { id: 39, type: '음식점' },
+  ],
+  regionType: [
+    { id: 1, type: '강서구' },
+    { id: 2, type: '금정구' },
+    { id: 3, type: '기장군' },
+    { id: 4, type: '남구' },
+    { id: 5, type: '동구' },
+    { id: 6, type: '동래구' },
+    { id: 7, type: '부산진구' },
+    { id: 8, type: '북구' },
+    { id: 9, type: '사상구' },
+    { id: 10, type: '사하구' },
+    { id: 11, type: '서구' },
+    { id: 12, type: '수영구' },
+    { id: 13, type: '연제구' },
+    { id: 14, type: '영도구' },
+    { id: 15, type: '중구' },
+    { id: 16, type: '해운대구' },
+  ],
+};
 
 export function TravelerActivityRecommendation({
   onNextPage,
 }: {
   onNextPage: () => void;
 }) {
+  const { isRecommendLoading, tourInfo, recommendContent, fillActivities } =
+    useTripStore();
+
+  const [isDetailVisible, setIsDetailVisible] = useState(false);
+
+  const [selectedPlace, setSelectedPlace] = useState<Location | null>(null);
+  const [selectedPlaces, setSelectedPlaces] = useState<Location[]>([]);
+
+  const handleCardClick = (place: Location) => {
+    setSelectedPlace(place);
+    setIsDetailVisible(true);
+  };
+
   return (
     <styles.container>
-      <Results
-        isLoading={false}
-        locations={dummyLocations}
-        nextLocations={dummyLocations}
+      <ResultWrapper
+        isLoading={isRecommendLoading}
+        isDetailVisible={isDetailVisible}
+        selectedPlace={selectedPlace}
+        selectedPlaces={selectedPlaces}
+        setSelectedPlaces={setSelectedPlaces}
+        setIsDetailVisible={setIsDetailVisible}
+        handleCardClick={handleCardClick}
       />
-      <CustomButton color='#FF75C8' text='여행 완성' onClick={onNextPage} />
+      <CustomButton
+        color='#FF75C8'
+        text='여행 완성'
+        onClick={() => {
+          fillActivities(
+            selectedPlaces.map((place) => ({
+              dayTime: 'MORNING',
+              orderIndex: 0,
+              dayNumber: 0,
+              spotName: place.name,
+              tourSpotDto: {
+                id: place.id,
+                sigunguCode: String(
+                  types.regionType.find(
+                    (region) => region.type === tourInfo.locationName,
+                  )?.id ?? 1,
+                ),
+                title: place.name,
+                typeId: String(
+                  types.travelType.find(
+                    (travel) => travel.type === recommendContent,
+                  )?.id ?? 1,
+                ),
+              },
+            })),
+          );
+          onNextPage();
+        }}
+      />
     </styles.container>
   );
 }
 
-function Results({
-  isLoading,
-  locations,
-  nextLocations,
-}: {
+interface Props {
   isLoading: boolean;
+  isDetailVisible: boolean;
+  selectedPlace: Location | null;
+  selectedPlaces: Location[];
+  setSelectedPlaces: (updateFn: (places: Location[]) => Location[]) => void;
+  setIsDetailVisible: (i: boolean) => void;
+  handleCardClick: (place: Location) => void;
+}
+
+function ResultWrapper({
+  isLoading,
+  isDetailVisible,
+  selectedPlace,
+  selectedPlaces,
+  setSelectedPlaces,
+  setIsDetailVisible,
+  handleCardClick,
+}: Props) {
+  const { recommendedItems } = useTripStore();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!isDetailVisible) {
+    return (
+      <Results
+        locations={recommendedItems.map((item) => ({
+          id: item.contentId,
+          imageUrl: item.imageUrl,
+          name: item.title,
+        }))}
+        onCardClick={handleCardClick}
+        selectedPlaces={selectedPlaces}
+      />
+    );
+  }
+
+  return (
+    <DetailCard
+      place={selectedPlace ?? { id: '1', imageUrl: '', name: '' }}
+      selectedPlaces={selectedPlaces}
+      onSelect={setSelectedPlaces}
+      setIsDetailVisible={setIsDetailVisible}
+    />
+  );
+}
+
+function Results({
+  locations,
+  onCardClick,
+  selectedPlaces,
+}: {
   locations: Location[];
-  nextLocations: Location[];
+  onCardClick: (place: Location) => void;
+  selectedPlaces: Location[];
 }) {
   return (
     <styles.container>
@@ -65,20 +172,9 @@ function Results({
           {locations.map((location) => (
             <LoadingCard
               key={location.id}
-              dataLoading={isLoading}
               imageUrl={location.imageUrl}
-            />
-          ))}
-        </styles.cardList>
-      </styles.resultCon>
-      <styles.resultCon>
-        <styles.description>다른 활동들도 추천해드릴게요.</styles.description>
-        <styles.cardList>
-          {nextLocations.map((location) => (
-            <LoadingCard
-              key={location.id}
-              dataLoading={isLoading}
-              imageUrl={location.imageUrl}
+              onClick={() => onCardClick(location)}
+              isSelected={selectedPlaces.some((p) => p.id === location.id)}
             />
           ))}
         </styles.cardList>
@@ -89,10 +185,13 @@ function Results({
 
 const styles = {
   container: styled.div`
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     width: 100%;
     gap: 2rem;
+
+    margin-top: 2rem;
   `,
 
   description: styled.p`

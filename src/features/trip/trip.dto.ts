@@ -7,8 +7,8 @@ export interface TourLogDTO {
   id: number;
   name: string;
   locationName: string;
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
 }
 
 export interface TourActivityDTO {

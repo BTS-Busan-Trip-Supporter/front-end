@@ -1,14 +1,14 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
-  TravelComponent,
-  ScrollMotion,
-  LoadingCard,
-  SearchBox,
   CustomButton,
+  LoadingCard,
+  ScrollMotion,
+  SearchBox,
+  TravelComponent,
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
 import type { Times } from '@/features/travel-schedule/travel-schedule.type';
@@ -22,6 +22,8 @@ import {
   type TripItem,
 } from '@/features/trip';
 import { useIntersectionObserver } from '@/shared';
+
+type Times = '오전' | '오후' | '저녁' | '밤' | '기본';
 
 interface Location {
   item: TripItem;
