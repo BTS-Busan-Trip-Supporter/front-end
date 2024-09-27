@@ -36,9 +36,3 @@ main {
   flex-direction: column;
   overflow: hidden;
 }
-
-@media (prefers-color-scheme: dark) {
-  /* html {
-    color-scheme: dark;
-  } */
-}
