@@ -28,7 +28,7 @@ export function TravelPage() {
           <br />
           어디가실 계획인가요?
         </h2>
-        <SearchBox setContent={setSearchContent} />
+        <SearchBox setContent={setSearchContent} dropBoxType='regionType' />
         <styles.btnCon>
           <CustomButton
             color='#FF75C8'

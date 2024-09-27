@@ -45,7 +45,7 @@ export function NavigationBar() {
           router.replace('/');
         }}
       >
-        {pathName.startsWith('/') ? (
+        {pathName === '/' || pathName.startsWith('/travel') ? (
           <styles.menu $active>
             <styles.icon src='/travel-active.png' alt='travel-active-menu' />
             여행하기

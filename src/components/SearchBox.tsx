@@ -10,7 +10,7 @@ export function SearchBox({
   dropBoxType,
 }: {
   setContent: (value: string) => void;
-  dropBoxType?: string;
+  dropBoxType?: 'travelType' | 'regionType';
 }) {
   const [value, setValue] = useState<string | null>(null);
   const [dropBoxVisible, setDropBoxVisible] = useState(false);
@@ -39,7 +39,7 @@ export function SearchBox({
       />
       {dropBoxVisible && (
         <DropBox
-          type='travelType'
+          type={dropBoxType ?? 'travelType'}
           setContent={handleChange}
           setDropBoxVisible={setDropBoxVisible}
         />

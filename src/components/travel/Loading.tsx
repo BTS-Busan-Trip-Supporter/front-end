@@ -11,7 +11,7 @@ export function Loading() {
           <br />
           선택해보세요!
         </p>
-        <span>잠시만 기다려 주세요</span>
+        <div className='loader' />
       </div>
     </styles.wrapper>
   );
@@ -27,6 +27,7 @@ const styles = {
     justify-content: center;
     scroll-snap-align: start;
     padding: 0.5rem 0.5rem 20rem 0.5rem;
+    position: relative;
 
     div {
       display: flex;
@@ -47,16 +48,96 @@ const styles = {
       letter-spacing: -0.02875rem;
     }
 
-    span {
-      color: #e2e2e2;
+    .loader {
+      position: relative;
+      width: 2.5em;
+      height: 2.5em;
+      transform: rotate(165deg);
+    }
 
-      text-align: center;
-      font-family: 'Noto Sans KR';
-      font-size: 1.25rem;
-      font-style: normal;
-      font-weight: 700;
-      line-height: normal;
-      letter-spacing: -0.02875rem;
+    .loader:before,
+    .loader:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: block;
+      width: 0.5em;
+      height: 0.5em;
+      border-radius: 0.25em;
+      transform: translate(-50%, -50%);
+    }
+
+    .loader:before {
+      animation: before 2s infinite;
+    }
+
+    .loader:after {
+      animation: after 2s infinite;
+    }
+
+    @keyframes before {
+      0% {
+        width: 0.5em;
+        box-shadow:
+          1em -0.5em rgba(154, 151, 255, 0.8),
+          -1em 0.5em rgba(63, 61, 147, 0.8);
+      }
+
+      35% {
+        width: 2.5em;
+        box-shadow:
+          0 -0.5em rgba(154, 151, 255, 0.8),
+          0 0.5em rgba(63, 61, 147, 0.8);
+      }
+
+      70% {
+        width: 0.5em;
+        box-shadow:
+          -1em -0.5em rgba(154, 151, 255, 0.8),
+          1em 0.5em rgba(63, 61, 147, 0.8);
+      }
+
+      100% {
+        box-shadow:
+          1em -0.5em rgba(154, 151, 255, 0.8),
+          -1em 0.5em rgba(63, 61, 147, 0.8);
+      }
+    }
+
+    @keyframes after {
+      0% {
+        height: 0.5em;
+        box-shadow:
+          0.5em 1em rgba(184, 182, 243, 0.8),
+          -0.5em -1em rgba(107, 103, 249, 0.8);
+      }
+
+      35% {
+        height: 2.5em;
+        box-shadow:
+          0.5em 0 rgba(184, 182, 243, 0.8),
+          -0.5em 0 rgba(107, 103, 249, 0.8);
+      }
+
+      70% {
+        height: 0.5em;
+        box-shadow:
+          0.5em -1em rgba(184, 182, 243, 0.8),
+          -0.5em 1em rgba(107, 103, 249, 0.8);
+      }
+
+      100% {
+        box-shadow:
+          0.5em 1em rgba(184, 182, 243, 0.8),
+          -0.5em -1em rgba(107, 103, 249, 0.8);
+      }
+    }
+
+    .loader {
+      position: absolute;
+      top: 40%;
+      left: calc(50% - 1.25em);
     }
   `,
 };
