@@ -9,121 +9,11 @@ import { ReviewCard } from './travel/ReviewCard';
 import {
   useTripSchedule,
   type TourActivityDTO,
-  type TourSpotDTO,
   translateDayTime,
   useUpdateActivityHistory,
   useUpdateActivityRecommend,
 } from '@/features/trip';
-import { convertDate, getDayOfWeek, getDateWithDaysAdded } from '@/shared';
-
-const dummy: Array<
-  TourActivityDTO & {
-    tourSpotDto: TourSpotDTO;
-  }
-> = [
-  {
-    id: 0,
-    spotName: '대저',
-    dayNumber: 0,
-    dayTime: 'MORNING',
-    orderIndex: 1,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 1,
-    spotName: '스타필드 푸드코트',
-    recommend: true,
-    history: 'string',
-    dayNumber: 0,
-    dayTime: 'MORNING',
-    orderIndex: 2,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 6,
-    spotName: '대저생태공원',
-    recommend: true,
-    history: 'string',
-    dayNumber: 0,
-    dayTime: 'MORNING',
-    orderIndex: 3,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 2,
-    spotName: '대저생태공원',
-    recommend: false,
-    history: 'string',
-    dayNumber: 0,
-    dayTime: 'MORNING',
-    orderIndex: 4,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 3,
-    spotName: '대저생태공원',
-    recommend: false,
-    history: 'string',
-    dayNumber: 0,
-    dayTime: 'MORNING',
-    orderIndex: 5,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 4,
-    spotName: '대저생태공원',
-    history: 'string',
-    dayNumber: 0,
-    dayTime: 'MORNING',
-    orderIndex: 6,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-  {
-    id: 5,
-    spotName: '대저생태공원대저생태공원대저생태공원대저생태공원',
-    recommend: true,
-    history: 'string',
-    dayNumber: 0,
-    dayTime: 'MORNING',
-    orderIndex: 7,
-    tourSpotDto: {
-      id: 'string',
-      typeId: 'string',
-      title: 'string',
-      sigunguCode: 'string',
-    },
-  },
-];
+import { convertDate, getDayOfWeek, getMonthAndDate } from '@/shared';
 
 const groupByDayNumber = (
   data: TourActivityDTO[],
@@ -143,13 +33,14 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
   const { data: tripSchedule } = useTripSchedule(selectedTravel);
   const [groupedData, setGroupedData] = useState<
     Record<number, TourActivityDTO[]>
-  >(groupByDayNumber(dummy));
+  >([]);
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 1;
 
-  const { mutate: updateReview } = useUpdateActivityHistory();
-  const { mutate: updateRecommend } = useUpdateActivityRecommend();
+  const { mutate: updateReview } = useUpdateActivityHistory(selectedTravel);
+  const { mutate: updateRecommend } =
+    useUpdateActivityRecommend(selectedTravel);
   const [reviews, setReviews] = useState<Record<number, string | null>>({});
   const [recommends, setRecommends] = useState<Record<number, boolean | null>>(
     {},
@@ -213,7 +104,7 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
                   <div className='dayNumCon'>
                     <p>{dayNumber}일차</p>
                     <span className='dates'>
-                      {getDateWithDaysAdded(
+                      {getMonthAndDate(
                         tripSchedule?.data.tourLogInfo.startTime ?? '',
                         dayNumber,
                       )}
@@ -360,7 +251,7 @@ const styles = {
 
     .dayNumCon {
       display: flex;
-      gap: 0.3rem;
+      gap: 0.5rem;
       width: 100%;
       align-items: center;
 

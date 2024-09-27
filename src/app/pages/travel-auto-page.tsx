@@ -11,6 +11,7 @@ import {
   CustomButton,
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
+import { useToast } from '@/features/toast';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
 import {
   useRecommendDayTrip,
@@ -59,6 +60,7 @@ function transformTourActivityData(selectedPlaces: Location[]) {
 }
 
 export function TravelAutoPage() {
+  const { createToast } = useToast();
   const [searchContent, setSearchContent] = useState('');
 
   useEffect(() => {
@@ -125,7 +127,15 @@ export function TravelAutoPage() {
     tourActivityDataList: transformTourActivityData(selectedPlaces),
   });
 
-  const { mutate: createSchedule } = useCreateTripSchedule(parsingSchedule());
+  const { mutate: createSchedule, status: isCreate } =
+    useCreateTripSchedule(parsingSchedule());
+
+  useEffect(() => {
+    if (isCreate === 'success')
+      createToast('success', '여행이 완성되었습니다!');
+    else if (isCreate === 'error')
+      createToast('error', '여행이 완성되지 않았습니다.');
+  }, [isCreate]);
 
   const Contents = {
     backgroundNode: (

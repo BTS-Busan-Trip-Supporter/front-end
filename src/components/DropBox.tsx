@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { DropBoxMenu } from '@/features/trip';
 
 interface Type {
-  id: number;
+  id: string;
   type: string;
 }
 

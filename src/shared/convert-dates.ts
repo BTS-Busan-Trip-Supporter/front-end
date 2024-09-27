@@ -10,22 +10,15 @@ export function convertDate(isoString: string) {
     .replace(/\.$/, '');
 }
 
-export function getDateWithDaysAdded(isoString: string, daysToAdd: number) {
-  const currentYear = new Date().getFullYear();
-  const [month, day] = isoString.split('. ').map(Number);
-  const startDate = new Date(currentYear, month - 1, day);
+export function getMonthAndDate(isoString: string, daysToAdd: number) {
+  const [month, day] = isoString.slice(5, 10).split('-').map(Number);
 
-  startDate.setDate(startDate.getDate() + daysToAdd);
-
-  const resultMonth = String(startDate.getMonth() + 1).padStart(2, '0');
-  const resultDay = String(startDate.getDate()).padStart(2, '0');
-
-  return `${resultMonth}. ${resultDay}`;
+  return `${month}. ${day + daysToAdd - 1}`;
 }
 
 export function getDayOfWeek(isoString: string, daysToAdd: number) {
   const date = new Date(isoString);
   const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
 
-  return daysOfWeek[date.getUTCDay() + daysToAdd];
+  return daysOfWeek[date.getUTCDay() + daysToAdd - 1];
 }
