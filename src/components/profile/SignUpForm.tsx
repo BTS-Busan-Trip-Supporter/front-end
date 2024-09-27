@@ -26,7 +26,11 @@ export function SignUpForm() {
   const { isEmailChecked, handleCheckButton, update } =
     useEmailDuplicationCheck(email);
   const { refetch: sendCode } = useSendEmailCheckingCode(email, false);
-  const { mutate: registerMember, status } = useRegisterMember(email, password, name);
+  const { mutate: registerMember, status } = useRegisterMember(
+    email,
+    password,
+    name,
+  );
   const { createToast } = useToast();
 
   const router = useRouter();
