@@ -79,7 +79,7 @@ export function TravelerActivityRecommendation({
         onClick={() => {
           fillActivities(
             selectedPlaces.map((place) => ({
-              dayTime: 'MORNING',
+              dayTime: convertTimeString(place.time ?? '오전'),
               orderIndex: 0,
               dayNumber: 0,
               spotName: place.name,
@@ -182,6 +182,24 @@ function Results({
     </styles.container>
   );
 }
+
+const convertTimeString = (
+  time: Times,
+): 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT' => {
+  if (time === '오전') {
+    return 'MORNING';
+  }
+  if (time === '오후') {
+    return 'AFTERNOON';
+  }
+  if (time === '저녁') {
+    return 'EVENING';
+  }
+  if (time === '밤') {
+    return 'NIGHT';
+  }
+  return 'MORNING';
+};
 
 const styles = {
   container: styled.div`

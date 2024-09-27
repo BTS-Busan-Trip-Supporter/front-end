@@ -12,7 +12,6 @@ import {
   TravelerScheduleConfirm,
   TravelerScheduleSelection,
   TravelerTravelArrange,
-  TravelerTravelReview,
   TravelModeLogo,
 } from '@/components/travel/traveler';
 import { TravelerActivityRecommendation } from '@/components/travel/traveler/TravelerActivityRecommendation';
@@ -24,8 +23,7 @@ type UIState =
   | 'traveler-activity-selection'
   | 'traveler-activity-recommendation'
   | 'traveler-travel-schedule-confirm'
-  | 'traveler-travel-schedule-arrange'
-  | 'traveler-travel-review';
+  | 'traveler-travel-schedule-arrange';
 
 type UIAction = { type: 'NEXT' } | { type: 'PREV' };
 
@@ -53,10 +51,8 @@ const transitionMap: { [key in UIState]: { NEXT?: UIState; PREV?: UIState } } =
       PREV: 'traveler-activity-selection',
     },
     'traveler-travel-schedule-arrange': {
-      NEXT: 'traveler-travel-review',
       PREV: 'traveler-travel-schedule-confirm',
     },
-    'traveler-travel-review': { PREV: 'traveler-travel-schedule-arrange' },
   };
 
 const uiReducer = (state: UIState, action: UIAction): UIState => {
@@ -79,8 +75,6 @@ export function TravelerPage() {
         return <TravelerHeaderText text='여행지를 수정하세요 :)' />;
       case 'traveler-travel-schedule-arrange':
         return <TravelerHeaderText text='여행을 정리할게요!' />;
-      case 'traveler-travel-review':
-        return <TravelerHeaderText text='여행은 어땠나요?' />;
       default:
         return <TravelModeLogo />;
     }
@@ -128,16 +122,6 @@ export function TravelerPage() {
         return (
           <TravelerTravelArrange
             onNextPage={() => dispatch({ type: 'NEXT' })}
-          />
-        );
-      case 'traveler-travel-review':
-        return (
-          <TravelerTravelReview
-            when='2024.05.12-2024.05.13'
-            where='부산광역시 (Busan)'
-            schedules={[]}
-            onLikeButtonClick={(day, destination) => {}}
-            onUnlikeButtonClick={(day, destination) => {}}
           />
         );
       default:
