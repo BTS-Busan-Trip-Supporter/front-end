@@ -92,13 +92,7 @@ export interface TourActivity {
   tourSpotData: {
     contentId: string;
     contentTypeId: string;
-    title: string;
-    sigunguCode: string;
   };
-  isNew: boolean;
-  isOrderChanged: boolean;
-  isTourSpotChanged: boolean;
-  isDeleted: boolean;
 }
 
 export interface PostTripScheduleDTO {

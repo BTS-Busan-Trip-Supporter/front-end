@@ -45,26 +45,16 @@ function convertTime(
   }
 }
 
-function transformTourActivityData(
-  selectedPlaces: Location[],
-  regionCode: string,
-) {
+function transformTourActivityData(selectedPlaces: Location[]) {
   return selectedPlaces.map((place) => ({
-    id: Math.floor(Math.random() * Date.now()),
     spotName: place.item.title,
-    dayNumber: 0,
+    dayNumber: 1,
     dayTime: convertTime(place.time),
-    orderIndex: 0,
+    orderIndex: 1,
     tourSpotData: {
       contentId: place.item.contentId,
       contentTypeId: place.item.contentTypeId,
-      title: place.item.title,
-      sigunguCode: regionCode,
     },
-    isNew: true,
-    isOrderChanged: false,
-    isTourSpotChanged: false,
-    isDeleted: false,
   }));
 }
 
@@ -127,17 +117,12 @@ export function TravelAutoPage() {
 
   const parsingSchedule = () => ({
     tourLogData: {
-      id: Math.floor(Math.random() * Date.now()),
       name: searchContent,
       locationName: searchContent,
-      startTime: new Date().toISOString(),
-      endTime: new Date().toISOString(),
+      startTime: new Date().toISOString().slice(0, -5),
+      endTime: new Date().toISOString().slice(0, -5),
     },
-    tourActivityDataList: transformTourActivityData(
-      selectedPlaces,
-      DropBoxMenu.regionType.find((item) => item.type === searchContent)?.id ??
-        '',
-    ),
+    tourActivityDataList: transformTourActivityData(selectedPlaces),
   });
 
   const { mutate: createSchedule } = useCreateTripSchedule(parsingSchedule());

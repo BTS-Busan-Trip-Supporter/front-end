@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { InputField } from '../InputField';
@@ -25,10 +26,10 @@ export function SignUpForm() {
   const { isEmailChecked, handleCheckButton, update } =
     useEmailDuplicationCheck(email);
   const { refetch: sendCode } = useSendEmailCheckingCode(email, false);
-
-  const { mutate: registerMember } = useRegisterMember(email, password, name);
-
+  const { mutate: registerMember, status } = useRegisterMember(email, password, name);
   const { createToast } = useToast();
+
+  const router = useRouter();
 
   useEffect(() => {
     if (email) {
@@ -46,6 +47,13 @@ export function SignUpForm() {
       setIsTimerActive(true);
     }
   }, [isEmailChecked, update]);
+
+  useEffect(() => {
+    if (status === 'success') {
+      createToast('success', '회원가입이 완료되었습니다.');
+      router.replace('/');
+    }
+  }, [status]);
 
   return (
     <styles.container>
