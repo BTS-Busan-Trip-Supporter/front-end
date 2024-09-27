@@ -39,9 +39,11 @@ export function SearchBox({
             : () => {}
         }
       />
-      <button type='button' onClick={onClick}>
-        <img alt='search' src='/search.svg' />
-      </button>
+      {onClick && (
+        <button type='button' onClick={onClick}>
+          <img alt='search' src='/search.svg' />
+        </button>
+      )}
       {dropBoxVisible && (
         <DropBox
           type={dropBoxType ?? 'travelType'}
@@ -64,23 +66,6 @@ const styles = {
     align-items: center;
     justify-content: space-between;
     position: relative;
-
-    &::before {
-      content: '';
-      display: inline-block;
-      width: 0.15rem;
-      height: 100%;
-      background-color: #ededed;
-    }
-
-    &::after {
-      content: '';
-      display: inline-block;
-      width: 1.625rem;
-      height: 100%;
-      background: url('/search-icon.svg') no-repeat center;
-      background-size: 90%;
-    }
 
     button {
       all: unset;
@@ -107,23 +92,6 @@ const styles = {
 
     &::placeholder {
       color: #e2e2e2;
-    }
-
-    &::before {
-      content: '';
-      display: inline-block;
-      width: 0.15rem;
-      height: 100%;
-      background-color: #ededed;
-    }
-
-    &::after {
-      content: '';
-      display: inline-block;
-      width: 1.625rem;
-      height: 100%;
-      background: url('/search-icon.svg') no-repeat center;
-      background-size: 90%;
     }
   `,
 };

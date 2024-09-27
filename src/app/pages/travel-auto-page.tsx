@@ -11,15 +11,14 @@ import {
   TravelComponent,
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
-import type { Times } from '@/features/travel-schedule/travel-schedule.type';
 import { useToast } from '@/features/toast';
 import {
-  useRecommendDayTrip,
-  useCreateTripSchedule,
   DropBoxMenu,
-  ScheduleTimeFromServer,
   type PostDayTripResponseDTO,
+  type ScheduleTimeFromServer,
   type TripItem,
+  useCreateTripSchedule,
+  useRecommendDayTrip,
 } from '@/features/trip';
 import { useIntersectionObserver } from '@/shared';
 
