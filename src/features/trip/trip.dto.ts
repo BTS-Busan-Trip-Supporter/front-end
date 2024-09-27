@@ -85,7 +85,6 @@ export interface PutTripActivityHistoryDTO {
 }
 
 export interface TourActivity {
-  id: number;
   spotName: string;
   dayNumber: number;
   dayTime: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
@@ -104,7 +103,6 @@ export interface TourActivity {
 
 export interface PostTripScheduleDTO {
   tourLogData: {
-    id: number;
     name: string;
     locationName: string;
     startTime: string;

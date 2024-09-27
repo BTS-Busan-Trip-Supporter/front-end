@@ -2,7 +2,14 @@
 
 import axios from 'axios';
 import { useRouter, usePathname } from 'next/navigation';
-import { createContext, useLayoutEffect, useCallback, useState } from 'react';
+import {
+  createContext,
+  useLayoutEffect,
+  useCallback,
+  useState,
+  useMemo,
+  useEffect,
+} from 'react';
 
 import { useToast } from '@/features/toast';
 
@@ -22,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const { createToast } = useToast();
 
-  const login = async (email: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     try {
       const response = await axios.post('/p-travel-log/login', {
         email,
@@ -37,9 +44,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       createToast('error', '로그인에 실패하였습니다.');
     }
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     const token = localStorage.getItem('accessToken');
     try {
       await axios.get('/p-travel-log/logout', {
@@ -54,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       createToast('error', '로그아웃에 실패하였습니다.');
     }
-  };
+  }, []);
 
   const getTokenExpiration = (token: string) => {
     const base64Url = token.split('.')[1];
@@ -99,11 +106,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (timeUntilRefresh > 0) {
         setTimeout(() => {
-          refreshAccessToken();
+          if (!isRefreshing) refreshAccessToken();
         }, timeUntilRefresh);
       }
     },
-    [refreshAccessToken],
+    [refreshAccessToken, isRefreshing],
   );
 
   const checkTokenValidity = useCallback(() => {
@@ -137,17 +144,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!isValid) {
       refreshAccessToken().finally(() => setLoading(false));
     } else {
-      scheduleTokenRefresh(token);
+      scheduleTokenRefresh(token ?? '');
       setLoading(false);
     }
   }, [pathname, refreshAccessToken]);
+
+  useEffect(() => {
+    const requestInterceptor = axios.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error),
+    );
+    return () => {
+      axios.interceptors.request.eject(requestInterceptor);
+    };
+  }, []);
+
+  const authContextValue = useMemo(
+    () => ({
+      login,
+      logout,
+    }),
+    [login, logout],
+  );
 
   if (loading) {
     return null;
   }
 
   return (
-    <AuthContext.Provider value={{ login, logout }}>
+    <AuthContext.Provider value={authContextValue}>
       {children}
     </AuthContext.Provider>
   );

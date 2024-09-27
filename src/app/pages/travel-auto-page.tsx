@@ -19,7 +19,6 @@ import {
   ScheduleTimeFromServer,
   type PostDayTripResponseDTO,
   type TripItem,
-  type TourActivity,
 } from '@/features/trip';
 import { useIntersectionObserver } from '@/shared';
 
@@ -49,13 +48,13 @@ function convertTime(
 function transformTourActivityData(
   selectedPlaces: Location[],
   regionCode: string,
-): TourActivity[] {
-  return selectedPlaces.map((place, index) => ({
+) {
+  return selectedPlaces.map((place) => ({
     id: Math.floor(Math.random() * Date.now()),
     spotName: place.item.title,
     dayNumber: 0,
     dayTime: convertTime(place.time),
-    orderIndex: index,
+    orderIndex: 0,
     tourSpotData: {
       contentId: place.item.contentId,
       contentTypeId: place.item.contentTypeId,
@@ -123,7 +122,7 @@ export function TravelAutoPage() {
   } = useRecommendDayTrip();
 
   useEffect(() => {
-    recommend(parsingItem());
+    if (event !== '') recommend(parsingItem());
   }, [event]);
 
   const parsingSchedule = () => ({
