@@ -4,10 +4,10 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { NavigationBar } from '@/components';
 import {
-  TravelScheduleStoreProvider,
+  AuthProvider,
   TanStackQueryProvider,
   ToastProvider,
-  AuthProvider,
+  TravelScheduleStoreProvider,
 } from '@/providers';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -25,7 +25,6 @@ export default function RootLayout({
   return (
     <html lang='ko-kr'>
       <head>
-        <meta name='theme-color' content='#605EFF' />
         <meta
           name='viewport'
           content='width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no'

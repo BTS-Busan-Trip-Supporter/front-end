@@ -87,7 +87,7 @@ const styles = {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 1.5rem 0;
+    padding: 0.75rem 0;
     position: fixed;
     bottom: 0;
     background-color: white;
@@ -102,7 +102,7 @@ const styles = {
     color: ${(props) => (props.$active ? '#605EFF' : '#b0afbc')};
 
     font-family: 'Noto Sans KR';
-    font-size: 0.75rem;
+    font-size: 0.5rem;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -116,7 +116,6 @@ const styles = {
   `,
 
   icon: styled.img`
-    width: 1.75rem;
-    object-fit: content;
+    width: 1.125rem;
   `,
 };
