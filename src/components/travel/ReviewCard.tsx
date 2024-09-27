@@ -6,33 +6,68 @@ import { useState } from 'react';
 export function ReviewCard({
   name,
   date,
-  prevReview,
+  review,
+  onReviewChange,
+  recommend,
+  onRecommendChange,
 }: {
   name: string;
   date: string;
-  prevReview?: string | null;
+  review: string | null;
+  onReviewChange: (newReview: string | null) => void;
+  recommend: boolean | null;
+  onRecommendChange: (newRecommend: boolean | null) => void;
 }) {
-  const [review, setReview] = useState<string | null>(prevReview ?? null);
-
   return (
     <styles.wrapper>
       <styles.container>
         <div>
           <p className='name'>{name}</p>
-          <Likes />
+          <Likes recommend={recommend} onRecommendChange={onRecommendChange} />
         </div>
         <p className='dateTime'>{date}</p>
-        <ReviewInput review={review} setReview={setReview} />
+        <ReviewInput
+          review={review}
+          setReview={(newReview) => {
+            onReviewChange(newReview);
+          }}
+        />
       </styles.container>
     </styles.wrapper>
   );
 }
 
-function Likes() {
+function Likes({
+  recommend,
+  onRecommendChange,
+}: {
+  recommend: boolean | null;
+  onRecommendChange: (newRecommend: boolean | null) => void;
+}) {
   return (
     <div className='likes'>
-      <styles.button src='/button/like.png' alt='like-button' />
-      <styles.button src='/button/unlike.png' alt='like-button' />
+      <styles.likeButton
+        $active={recommend === true}
+        style={{ justifyContent: 'center' }}
+        onClick={() => {
+          onRecommendChange(
+            recommend == null || recommend === false ? true : null,
+          );
+        }}
+      >
+        <img src='/button/like.png' alt='like-button' />
+      </styles.likeButton>
+      <styles.likeButton
+        $active={recommend === false}
+        style={{ justifyContent: 'center' }}
+        onClick={() => {
+          onRecommendChange(
+            recommend == null || recommend === true ? false : null,
+          );
+        }}
+      >
+        <img src='/button/like.png' alt='like-button' data-unlike />
+      </styles.likeButton>
     </div>
   );
 }
@@ -100,10 +135,15 @@ function ReviewInput({
   );
 }
 
+interface LikeButtonProp {
+  $active: boolean;
+}
+
 const styles = {
   wrapper: styled.div`
     width: 100%;
     padding: 0.5rem;
+    scroll-snap-align: start;
   `,
   container: styled.div`
     width: 100%;
@@ -154,7 +194,7 @@ const styles = {
 
       color: #7d7d7d;
       font-family: 'Noto Sans KR';
-      font-size: 0.75rem;
+      font-size: 0.875rem;
       font-style: normal;
       font-weight: 400;
       line-height: normal;
@@ -194,5 +234,30 @@ const styles = {
     width: 1.375rem;
     height: 1.375rem;
     object-fit: contain;
+  `,
+
+  likeButton: styled.div<LikeButtonProp>`
+    width: 1.375rem;
+    height: 1.375rem;
+    background-color: ${({ $active }) =>
+      $active === true ? '#625ee3' : '#fff'};
+    border-radius: 50%;
+    border: ${({ $active }) =>
+      $active === true ? 'none' : '0.5px solid #aaa'};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 0.6875rem;
+      height: 0.74481rem;
+      object-fit: content;
+      filter: ${({ $active }) =>
+        $active === true ? 'none' : 'grayscale(100%) brightness(0.5)'};
+    }
+
+    img[data-unlike] {
+      transform: rotate(180deg);
+    }
   `,
 };

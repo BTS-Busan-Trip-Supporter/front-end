@@ -110,10 +110,7 @@ function DestinationItem({
         $selected={destination.selected === 'like'}
         onClick={() => onLikeButtonClick(destination)}
       >
-        <img
-          src='https://s3-alpha-sig.figma.com/img/fc94/f84d/00ab7214741a0b77e2d326ec543caed5?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=W2v204pE7-sCMbigzy-bjnH8wOsy97lSTo9KTIVYCh6lOSXgwKbRTpBDghyxESV5d9whWvksFggzi0dPyYHGkJ6CczRHTNrgwzXWg-RleSOfLrFd2bgjEzhhjYYfNZzjjaHOb76YhSzzwNIwrwZH-WwE9nZH3MKvxNLDAQjIdag2dvLrMUFENTXygqfGymvXIdoJ79ZB-EL2Qu1Mfots58mUTYfe98EMMpR34eE75av7usqw9~1ngl8mKnudTVoVYX3QJ5LabbN7iFUGGADII2wJPTL9xgEphSnfjGYWI5m25ZmQjGjvdSFT1aZd7xC70KoRQ0kiZNBAE4umU0eHJA__'
-          alt='like'
-        />
+        <img src='/button/like.png' alt='like' />
       </styles.likeButton>
     );
   }
@@ -124,11 +121,7 @@ function DestinationItem({
         $selected={destination.selected === 'unlike'}
         onClick={() => onUnlikeButtonClick(destination)}
       >
-        <img
-          data-unlike
-          src='https://s3-alpha-sig.figma.com/img/fc94/f84d/00ab7214741a0b77e2d326ec543caed5?Expires=1724630400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=W2v204pE7-sCMbigzy-bjnH8wOsy97lSTo9KTIVYCh6lOSXgwKbRTpBDghyxESV5d9whWvksFggzi0dPyYHGkJ6CczRHTNrgwzXWg-RleSOfLrFd2bgjEzhhjYYfNZzjjaHOb76YhSzzwNIwrwZH-WwE9nZH3MKvxNLDAQjIdag2dvLrMUFENTXygqfGymvXIdoJ79ZB-EL2Qu1Mfots58mUTYfe98EMMpR34eE75av7usqw9~1ngl8mKnudTVoVYX3QJ5LabbN7iFUGGADII2wJPTL9xgEphSnfjGYWI5m25ZmQjGjvdSFT1aZd7xC70KoRQ0kiZNBAE4umU0eHJA__'
-          alt='unlike'
-        />
+        <img data-unlike src='/button/like.png' alt='unlike' />
       </styles.likeButton>
     );
   }

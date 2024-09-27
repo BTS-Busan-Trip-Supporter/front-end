@@ -6,3 +6,5 @@ export * from './travel-page';
 export * from './profile-edit-page';
 export * from './sign-up-page';
 export * from './email-login-page';
+export * from './record-list-page';
+export * from './record-review-page';

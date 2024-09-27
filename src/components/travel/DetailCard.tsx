@@ -6,12 +6,12 @@ import { useEffect, useState } from 'react';
 import { CustomButton } from '../CustomButton';
 import { TimeCard } from '../TimeCard';
 
+import { useTourSpotData } from '@/features/tour-spot';
 import { Times } from '@/features/travel-schedule/travel-schedule.type';
+import { TripItem } from '@/features/trip';
 
 interface Location {
-  id: number;
-  imageUrl: string;
-  name: string;
+  item: TripItem;
   selected?: boolean;
   time?: Times;
 }
@@ -29,33 +29,53 @@ export function DetailCard({
 }) {
   const [time, setTime] = useState<Times>(place.time ?? '오전');
 
-  const isSelected = selectedPlaces.some((p) => p.id === place.id);
+  const { data: tourSpot } = useTourSpotData(
+    place.item.contentId,
+    place.item.contentTypeId,
+  );
+
+  const isSelected = selectedPlaces.some(
+    (p) => p.item.contentId === place.item.contentId,
+  );
 
   useEffect(() => {
     if (isSelected) {
-      const placeIndex = selectedPlaces.findIndex((p) => p.id === place.id);
+      const placeIndex = selectedPlaces.findIndex(
+        (p) => p.item.contentId === place.item.contentId,
+      );
       setTime(selectedPlaces[placeIndex].time ?? '오전');
     }
   }, [isSelected]);
 
   const savePlace = () => {
     onSelect((prevSelectedPlaces) => {
-      const placeIndex = prevSelectedPlaces.findIndex((p) => p.id === place.id);
-      if (placeIndex !== -1) {
-        const updatedPlaces = [...prevSelectedPlaces];
-        const updatedPlace = {
-          ...updatedPlaces[placeIndex],
-          time,
-        };
-        updatedPlaces[placeIndex] = updatedPlace;
-        return updatedPlaces;
+      const existingPlaceForTime = prevSelectedPlaces.find(
+        (p) => p.time === time,
+      );
+
+      if (existingPlaceForTime) {
+        if (existingPlaceForTime.item.contentId === place.item.contentId) {
+          const updatedPlaces = [...prevSelectedPlaces];
+          const placeIndex = prevSelectedPlaces.findIndex(
+            (p) => p.item.contentId === place.item.contentId,
+          );
+          const updatedPlace = {
+            ...updatedPlaces[placeIndex],
+            time,
+          };
+          updatedPlaces[placeIndex] = updatedPlace;
+          return updatedPlaces;
+        }
+
+        return prevSelectedPlaces.map((p) =>
+          p.time === time ? { ...p, item: place.item, time } : p,
+        );
       }
+
       return [
         ...prevSelectedPlaces,
         {
-          id: place.id,
-          imageUrl: place.imageUrl,
-          name: place.name,
+          item: place.item,
           selected: true,
           time,
         },
@@ -66,7 +86,9 @@ export function DetailCard({
 
   const removePlace = () => {
     onSelect((prevSelectedPlaces) =>
-      prevSelectedPlaces.filter((p) => p.id !== place.id),
+      prevSelectedPlaces.filter(
+        (p) => p.item.contentId !== place.item.contentId,
+      ),
     );
     setIsDetailVisible(false);
   };
@@ -75,7 +97,7 @@ export function DetailCard({
     <styles.wrapper>
       <styles.placeCon>
         <div>
-          <p>{place.name}</p>
+          <p>{tourSpot?.data.title}</p>
           <styles.xIcon
             className='x'
             src='/x.svg'
@@ -85,7 +107,10 @@ export function DetailCard({
             }}
           />
         </div>
-        <styles.placeImg src={place.imageUrl} alt='place-image' />
+        <styles.addr>
+          {tourSpot?.data.addr1} {tourSpot?.data.addr2}
+        </styles.addr>
+        <styles.placeImg src={tourSpot?.data.firstImage} alt='place-image' />
       </styles.placeCon>
       <styles.timeCardCon>
         <TimeCard
@@ -148,7 +173,7 @@ const styles = {
     flex-direction: column;
     align-items: center;
     padding: 1rem;
-    gap: 0.5rem;
+    gap: 0.3rem;
 
     div {
       width: 100%;
@@ -192,5 +217,19 @@ const styles = {
     width: 0.9375rem;
     height: 0.9375rem;
     object-fit: cover;
+  `,
+
+  addr: styled.span`
+    width: 100%;
+    color: #7d7d7d;
+    font-family: 'Noto Sans KR';
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   `,
 };

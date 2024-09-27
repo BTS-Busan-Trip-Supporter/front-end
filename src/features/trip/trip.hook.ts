@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   deleteTripSchedule,
@@ -16,6 +16,7 @@ import {
   PutTripActivityHistoryDTO,
   PutTripActivityRecommendDTO,
   PutTripScheduleRequestDTO,
+  PostDayTripResponseDTO,
 } from './trip.dto';
 
 export const useTripSchedules = () =>
@@ -43,19 +44,35 @@ export const useRemoveTripSchedule = (logId: number) =>
     mutationFn: () => deleteTripSchedule(logId),
   });
 
-export const useUpdateActivityRecommend = (body: PutTripActivityRecommendDTO) =>
-  useMutation({
-    mutationFn: () => putTripActivityRecommend(body),
+export const useUpdateActivityRecommend = (logId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: PutTripActivityRecommendDTO) =>
+      putTripActivityRecommend(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [`/trips/schedule/${logId}`],
+      });
+    },
   });
+};
 
-export const useUpdateActivityHistory = (body: PutTripActivityHistoryDTO) =>
-  useMutation({
-    mutationFn: () => putTripActivityHistory(body),
+export const useUpdateActivityHistory = (logId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: PutTripActivityHistoryDTO) =>
+      putTripActivityHistory(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [`/trips/schedule/${logId}`],
+      });
+    },
   });
+};
 
-export const useRecommendDayTrip = (body: PostDayTripRequestDTO) =>
-  useMutation({
-    mutationFn: () => postDayTrip(body),
+export const useRecommendDayTrip = () =>
+  useMutation<PostDayTripResponseDTO, Error, PostDayTripRequestDTO>({
+    mutationFn: (body) => postDayTrip(body),
   });
 
 export const useCreateTripSchedule = (body: PostTripScheduleDTO) =>

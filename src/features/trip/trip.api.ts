@@ -8,10 +8,13 @@ import type {
   PostDayTripRequestDTO,
   PostDayTripResponseDTO,
   PostTripScheduleDTO,
+  GetTripSchedulesResponseDTO,
 } from './trip.dto';
 
 export const getTripSchedules = () =>
-  axios.get('/p-travel-log/trips/schedule').then((res) => res.data);
+  axios
+    .get<GetTripSchedulesResponseDTO>('/p-travel-log/trips/schedule')
+    .then((res) => res.data);
 
 export const getTripSchedule = (logId: number) =>
   axios

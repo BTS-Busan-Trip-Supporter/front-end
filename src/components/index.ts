@@ -10,3 +10,5 @@ export * from './LoadingCard';
 export * from './RecentSearch';
 export * from './DropBox';
 export * from './InputField';
+export * from './TravelLog';
+export * from './TravelList';
