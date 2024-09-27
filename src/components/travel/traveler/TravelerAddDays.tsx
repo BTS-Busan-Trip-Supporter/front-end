@@ -6,8 +6,7 @@ import { useState } from 'react';
 import { CustomButton } from '@/components';
 import { TravelerLocationConfirm } from '@/components/travel/traveler/TravelerLocationConfirm';
 import { TravelerLocationSearch } from '@/components/travel/traveler/TravelerLocationSearch';
-import type { GetTourSpotsDTO } from '@/features/tour-spot';
-import { getTourSpots } from '@/features/tour-spot';
+import { getTourSpots, type GetTourSpotsDTO } from '@/features/tour-spot';
 import { TIME_STRING } from '@/features/trip';
 import { useTripStore } from '@/features/trip/trip.slice';
 

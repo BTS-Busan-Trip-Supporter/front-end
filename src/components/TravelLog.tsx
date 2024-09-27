@@ -7,9 +7,9 @@ import { useEffect, useState } from 'react';
 import { ReviewCard } from './travel/ReviewCard';
 
 import {
-  useTripSchedule,
   type TourActivityDTO,
   translateDayTime,
+  useTripSchedule,
   useUpdateActivityHistory,
   useUpdateActivityRecommend,
 } from '@/features/trip';
@@ -88,8 +88,13 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
             />
             <h3>
               {tripSchedule?.data.tourLogInfo.name},{' '}
-              {convertDate(tripSchedule?.data.tourLogInfo.startTime ?? '')} -{' '}
-              {convertDate(tripSchedule?.data.tourLogInfo.endTime ?? '')}
+              {convertDate(
+                tripSchedule?.data.tourLogInfo.startTime ?? new Date(),
+              )}{' '}
+              -{' '}
+              {convertDate(
+                tripSchedule?.data.tourLogInfo.endTime ?? new Date(),
+              )}
             </h3>
           </styles.header>
           <styles.logs>
@@ -105,11 +110,13 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
                     <p>{dayNumber}일차</p>
                     <span className='dates'>
                       {getMonthAndDate(
-                        tripSchedule?.data.tourLogInfo.startTime ?? '',
+                        tripSchedule?.data.tourLogInfo.startTime.toISOString() ??
+                          '',
                         dayNumber,
                       )}
                       {`(${getDayOfWeek(
-                        tripSchedule?.data.tourLogInfo.startTime ?? '',
+                        tripSchedule?.data.tourLogInfo.startTime.toISOString() ??
+                          '',
                         dayNumber,
                       )})`}
                     </span>
@@ -355,7 +362,6 @@ const styles = {
   pin: styled.img`
     width: 0.3125rem;
     height: 0.875rem;
-    object-fit: content;
     transform: translateY(10%);
   `,
 
@@ -372,7 +378,6 @@ const styles = {
     img {
       width: 0.6875rem;
       height: 0.74481rem;
-      object-fit: content;
       filter: ${({ $active }) =>
         $active ? 'none' : 'grayscale(100%) brightness(0.5)'};
     }
@@ -401,7 +406,6 @@ const styles = {
   prevButton: styled.img`
     width: 0.7rem;
     height: 0.7rem;
-    object-fit: content;
   `,
 
   reviews: styled.div`

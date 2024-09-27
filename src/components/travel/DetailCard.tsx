@@ -7,8 +7,7 @@ import { CustomButton } from '../CustomButton';
 import { TimeCard } from '../TimeCard';
 
 import { useTourSpotData } from '@/features/tour-spot';
-import { Times } from '@/features/travel-schedule/travel-schedule.type';
-import { TripItem } from '@/features/trip';
+import type { TripItem } from '@/features/trip';
 
 type Times = '오전' | '오후' | '저녁' | '밤' | '기본';
 
@@ -209,7 +208,6 @@ const styles = {
 
   placeImg: styled.img`
     width: 100%;
-    object-fit: content;
     height: 16rem;
     border-radius: 8px;
     margin-top: 0.8rem;

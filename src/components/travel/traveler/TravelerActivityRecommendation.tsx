@@ -3,14 +3,13 @@ import { useState } from 'react';
 
 import { CustomButton, LoadingCard } from '@/components';
 import { DetailCard, Loading } from '@/components/travel';
+import type { TripItem } from '@/features/trip';
 import { useTripStore } from '@/features/trip/trip.slice';
 
 type Times = '오전' | '오후' | '저녁' | '밤' | '기본';
 
 interface Location {
-  id: string;
-  imageUrl: string;
-  name: string;
+  item: TripItem;
   selected?: boolean;
   time?: Times;
 }
@@ -82,15 +81,15 @@ export function TravelerActivityRecommendation({
               dayTime: convertTimeString(place.time ?? '오전'),
               orderIndex: 0,
               dayNumber: 0,
-              spotName: place.name,
+              spotName: place.item.title,
               tourSpotDto: {
-                id: place.id,
+                id: place.item.contentId,
                 sigunguCode: String(
                   types.regionType.find(
                     (region) => region.type === tourInfo.locationName,
                   )?.id ?? 1,
                 ),
-                title: place.name,
+                title: place.item.title,
                 typeId: String(
                   types.travelType.find(
                     (travel) => travel.type === recommendContent,
@@ -135,9 +134,12 @@ function ResultWrapper({
     return (
       <Results
         locations={recommendedItems.map((item) => ({
-          id: item.contentId,
-          imageUrl: item.imageUrl,
-          name: item.title,
+          item: {
+            title: item.title,
+            contentId: item.contentId,
+            contentTypeId: item.contentTypeId,
+            imageUrl: item.imageUrl,
+          },
         }))}
         onCardClick={handleCardClick}
         selectedPlaces={selectedPlaces}
@@ -147,7 +149,11 @@ function ResultWrapper({
 
   return (
     <DetailCard
-      place={selectedPlace ?? { id: '1', imageUrl: '', name: '' }}
+      place={
+        selectedPlace ?? {
+          item: { contentId: '1', imageUrl: '', title: '', contentTypeId: '1' },
+        }
+      }
       selectedPlaces={selectedPlaces}
       onSelect={setSelectedPlaces}
       setIsDetailVisible={setIsDetailVisible}
@@ -171,10 +177,13 @@ function Results({
         <styles.cardList>
           {locations.map((location) => (
             <LoadingCard
-              key={location.id}
-              imageUrl={location.imageUrl}
+              key={location.item.contentId}
+              title={location.item.title}
+              imageUrl={location.item.imageUrl}
               onClick={() => onCardClick(location)}
-              isSelected={selectedPlaces.some((p) => p.id === location.id)}
+              isSelected={selectedPlaces.some(
+                (p) => p.item.contentId === location.item.contentId,
+              )}
             />
           ))}
         </styles.cardList>
