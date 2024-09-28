@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import type {
   GetTripScheduleResponseDTO,
-  PutTripActivityHistoryDTO,
-  PutTripActivityRecommendDTO,
-  PutTripScheduleRequestDTO,
+  GetTripSchedulesResponseDTO,
   PostDayTripRequestDTO,
   PostDayTripResponseDTO,
   PostTripScheduleDTO,
-  GetTripSchedulesResponseDTO,
+  PutTripActivityHistoryDTO,
+  PutTripActivityRecommendDTO,
+  PutTripScheduleRequestDTO,
 } from './trip.dto';
 
 export const getTripSchedules = () =>
@@ -48,4 +48,12 @@ export const postTripSchedule = (body: PostTripScheduleDTO) =>
 export const postDayTrip = (body: PostDayTripRequestDTO) =>
   axios
     .post<PostDayTripResponseDTO>(`/p-travel-log/trips/day`, body)
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .then((res) => ({
+      status: res.status,
+      data: res.data.map((location) =>
+        location.imageUrl === ''
+          ? { ...location, imageUrl: '/no-image.svg' }
+          : location,
+      ),
+    }));

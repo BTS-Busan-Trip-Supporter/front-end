@@ -11,6 +11,10 @@ import type { TripItem } from '@/features/trip';
 
 type Times = '오전' | '오후' | '저녁' | '밤' | '기본';
 
+interface NoImage {
+  $isNoImage: boolean;
+}
+
 interface Location {
   item: TripItem;
   selected?: boolean;
@@ -111,7 +115,11 @@ export function DetailCard({
         <styles.addr>
           {tourSpot?.data.addr1} {tourSpot?.data.addr2}
         </styles.addr>
-        <styles.placeImg src={tourSpot?.data.firstImage} alt='place-image' />
+        <styles.placeImg
+          $isNoImage={tourSpot?.data.firstImage === '/no-image.svg'}
+          src={tourSpot?.data.firstImage}
+          alt='place-image'
+        />
       </styles.placeCon>
       <styles.timeCardCon>
         <TimeCard
@@ -206,11 +214,12 @@ const styles = {
     gap: 1rem;
   `,
 
-  placeImg: styled.img`
+  placeImg: styled.img<NoImage>`
     width: 100%;
     height: 16rem;
     border-radius: 8px;
     margin-top: 0.8rem;
+    scale: ${(props) => (props.$isNoImage ? 0.5 : 1)};
   `,
 
   xIcon: styled.img`
