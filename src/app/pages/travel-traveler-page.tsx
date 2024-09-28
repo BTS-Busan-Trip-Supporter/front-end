@@ -95,6 +95,9 @@ export function TravelerPage() {
       case 'traveler-schedule-selection':
         return (
           <TravelerScheduleSelection
+            onPrevPage={() => {
+              router.replace('/');
+            }}
             onNextPage={() => {
               dispatch({ type: 'NEXT' });
             }}

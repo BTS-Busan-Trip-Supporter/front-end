@@ -8,8 +8,10 @@ import { Calendar } from '@/components/Calendar';
 import { useTripStore } from '@/features/trip/trip.slice';
 
 export function TravelerScheduleSelection({
+  onPrevPage,
   onNextPage,
 }: {
+  onPrevPage: () => void;
   onNextPage: ({ start, end }: { start?: Date; end?: Date }) => void;
 }) {
   const { setDates: setTourInfoDates } = useTripStore((state) => state);
@@ -17,6 +19,13 @@ export function TravelerScheduleSelection({
 
   return (
     <styles.container>
+      <styles.header>
+        <styles.prevButton
+          src='/chevron-left.svg'
+          alt='chevron-left'
+          onClick={onPrevPage}
+        />
+      </styles.header>
       <h1>언제 가시나요?</h1>
       <Calendar selectedMode='multiple' onSelect={setDates} />
       <styles.CustomButton
@@ -57,5 +66,18 @@ const styles = {
 
   CustomButton: styled(CustomButton)`
     margin: 2rem;
+  `,
+
+  header: styled.div`
+    display: flex;
+    position: fixed;
+    align-items: center;
+    gap: 0.5rem;
+    transform: translateY(50%);
+  `,
+
+  prevButton: styled.img`
+    width: 1rem;
+    height: 1rem;
   `,
 };
