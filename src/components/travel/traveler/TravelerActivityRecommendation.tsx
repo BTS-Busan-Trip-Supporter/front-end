@@ -72,7 +72,7 @@ export function TravelerActivityRecommendation({
         setIsDetailVisible={setIsDetailVisible}
         handleCardClick={handleCardClick}
       />
-      {!setIsDetailVisible && (
+      {!isRecommendLoading && !isDetailVisible && (
         <CustomButton
           color='#FF75C8'
           text='여행 완성'
