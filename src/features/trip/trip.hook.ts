@@ -10,7 +10,7 @@ import {
   putTripActivityRecommend,
   putTripSchedule,
 } from './trip.api';
-import {
+import type {
   PostDayTripRequestDTO,
   PostTripScheduleDTO,
   PutTripActivityHistoryDTO,

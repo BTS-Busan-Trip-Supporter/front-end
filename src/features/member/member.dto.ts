@@ -1,4 +1,4 @@
-import { User } from './member.type';
+import type { User } from './member.type';
 
 export interface GetDuplicateEmailDTO {
   status: string;

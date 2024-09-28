@@ -1,181 +1,141 @@
 'use client';
 
-import { useEffect, useReducer, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useReducer } from 'react';
 
 import { TravelComponent } from '@/components';
 import { ChoiceList } from '@/components/travel';
 import {
-  TravelModeLogo,
   TravelerActivitySelection,
   TravelerAddDays,
   TravelerHeaderText,
-  TravelerMain,
   TravelerScheduleConfirm,
-  TravelerTimeSelection,
+  TravelerScheduleSelection,
   TravelerTravelArrange,
-  TravelerTravelReview,
 } from '@/components/travel/traveler';
-import { useTravelScheduleStore } from '@/providers';
+import { TravelerActivityRecommendation } from '@/components/travel/traveler/TravelerActivityRecommendation';
+import { useTripStore } from '@/features/trip/trip.slice';
 
 type UIState =
-  | 'traveler-main'
+  | 'traveler-schedule-selection'
   | 'traveler-add-days'
-  | 'traveler-time-selection'
   | 'traveler-activity-selection'
+  | 'traveler-activity-recommendation'
   | 'traveler-travel-schedule-confirm'
-  | 'traveler-travel-schedule-arrange'
-  | 'traveler-travel-review';
+  | 'traveler-travel-schedule-arrange';
 
-type UIAction = { type: 'NEXT' } | { type: 'PREV' };
+type UIAction =
+  | { type: 'NEXT'; payload?: { nextState: UIState } }
+  | { type: 'PREV' };
 
 const transitionMap: { [key in UIState]: { NEXT?: UIState; PREV?: UIState } } =
   {
-    'traveler-main': { NEXT: 'traveler-add-days' },
-    'traveler-add-days': {
-      NEXT: 'traveler-time-selection',
-      PREV: 'traveler-main',
+    'traveler-schedule-selection': {
+      NEXT: 'traveler-add-days',
     },
-    'traveler-time-selection': {
+    'traveler-add-days': {
       NEXT: 'traveler-activity-selection',
-      PREV: 'traveler-add-days',
+      PREV: 'traveler-schedule-selection',
     },
     'traveler-activity-selection': {
+      NEXT: 'traveler-activity-recommendation',
+      PREV: 'traveler-add-days',
+    },
+    'traveler-activity-recommendation': {
       NEXT: 'traveler-travel-schedule-confirm',
-      PREV: 'traveler-time-selection',
+      PREV: 'traveler-activity-selection',
     },
     'traveler-travel-schedule-confirm': {
       NEXT: 'traveler-travel-schedule-arrange',
       PREV: 'traveler-activity-selection',
     },
     'traveler-travel-schedule-arrange': {
-      NEXT: 'traveler-travel-review',
       PREV: 'traveler-travel-schedule-confirm',
     },
-    'traveler-travel-review': { PREV: 'traveler-travel-schedule-arrange' },
   };
 
 const uiReducer = (state: UIState, action: UIAction): UIState => {
   const nextState = transitionMap[state][action.type];
+  if (action.type === 'NEXT' && action.payload) return action.payload.nextState;
   return nextState ?? state;
 };
 
 export function TravelerPage() {
-  const schedules = useTravelScheduleStore((state) => state.schedules);
-  const addDaySchedule = useTravelScheduleStore(
-    (state) => state.addDaySchedule,
-  );
-  const addDestination = useTravelScheduleStore(
-    (state) => state.addDestination,
-  );
-  const removeDestination = useTravelScheduleStore(
-    (state) => state.removeDestination,
-  );
-  const updateDestination = useTravelScheduleStore(
-    (state) => state.updateDestination,
+  const { tourInfo, isAllTravelSchedulesFilled, setLocation } = useTripStore();
+
+  useEffect(() => {
+    const savedContent = sessionStorage.getItem('searchContent');
+    if (savedContent) {
+      setLocation(savedContent);
+      sessionStorage.removeItem('searchContent');
+    }
+  }, []);
+
+  const [uiState, dispatch] = useReducer(
+    uiReducer,
+    'traveler-schedule-selection',
   );
 
-  const [selectedDay, setSelectedDay] = useState<number>();
-  const [, setSelectedTimeRange] = useState<Set<number>>();
-
-  const [uiState, dispatch] = useReducer(uiReducer, 'traveler-main');
+  const router = useRouter();
 
   const backgroundNode = () => {
     switch (uiState) {
-      case 'traveler-main':
-        return <TravelModeLogo />;
-      case 'traveler-add-days':
-      case 'traveler-time-selection':
       case 'traveler-activity-selection':
-        return <ChoiceList choiceList={{ where: '부산광역시 (Busan)' }} />;
       case 'traveler-travel-schedule-confirm':
         return <TravelerHeaderText text='여행지를 수정하세요 :)' />;
       case 'traveler-travel-schedule-arrange':
         return <TravelerHeaderText text='여행을 정리할게요!' />;
-      case 'traveler-travel-review':
-        return <TravelerHeaderText text='여행은 어땠나요?' />;
       default:
-        return <TravelModeLogo />;
+        return <ChoiceList choiceList={{ where: tourInfo.locationName }} />;
     }
   };
 
   const childNode = () => {
     switch (uiState) {
-      case 'traveler-main':
-        return <TravelerMain onClick={() => dispatch({ type: 'NEXT' })} />;
-      case 'traveler-add-days':
+      case 'traveler-schedule-selection':
         return (
-          <TravelerAddDays
-            schedules={schedules}
-            onAddDaySchedule={addDaySchedule}
-            onChangeNextUI={(day) => {
-              setSelectedDay(day);
+          <TravelerScheduleSelection
+            onNextPage={() => {
               dispatch({ type: 'NEXT' });
             }}
           />
         );
-      case 'traveler-time-selection':
+      case 'traveler-add-days':
         return (
-          <TravelerTimeSelection
-            day={selectedDay ?? 1}
-            onChangeNextUI={(range) => {
-              setSelectedTimeRange(range);
-              dispatch({ type: 'NEXT' });
+          <TravelerAddDays
+            onNextPage={() => {
+              dispatch({
+                type: 'NEXT',
+                payload: isAllTravelSchedulesFilled()
+                  ? { nextState: 'traveler-travel-schedule-confirm' }
+                  : undefined,
+              });
             }}
           />
         );
       case 'traveler-activity-selection':
         return (
           <TravelerActivitySelection
-            onClick={() => dispatch({ type: 'NEXT' })}
+            onNextPage={() => dispatch({ type: 'NEXT' })}
+          />
+        );
+      case 'traveler-activity-recommendation':
+        return (
+          <TravelerActivityRecommendation
+            onNextPage={() => dispatch({ type: 'NEXT' })}
           />
         );
       case 'traveler-travel-schedule-confirm':
         return (
           <TravelerScheduleConfirm
-            where='부산광역시 (Busan)'
-            schedules={schedules}
-            onRemoveDestination={(day, destination) =>
-              removeDestination({ day, destination })
-            }
-            onAddDestination={() => {}}
-            onConfirm={() => dispatch({ type: 'NEXT' })}
+            onNextPage={() => dispatch({ type: 'NEXT' })}
           />
         );
       case 'traveler-travel-schedule-arrange':
         return (
           <TravelerTravelArrange
-            where='부산광역시 (Busan)'
-            schedules={schedules}
-            onRecord={() => dispatch({ type: 'NEXT' })}
-          />
-        );
-      case 'traveler-travel-review':
-        return (
-          <TravelerTravelReview
-            when='2024.05.12-2024.05.13'
-            where='부산광역시 (Busan)'
-            schedules={schedules}
-            onLikeButtonClick={(day, destination) => {
-              updateDestination({
-                day,
-                target: destination,
-                updateValue: {
-                  ...destination,
-                  selected:
-                    destination.selected === 'like' ? undefined : 'like',
-                },
-              });
-            }}
-            onUnlikeButtonClick={(day, destination) => {
-              updateDestination({
-                day,
-                target: destination,
-                updateValue: {
-                  ...destination,
-                  selected:
-                    destination.selected === 'unlike' ? undefined : 'unlike',
-                },
-              });
+            onNextPage={() => {
+              router.replace('/');
             }}
           />
         );
@@ -184,53 +144,12 @@ export function TravelerPage() {
     }
   };
 
-  const type = (): 'traveler' | 'edit' => {
-    switch (uiState) {
-      case 'traveler-main':
-      case 'traveler-add-days':
-      case 'traveler-time-selection':
-      case 'traveler-activity-selection':
-        return 'traveler';
-      default:
-        return 'edit';
-    }
-  };
-
-  useEffect(() => {
-    if (uiState === 'traveler-add-days') {
-      addDaySchedule();
-      addDaySchedule();
-    }
-    if (uiState === 'traveler-travel-schedule-confirm') {
-      addDestination({
-        day: 1,
-        destination: {
-          id: 'test',
-          name: 'test',
-          endDate: new Date(),
-          startDate: new Date(),
-          timeToDestination: 10,
-        },
-      });
-      addDestination({
-        day: 2,
-        destination: {
-          id: 'test',
-          name: 'test',
-          endDate: new Date(),
-          startDate: new Date(),
-          timeToDestination: 10,
-        },
-      });
-    }
-  }, [addDaySchedule, addDestination, uiState]);
-
   return (
     <TravelComponent
       contents={{
         backgroundNode: backgroundNode(),
         childNode: childNode(),
-        type: type(),
+        type: 'edit',
       }}
     />
   );

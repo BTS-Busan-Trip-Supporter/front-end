@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 import {
-  type GetSendEmailCodeDTO,
   type GetDuplicateEmailDTO,
+  type GetSendEmailCodeDTO,
+  type GetUserDataDTO,
   type PostCheckCodeDTO,
   type PostRegisterDTO,
-  type GetUserDataDTO,
 } from './member.dto';
 
 export const getDuplicateCheck = (email: string) =>

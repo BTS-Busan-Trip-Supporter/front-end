@@ -56,16 +56,6 @@ export default [
       'import/no-default-export': 'error',
       '@typescript-eslint/no-floating-promises': 'off',
 
-      'max-lines-per-function': [
-        'error',
-        {
-          max: 20,
-          skipBlankLines: true,
-          skipComments: true,
-          IIFEs: true,
-        },
-      ],
-
       'react/jsx-max-depth': ['error', { max: 3 }],
 
       'import/order': [
@@ -108,6 +98,8 @@ export default [
 
       'no-return-await': 'off',
       '@typescript-eslint/return-await': ['error', 'in-try-catch'],
+
+      '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
   {

@@ -6,17 +6,19 @@ import { useState } from 'react';
 import { DropBox } from './DropBox';
 
 export function SearchBox({
+  onClick,
   setContent,
   dropBoxType,
 }: {
-  setContent: (value: string) => void;
+  onClick?: () => void;
+  setContent?: (value: string) => void;
   dropBoxType?: 'travelType' | 'regionType';
 }) {
   const [value, setValue] = useState<string | null>(null);
   const [dropBoxVisible, setDropBoxVisible] = useState(false);
 
   const handleChange = (content: string) => {
-    setContent(content);
+    if (setContent) setContent(content);
     setValue(content);
   };
 
@@ -37,6 +39,11 @@ export function SearchBox({
             : () => {}
         }
       />
+      {onClick && (
+        <button type='button' onClick={onClick}>
+          <img alt='search' src='/search.svg' />
+        </button>
+      )}
       {dropBoxVisible && (
         <DropBox
           type={dropBoxType ?? 'travelType'}
@@ -60,21 +67,9 @@ const styles = {
     justify-content: space-between;
     position: relative;
 
-    &::before {
-      content: '';
-      display: inline-block;
-      width: 0.15rem;
-      height: 100%;
-      background-color: #ededed;
-    }
-
-    &::after {
-      content: '';
-      display: inline-block;
-      width: 1.625rem;
-      height: 100%;
-      background: url('/search-icon.svg') no-repeat center;
-      background-size: 90%;
+    button {
+      all: unset;
+      cursor: pointer;
     }
   `,
 
