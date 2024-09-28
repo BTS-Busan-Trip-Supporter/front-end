@@ -20,77 +20,83 @@ export function NavigationBar() {
   }
 
   return (
-    <styles.container>
-      <button
-        type='button'
-        onClick={() => {
-          router.replace('/my');
-        }}
-      >
-        {pathName === '/my' ? (
-          <styles.menu $active>
-            <styles.icon src='/user-active.svg' alt='user-active-menu' />
-            마이 페이지
-          </styles.menu>
-        ) : (
-          <styles.menu>
-            <styles.icon src='/user.svg' alt='user-menu' />
-            마이 페이지
-          </styles.menu>
-        )}
-      </button>
-      <button
-        type='button'
-        onClick={() => {
-          router.replace('/');
-        }}
-      >
-        {pathName === '/' || pathName.startsWith('/travel') ? (
-          <styles.menu $active>
-            <styles.icon src='/travel-active.png' alt='travel-active-menu' />
-            여행하기
-          </styles.menu>
-        ) : (
-          <styles.menu>
-            <styles.icon src='/travel.png' alt='travel-menu' />
-            여행하기
-          </styles.menu>
-        )}
-      </button>
-
-      <button
-        type='button'
-        onClick={() => {
-          router.replace('/record');
-        }}
-      >
-        {pathName.startsWith('/record') ? (
-          <styles.menu $active>
-            <styles.icon src='/record-active.png' alt='record-active-menu' />
-            기록하기
-          </styles.menu>
-        ) : (
-          <styles.menu>
-            <styles.icon src='/record.png' alt='record-menu' />
-            기록하기
-          </styles.menu>
-        )}
-      </button>
-    </styles.container>
+    <styles.wrapper>
+      <styles.container>
+        <button
+          type='button'
+          onClick={() => {
+            router.replace('/my');
+          }}
+        >
+          {pathName === '/my' ? (
+            <styles.menu $active>
+              <styles.icon src='/user-active.svg' alt='user-active-menu' />
+              마이 페이지
+            </styles.menu>
+          ) : (
+            <styles.menu>
+              <styles.icon src='/user.svg' alt='user-menu' />
+              마이 페이지
+            </styles.menu>
+          )}
+        </button>
+        <button
+          type='button'
+          onClick={() => {
+            router.replace('/');
+          }}
+        >
+          {pathName === '/' || pathName.startsWith('/travel') ? (
+            <styles.menu $active>
+              <styles.icon src='/travel-active.png' alt='travel-active-menu' />
+              여행하기
+            </styles.menu>
+          ) : (
+            <styles.menu>
+              <styles.icon src='/travel.png' alt='travel-menu' />
+              여행하기
+            </styles.menu>
+          )}
+        </button>
+        <button
+          type='button'
+          onClick={() => {
+            router.replace('/record');
+          }}
+        >
+          {pathName.startsWith('/record') ? (
+            <styles.menu $active>
+              <styles.icon src='/record-active.png' alt='record-active-menu' />
+              기록하기
+            </styles.menu>
+          ) : (
+            <styles.menu>
+              <styles.icon src='/record.png' alt='record-menu' />
+              기록하기
+            </styles.menu>
+          )}
+        </button>
+      </styles.container>
+    </styles.wrapper>
   );
 }
 
 const styles = {
-  container: styled.nav`
+  wrapper: styled.nav`
+    display: flex;
+    position: relative;
+    z-index: 99999;
+  `,
+
+  container: styled.div`
     width: 100%;
+    height: 55px;
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 0.75rem 0;
     position: fixed;
     bottom: 0;
     background-color: white;
-    z-index: 99999;
 
     button {
       all: unset;
@@ -101,7 +107,7 @@ const styles = {
     color: ${(props) => (props.$active ? '#605EFF' : '#b0afbc')};
 
     font-family: 'Noto Sans KR';
-    font-size: 0.5rem;
+    font-size: 0.7rem;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -115,6 +121,6 @@ const styles = {
   `,
 
   icon: styled.img`
-    width: 1.125rem;
+    width: 1.3rem;
   `,
 };
