@@ -1,63 +1,147 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
-import type { DaySchedule, Destination } from '@/features/travel-schedule';
+import { TravelerLocationConfirm } from '@/components/travel/traveler/TravelerLocationConfirm';
+import { TravelerLocationSearch } from '@/components/travel/traveler/TravelerLocationSearch';
+import type { GetTourSpotsDTO } from '@/features/tour-spot';
+import { getTourSpots } from '@/features/tour-spot';
+import { TIME_STRING } from '@/features/trip';
+import type { Activity } from '@/features/trip/trip.slice';
+import { useTripStore } from '@/features/trip/trip.slice';
 
 export function TravelerScheduleConfirm({
-  schedules,
-  where,
-  onRemoveDestination,
-  onAddDestination,
-  onConfirm,
+  onNextPage,
 }: {
-  schedules: DaySchedule[];
-  where: string;
-  onRemoveDestination: (day: number, destination: Destination) => void;
-  onAddDestination: () => void;
-  onConfirm: () => void;
+  onNextPage: () => void;
 }) {
+  const [state, setState] = useState<{
+    ui: 'main' | 'search' | 'confirm';
+    day?: number;
+    location?: string;
+    time?: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
+    tourSpotDto?: GetTourSpotsDTO;
+  }>({ ui: 'main' });
+
+  const { tourInfo, activities, addActivity } = useTripStore();
+
   return (
-    <styles.container>
-      <styles.location>{where}</styles.location>
-      {schedules.map((schedule, index) => (
-        <DayScheduleItem
-          key={index}
-          day={index + 1}
-          schedule={schedule}
-          onRemoveDestination={onRemoveDestination}
-          onAddDestination={onAddDestination}
+    <>
+      {state.ui === 'main' && (
+        <styles.container>
+          <styles.location>{tourInfo.locationName}</styles.location>
+          {activities.map((acts, index) => (
+            <DayScheduleItem
+              key={index}
+              day={index + 1}
+              activities={acts}
+              onAddActivityButtonClick={() => {
+                setState((prev) => ({
+                  ...prev,
+                  ui: 'search',
+                  day: index + 1,
+                }));
+              }}
+            />
+          ))}
+          <styles.confirmButton onClick={onNextPage}>
+            여행 완성
+          </styles.confirmButton>
+        </styles.container>
+      )}{' '}
+      {state.ui === 'search' && (
+        <TravelerLocationSearch
+          onClick={() => {
+            if (!state.location) return;
+
+            getTourSpots(state.location, tourInfo.sigunguCode ?? '').then(
+              (res) => {
+                setState((prev) => ({
+                  ...prev,
+                  ui: 'confirm',
+                  tourSpotDto: res,
+                }));
+              },
+            );
+          }}
+          onContentChange={(value) =>
+            setState((prev) => ({ ...prev, location: value }))
+          }
         />
-      ))}
-      <styles.confirmButton onClick={onConfirm}>여행 완성</styles.confirmButton>
-    </styles.container>
+      )}
+      {state.ui === 'confirm' &&
+        state.tourSpotDto &&
+        state.day &&
+        state.location && (
+          <TravelerLocationConfirm
+            location={state.tourSpotDto.data.title}
+            day={state.day}
+            selectedTime={state.time}
+            onTimeClicked={(time) => {
+              if (
+                state.day &&
+                !activities[state.day - 1]?.find(
+                  (activity) => activity.dayTime === time,
+                )
+              ) {
+                setState((prev) => ({ ...prev, time }));
+              }
+            }}
+            onConfirm={() => {
+              if (
+                !state.day ||
+                !state.time ||
+                !state.tourSpotDto ||
+                !tourInfo.startTime ||
+                !tourInfo.endTime
+              )
+                return;
+
+              addActivity(state.day, {
+                dayNumber: state.day,
+                dayTime: state.time,
+                spotName: state.tourSpotDto.data.title,
+                tourSpotDto: {
+                  id: state.tourSpotDto.data.contentId,
+                  typeId: state.tourSpotDto.data.contentTypeId,
+                  title: state.tourSpotDto.data.title,
+                  sigunguCode: state.tourSpotDto.data.sigunguCode,
+                },
+                orderIndex: 0,
+              });
+
+              setState(() => ({ ui: 'main' }));
+            }}
+          />
+        )}
+    </>
   );
 }
 
 function DayScheduleItem({
   day,
-  schedule,
-  onRemoveDestination,
-  onAddDestination,
+  activities,
+  onAddActivityButtonClick,
 }: {
   day: number;
-  schedule: DaySchedule;
-  onRemoveDestination: (day: number, destination: Destination) => void;
-  onAddDestination: () => void;
+  activities: Activity[];
+  onAddActivityButtonClick: () => void;
 }) {
   return (
     <styles.daySchedule>
       <h2>{day}일차</h2>
       <ul>
-        {schedule.destinations.map((destination) => (
+        {activities.map((activity) => (
           <DestinationItem
-            key={destination.id}
+            key={`${activity.dayTime}-${activity.spotName}`}
             day={day}
-            destination={destination}
-            onRemoveDestination={onRemoveDestination}
+            activity={activity}
           />
         ))}
-        <AddDestinationButton onAddDestination={onAddDestination} />
+        {activities.length < 4 && (
+          <AddDestinationButton onClick={onAddActivityButtonClick} />
+        )}
       </ul>
     </styles.daySchedule>
   );
@@ -65,40 +149,35 @@ function DayScheduleItem({
 
 function DestinationItem({
   day,
-  destination,
-  onRemoveDestination,
+  activity,
 }: {
   day: number;
-  destination: Destination;
-  onRemoveDestination: (day: number, destination: Destination) => void;
+  activity: Activity;
 }) {
+  const { removeActivity } = useTripStore();
+
   return (
     <styles.destinationItem>
       <button
         type='button'
-        onClickCapture={() => onRemoveDestination(day, destination)}
+        onClickCapture={() => removeActivity(day, activity)}
       >
         <img
           src='/traveler-mode-delete-button.svg'
           alt='button to remove destination'
         />
       </button>
-      <p data-location>{destination.name}</p>
+      <p data-location>{activity.spotName}</p>
       <p data-time>
-        {convertTimeString(destination.startDate)} -
-        {convertTimeString(destination.endDate)}
+        {day}일차 {TIME_STRING[activity.dayTime]}
       </p>
     </styles.destinationItem>
   );
 }
 
-function AddDestinationButton({
-  onAddDestination,
-}: {
-  onAddDestination: () => void;
-}) {
+function AddDestinationButton({ onClick }: { onClick: () => void }) {
   return (
-    <styles.addDestinationButton onClick={onAddDestination}>
+    <styles.addDestinationButton onClick={onClick}>
       <img
         src='/traveler-mode-add-button.svg'
         alt='button to add destination'
@@ -106,9 +185,6 @@ function AddDestinationButton({
     </styles.addDestinationButton>
   );
 }
-
-const convertTimeString = (date: Date) =>
-  `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 
 const styles = {
   container: styled.div`
@@ -234,7 +310,7 @@ const styles = {
     width: fit-content;
     height: fit-content;
     border-radius: 130px;
-    padding: 16px 22px;
+    padding: 0.5rem 1.25rem;
 
     display: flex;
     justify-content: center;
@@ -244,7 +320,7 @@ const styles = {
     background: #5e5bda;
 
     font-family: Noto Sans KR;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
     line-height: 28.96px;
     letter-spacing: -0.02em;

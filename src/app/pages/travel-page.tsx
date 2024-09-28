@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { Background, SearchBox, CustomButton } from '@/components';
+import { Background, CustomButton, SearchBox } from '@/components';
 import { useUserData } from '@/features/member';
 
 export function TravelPage() {
@@ -12,9 +12,9 @@ export function TravelPage() {
 
   const router = useRouter();
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (route: string) => {
+    router.replace(route);
     sessionStorage.setItem('searchContent', searchContent);
-    router.replace('/travel/auto');
   };
 
   const { data: userData } = useUserData(localStorage.getItem('accessToken'));
@@ -34,14 +34,14 @@ export function TravelPage() {
             color='#FF75C8'
             text='알아서 해줘'
             onClick={() => {
-              handleButtonClick();
+              handleButtonClick('/travel/auto');
             }}
           />
           <CustomButton
             color='#514EBD'
             text='여행자 모드'
             onClick={() => {
-              router.replace('/travel/traveler');
+              handleButtonClick('/travel/traveler');
             }}
           />
         </styles.btnCon>

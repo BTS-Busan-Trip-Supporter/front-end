@@ -1,7 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface Position {
   $top?: string;
@@ -70,7 +70,6 @@ const styles = {
 
   image: styled.img<Position>`
     position: absolute;
-    object-fit: content;
     top: ${(props) => props.$top || 'auto'};
     bottom: ${(props) => props.$bottom || 'auto'};
     left: ${(props) => props.$left || 'auto'};

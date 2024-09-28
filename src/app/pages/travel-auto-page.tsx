@@ -1,27 +1,28 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
-  TravelComponent,
-  ScrollMotion,
-  LoadingCard,
-  SearchBox,
   CustomButton,
+  LoadingCard,
+  ScrollMotion,
+  SearchBox,
+  TravelComponent,
 } from '@/components';
 import { ChoiceList, DetailCard, Loading } from '@/components/travel';
 import { useToast } from '@/features/toast';
-import { Times } from '@/features/travel-schedule/travel-schedule.type';
 import {
-  useRecommendDayTrip,
-  useCreateTripSchedule,
   DropBoxMenu,
-  ScheduleTimeFromServer,
   type PostDayTripResponseDTO,
+  type ScheduleTimeFromServer,
   type TripItem,
+  useCreateTripSchedule,
+  useRecommendDayTrip,
 } from '@/features/trip';
 import { useIntersectionObserver } from '@/shared';
+
+type Times = '오전' | '오후' | '저녁' | '밤' | '기본';
 
 interface Location {
   item: TripItem;

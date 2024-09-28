@@ -2,14 +2,19 @@
 
 import styled from '@emotion/styled';
 
-import {
-  TIME_STRINGS,
-  Times,
-} from '@/features/travel-schedule/travel-schedule.type';
-
 interface Color {
   $selected: boolean;
 }
+
+type Times = '오전' | '오후' | '저녁' | '밤' | '기본';
+
+const TIME_STRINGS: { [key in Times]: string } = {
+  오전: 'sunrise',
+  오후: 'sun',
+  저녁: 'sunset',
+  밤: 'moon',
+  기본: 'default',
+} as const;
 
 export function TimeCard({
   time,

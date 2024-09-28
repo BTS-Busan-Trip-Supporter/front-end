@@ -4,19 +4,29 @@ import styled from '@emotion/styled';
 
 interface Color {
   $color: string;
+  $grow: boolean;
 }
 
 export function CustomButton({
   color,
   text,
   onClick,
+  grow = false,
+  className,
 }: {
   color: string;
   text: string;
   onClick: () => void;
+  grow?: boolean;
+  className?: string;
 }) {
   return (
-    <styles.button $color={color} onClick={onClick}>
+    <styles.button
+      className={className}
+      $color={color}
+      $grow={grow}
+      onClick={onClick}
+    >
       {text}
     </styles.button>
   );
@@ -38,5 +48,7 @@ const styles = {
     line-height: normal;
     letter-spacing: -0.02rem;
     text-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+
+    width: ${({ $grow }) => ($grow ? '100%' : 'auto')};
   `,
 };

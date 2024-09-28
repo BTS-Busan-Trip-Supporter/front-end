@@ -2,28 +2,54 @@
 
 import styled from '@emotion/styled';
 
-import { DaySchedule, Destination } from '@/features/travel-schedule';
+import { postTripSchedule, TIME_STRING } from '@/features/trip';
+import type { Activity } from '@/features/trip/trip.slice';
+import { useTripStore } from '@/features/trip/trip.slice';
 
 export function TravelerTravelArrange({
-  schedules,
-  where,
-  onRecord,
+  onNextPage,
 }: {
-  schedules: DaySchedule[];
-  where: string;
-  onRecord: () => void;
+  onNextPage: () => void;
 }) {
+  const { tourInfo, activities } = useTripStore();
+
   return (
     <styles.container>
-      <styles.location>{where}</styles.location>
-      {schedules.map((schedule, index) => (
-        <DayScheduleItem
-          key={index}
-          day={index + 1}
-          destinations={schedule.destinations}
-        />
+      <styles.location>{tourInfo.locationName}</styles.location>
+      {activities.map((acts, index) => (
+        <DayScheduleItem key={index} day={index + 1} activities={acts} />
       ))}
-      <button type='button' onClick={onRecord}>
+      <button
+        type='button'
+        onClick={() => {
+          if (
+            !tourInfo.name ||
+            !tourInfo.locationName ||
+            !tourInfo.startTime ||
+            !tourInfo.endTime
+          )
+            return;
+
+          postTripSchedule({
+            tourLogData: {
+              name: tourInfo.name,
+              locationName: tourInfo.locationName,
+              startTime: tourInfo.startTime.toISOString().slice(0, -5),
+              endTime: tourInfo.endTime.toISOString().slice(0, -5),
+            },
+            tourActivityDataList: activities.flat().map((act) => ({
+              spotName: act.spotName,
+              dayNumber: act.dayNumber,
+              dayTime: act.dayTime,
+              orderIndex: 0,
+              tourSpotData: {
+                contentId: act.tourSpotDto.id,
+                contentTypeId: act.tourSpotDto.typeId,
+              },
+            })),
+          }).then(onNextPage);
+        }}
+      >
         <div>
           <img src='/traveler-write-record.svg' alt='button to write review' />
           <p>기록하기</p>
@@ -35,24 +61,34 @@ export function TravelerTravelArrange({
 
 function DayScheduleItem({
   day,
-  destinations,
+  activities,
 }: {
   day: number;
-  destinations: Destination[];
+  activities: Activity[];
 }) {
   return (
     <styles.daySchedule>
       <h2>{day}일차</h2>
       <ul>
-        {destinations.map((destination) => (
-          <DestinationItem key={destination.id} destination={destination} />
+        {activities.map((activity) => (
+          <DestinationItem
+            key={`${activity.dayTime}-${activity.spotName}`}
+            day={day}
+            activity={activity}
+          />
         ))}
       </ul>
     </styles.daySchedule>
   );
 }
 
-function DestinationItem({ destination }: { destination: Destination }) {
+function DestinationItem({
+  day,
+  activity,
+}: {
+  day: number;
+  activity: Activity;
+}) {
   function DashedLine() {
     return (
       <svg>
@@ -65,13 +101,12 @@ function DestinationItem({ destination }: { destination: Destination }) {
     return (
       <div>
         {/* ICON */}
-        <p data-location>{destination.name}</p>
+        <p data-location>{activity.spotName}</p>
         <span className='dashed'>
           <DashedLine />
         </span>
         <p data-time>
-          {convertTimeString(destination.startDate)} -
-          {convertTimeString(destination.endDate)}
+          {day}일차 {TIME_STRING[activity.dayTime]}
         </p>
       </div>
     );
@@ -81,7 +116,7 @@ function DestinationItem({ destination }: { destination: Destination }) {
     return (
       <div style={{ width: '100%', gap: '6px' }}>
         <img src='/location-pin.svg' alt='location pin' />
-        <p data-timetodestination>{destination.timeToDestination}분</p>
+        {/* <p data-timetodestination>{activity.timeToDestination}분</p> */}
       </div>
     );
   }
@@ -95,9 +130,6 @@ function DestinationItem({ destination }: { destination: Destination }) {
     </styles.destinationItem>
   );
 }
-
-const convertTimeString = (date: Date) =>
-  `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
 
 const styles = {
   container: styled.div`
