@@ -1,4 +1,6 @@
-export function convertDate(date: Date) {
+export function convertDate(isoString: string) {
+  const date = new Date(isoString);
+
   return date
     .toLocaleDateString('ko-KR', {
       year: 'numeric',

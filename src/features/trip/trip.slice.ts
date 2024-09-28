@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import type { TripItem } from '@/features/trip/trip.dto';
-import { TIME_ORDER } from '@/features/trip/trip.type';
+import { DropBoxMenu, TIME_ORDER } from '@/features/trip/trip.type';
 
 export interface Activity {
   spotName: string;
@@ -21,6 +21,7 @@ export interface Activity {
 export interface TourInfo {
   name?: string;
   locationName?: string;
+  sigunguCode?: string;
   startTime?: Date;
   endTime?: Date;
 }
@@ -35,6 +36,7 @@ export interface TripState {
 }
 
 export interface TripAction {
+  isAllTravelSchedulesFilled: () => boolean;
   setLocation: (location: string) => void;
   setDates: (dates: { start: Date; end: Date }) => void;
   setIsRecommendLoading: (isRecommendLoading: boolean) => void;
@@ -53,8 +55,11 @@ const initialState: TripState = {
   recommendedItems: [],
 };
 
-export const useTripStore = create<TripState & TripAction>((set) => ({
+export const useTripStore = create<TripState & TripAction>((set, get) => ({
   ...initialState,
+
+  isAllTravelSchedulesFilled: () =>
+    !get().activities.some((acts) => acts.length < 4),
 
   setLocation: (location: string) =>
     set((prev) => ({
@@ -62,6 +67,10 @@ export const useTripStore = create<TripState & TripAction>((set) => ({
       tourInfo: {
         name: location,
         locationName: location,
+        sigunguCode: String(
+          DropBoxMenu.regionType.find((region) => region.type === location)
+            ?.id ?? '1',
+        ),
       },
     })),
 

@@ -55,7 +55,7 @@ export function TravelerScheduleConfirm({
           onClick={() => {
             if (!state.location) return;
 
-            getTourSpots(state.location, tourInfo.locationName ?? '').then(
+            getTourSpots(state.location, tourInfo.sigunguCode ?? '').then(
               (res) => {
                 setState((prev) => ({
                   ...prev,

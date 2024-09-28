@@ -83,7 +83,7 @@ export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
           onClick={() => {
             if (!state.location) return;
 
-            getTourSpots(state.location, tourInfo.locationName ?? '').then(
+            getTourSpots(state.location, tourInfo.sigunguCode ?? '').then(
               (res) => {
                 setState((prev) => ({
                   ...prev,

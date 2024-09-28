@@ -2,7 +2,7 @@
 
 import styled from '@emotion/styled';
 
-import { TIME_STRING } from '@/features/trip';
+import { postTripSchedule, TIME_STRING } from '@/features/trip';
 import type { Activity } from '@/features/trip/trip.slice';
 import { useTripStore } from '@/features/trip/trip.slice';
 
@@ -19,7 +19,37 @@ export function TravelerTravelArrange({
       {activities.map((acts, index) => (
         <DayScheduleItem key={index} day={index + 1} activities={acts} />
       ))}
-      <button type='button' onClick={onNextPage}>
+      <button
+        type='button'
+        onClick={() => {
+          if (
+            !tourInfo.name ||
+            !tourInfo.locationName ||
+            !tourInfo.startTime ||
+            !tourInfo.endTime
+          )
+            return;
+
+          postTripSchedule({
+            tourLogData: {
+              name: tourInfo.name,
+              locationName: tourInfo.locationName,
+              startTime: tourInfo.startTime.toISOString().slice(0, -5),
+              endTime: tourInfo.endTime.toISOString().slice(0, -5),
+            },
+            tourActivityDataList: activities.flat().map((act) => ({
+              spotName: act.spotName,
+              dayNumber: act.dayNumber,
+              dayTime: act.dayTime,
+              orderIndex: 0,
+              tourSpotData: {
+                contentId: act.tourSpotDto.id,
+                contentTypeId: act.tourSpotDto.typeId,
+              },
+            })),
+          }).then(onNextPage);
+        }}
+      >
         <div>
           <img src='/traveler-write-record.svg' alt='button to write review' />
           <p>기록하기</p>

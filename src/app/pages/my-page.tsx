@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 
 import { useAuth, useUserData } from '@/features/member';
-import { useTripSchedules, type TourLogDTO } from '@/features/trip';
+import { type TourLogDTO, useTripSchedules } from '@/features/trip';
 import { convertDate } from '@/shared';
 
 export function MyPage() {

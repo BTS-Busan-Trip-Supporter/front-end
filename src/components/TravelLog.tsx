@@ -88,13 +88,8 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
             />
             <h3>
               {tripSchedule?.data.tourLogInfo.name},{' '}
-              {convertDate(
-                tripSchedule?.data.tourLogInfo.startTime ?? new Date(),
-              )}{' '}
-              -{' '}
-              {convertDate(
-                tripSchedule?.data.tourLogInfo.endTime ?? new Date(),
-              )}
+              {convertDate(tripSchedule?.data.tourLogInfo.startTime ?? ' ')} -{' '}
+              {convertDate(tripSchedule?.data.tourLogInfo.endTime ?? ' ')}
             </h3>
           </styles.header>
           <styles.logs>
@@ -110,13 +105,11 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
                     <p>{dayNumber}일차</p>
                     <span className='dates'>
                       {getMonthAndDate(
-                        tripSchedule?.data.tourLogInfo.startTime.toISOString() ??
-                          '',
+                        tripSchedule?.data.tourLogInfo.startTime ?? '',
                         dayNumber,
                       )}
                       {`(${getDayOfWeek(
-                        tripSchedule?.data.tourLogInfo.startTime.toISOString() ??
-                          '',
+                        tripSchedule?.data.tourLogInfo.startTime ?? '',
                         dayNumber,
                       )})`}
                     </span>
