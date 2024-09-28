@@ -16,42 +16,18 @@ export function ContentsCard({
 const styles = {
   container: styled.div<{ $type: 'auto' | 'traveler' | 'edit' }>`
     width: 100%;
-    height: calc(100% - 34px);
+    height: 76%;
     border-radius: 2.6875rem;
     background: #fafaff;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     position: absolute;
+    padding: 20px;
 
     display: flex;
-    padding: 1.25rem;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
 
-    top: ${({ $type }) => {
-      switch ($type) {
-        case 'auto':
-          return '12rem';
-        case 'traveler':
-          return '7rem';
-        case 'edit':
-          return '9rem';
-        default:
-          return '12rem';
-      }
-    }};
-
-    padding-bottom: ${({ $type }) => {
-      switch ($type) {
-        case 'auto':
-          return '13rem';
-        case 'traveler':
-          return '8rem';
-        case 'edit':
-          return '10rem';
-        default:
-          return '13rem';
-      }
-    }};
+    top: 24%;
   `,
 };

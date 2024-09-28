@@ -150,7 +150,7 @@ export function TravelAutoPage() {
     childNode: (
       <styles.wrapper>
         <InputWhat where={searchContent} setContent={setEvent} />
-        <div ref={ResultsRef}>
+        <div ref={ResultsRef} className='result-wrapper'>
           <ResultWrapper
             isLoading={status === 'pending'}
             isError={status === 'error'}
@@ -331,7 +331,7 @@ function ResultWrapper({
 const styles = {
   wrapper: styled.div`
     width: 100%;
-    height: 100vh;
+    height: calc(100% - 35px);
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: y mandatory;
@@ -339,18 +339,27 @@ const styles = {
     &::-webkit-scrollbar {
       display: none;
     }
+
+    .result-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   `,
 
   container: styled.div`
     width: 100%;
-    height: 100vh;
+    height: 100%;
     gap: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-bottom: 20rem;
     scroll-snap-align: start;
+    overflow-y: scroll;
+    padding: 1rem 0;
   `,
 
   description: styled.p`
@@ -375,7 +384,9 @@ const styles = {
   resultCon: styled.div`
     display: flex;
     width: 100%;
+    height: 100%;
     align-items: flex-start;
+    justify-content: center;
     flex-direction: column;
     gap: 0.5rem;
   `,
@@ -396,6 +407,9 @@ const styles = {
   travel: styled.ul`
     display: flex;
     width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
     flex-direction: column;
 
     color: #505050;
@@ -409,6 +423,7 @@ const styles = {
 
     li {
       display: flex;
+      width: 100%;
       gap: 1rem;
       border-bottom: 1px solid #e2e2e2;
       padding: 0.3rem 0;

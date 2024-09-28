@@ -135,7 +135,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (pathname.startsWith('/login') || token == null) {
+    if (
+      pathname.startsWith('/login') ||
+      pathname.startsWith('sign-up') ||
+      token == null
+    ) {
       setLoading(false);
       return;
     }
