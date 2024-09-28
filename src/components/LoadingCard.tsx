@@ -1,10 +1,14 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Loading {
   $isLoading: boolean;
+}
+
+interface NoImage {
+  $isNoImage: boolean;
 }
 
 export function LoadingCard({
@@ -41,6 +45,7 @@ export function LoadingCard({
         />
         <styles.contents
           $isLoading={imageLoading}
+          $isNoImage={imageUrl === '/no-image.svg'}
           src={imageUrl}
           alt='card-contents'
         />
@@ -58,6 +63,7 @@ const styles = {
     align-items: center;
     gap: 0.7rem;
   `,
+
   card: styled.div<Loading>`
     width: 6.875rem;
     height: 7.6875rem;
@@ -87,17 +93,17 @@ const styles = {
     }
   `,
 
-  contents: styled.img<Loading>`
+  contents: styled.img<Loading & NoImage>`
     object-fit: cover;
     width: 100%;
     height: 100%;
     display: ${(props) => (props.$isLoading ? 'none' : 'block')};
+    scale: ${(props) => (props.$isNoImage ? 0.5 : 1)};
   `,
 
   checkIcon: styled.img`
     width: 1.25rem;
     height: 1.25rem;
-    object-fit: content;
     position: absolute;
     top: 0.5rem;
     right: 0.3rem;

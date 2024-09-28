@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 import {
-  type GetTourSpotsDTO,
   type GetTourSpotContentDTO,
+  type GetTourSpotsDTO,
 } from './tour-spot.dto';
 
 export const getTourSpots = (keyword: string, sigunguCode: string) =>
@@ -19,4 +19,12 @@ export const getTourSpotContents = (contentId: string, contentTypeId: string) =>
         contentTypeId,
       },
     })
-    .then((res) => res.data);
+    .then((res) => res.data)
+    .then((res) => ({
+      ...res,
+      data: {
+        ...res.data,
+        firstImage:
+          res.data.firstImage === '' ? '/no-image.svg' : res.data.firstImage,
+      },
+    }));
