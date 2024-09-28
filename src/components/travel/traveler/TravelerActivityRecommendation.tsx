@@ -72,35 +72,37 @@ export function TravelerActivityRecommendation({
         setIsDetailVisible={setIsDetailVisible}
         handleCardClick={handleCardClick}
       />
-      <CustomButton
-        color='#FF75C8'
-        text='여행 완성'
-        onClick={() => {
-          fillActivities(
-            selectedPlaces.map((place) => ({
-              dayTime: convertTimeString(place.time ?? '오전'),
-              orderIndex: 0,
-              dayNumber: 0,
-              spotName: place.item.title,
-              tourSpotDto: {
-                id: place.item.contentId,
-                sigunguCode: String(
-                  types.regionType.find(
-                    (region) => region.type === tourInfo.locationName,
-                  )?.id ?? 1,
-                ),
-                title: place.item.title,
-                typeId: String(
-                  types.travelType.find(
-                    (travel) => travel.type === recommendContent,
-                  )?.id ?? 1,
-                ),
-              },
-            })),
-          );
-          onNextPage();
-        }}
-      />
+      {!setIsDetailVisible && (
+        <CustomButton
+          color='#FF75C8'
+          text='여행 완성'
+          onClick={() => {
+            fillActivities(
+              selectedPlaces.map((place) => ({
+                dayTime: convertTimeString(place.time ?? '오전'),
+                orderIndex: 0,
+                dayNumber: 0,
+                spotName: place.item.title,
+                tourSpotDto: {
+                  id: place.item.contentId,
+                  sigunguCode: String(
+                    types.regionType.find(
+                      (region) => region.type === tourInfo.locationName,
+                    )?.id ?? 1,
+                  ),
+                  title: place.item.title,
+                  typeId: String(
+                    types.travelType.find(
+                      (travel) => travel.type === recommendContent,
+                    )?.id ?? 1,
+                  ),
+                },
+              })),
+            );
+            onNextPage();
+          }}
+        />
+      )}
     </styles.container>
   );
 }
