@@ -32,7 +32,7 @@ export function TravelList() {
             <button
               type='button'
               onClick={() => {
-                router.push(`/record/${tour.id}`);
+                router.replace(`/record/${tour.id}`);
               }}
             >
               기록하기
