@@ -20,17 +20,18 @@ export function Loading() {
 const styles = {
   wrapper: styled.div`
     width: 100%;
-    min-height: 100dvh;
+    height: 100%;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     scroll-snap-align: start;
-    padding: 0.5rem 0.5rem 20rem 0.5rem;
+    padding: 0.5rem;
     position: relative;
 
     div {
       display: flex;
+      position: relative;
       flex-direction: column;
       align-items: center;
       gap: 2rem;
@@ -52,20 +53,20 @@ const styles = {
       position: relative;
       width: 2.5em;
       height: 2.5em;
-      transform: rotate(165deg);
+      transform: translateY(230%);
     }
 
     .loader:before,
     .loader:after {
       content: '';
       position: absolute;
-      top: 50%;
       left: 50%;
       display: block;
       width: 0.5em;
       height: 0.5em;
       border-radius: 0.25em;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) rotate(165deg);
+      transform-origin: 50% 50%;
     }
 
     .loader:before {

@@ -60,7 +60,7 @@ function Elements() {
 const styles = {
   container: styled.div`
     width: 100%;
-    height: 17rem;
+    height: 30%;
     position: relative;
     background: linear-gradient(180deg, #6b67f9 0.04%, #3f3d93 90.12%);
     padding: 1.25rem;

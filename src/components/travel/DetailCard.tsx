@@ -30,6 +30,8 @@ export function DetailCard({
 }) {
   const [time, setTime] = useState<Times>(place.time ?? '오전');
 
+  console.log(time);
+
   const { data: tourSpot } = useTourSpotData(
     place.item.contentId,
     place.item.contentTypeId,
@@ -153,20 +155,24 @@ export function DetailCard({
 const styles = {
   wrapper: styled.div`
     width: 100%;
-    min-height: 100dvh;
-    flex-shrink: 0;
+    height: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     scroll-snap-align: start;
-    padding: 0.5rem 0.5rem 20rem 0.5rem;
+    padding: 0.5rem;
     flex-direction: column;
     gap: 1rem;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   `,
 
   placeCon: styled.div`
     width: 100%;
-    min-height: 20rem;
+    flex: 1;
     border-radius: 10px;
     background: #fff;
     box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.1);
@@ -208,7 +214,8 @@ const styles = {
 
   placeImg: styled.img`
     width: 100%;
-    height: 16rem;
+    object-fit: content;
+    flex: 1;
     border-radius: 8px;
     margin-top: 0.8rem;
   `,
