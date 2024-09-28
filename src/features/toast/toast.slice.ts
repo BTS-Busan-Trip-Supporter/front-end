@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { ToastState, Toast } from './toast.type';
+import type { ToastState, Toast } from './toast.type';
 
 export const useToastStore = create<ToastState>((set) => ({
   toasts: [],
