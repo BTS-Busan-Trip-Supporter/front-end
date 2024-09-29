@@ -95,6 +95,9 @@ export function TravelerPage() {
       case 'traveler-schedule-selection':
         return (
           <TravelerScheduleSelection
+            onPrevPage={() => {
+              router.replace('/');
+            }}
             onNextPage={() => {
               dispatch({ type: 'NEXT' });
             }}
@@ -103,6 +106,11 @@ export function TravelerPage() {
       case 'traveler-add-days':
         return (
           <TravelerAddDays
+            onPrevPage={() => {
+              dispatch({
+                type: 'PREV',
+              });
+            }}
             onNextPage={() => {
               dispatch({
                 type: 'NEXT',
@@ -117,18 +125,21 @@ export function TravelerPage() {
         return (
           <TravelerActivitySelection
             onNextPage={() => dispatch({ type: 'NEXT' })}
+            onPrevPage={() => dispatch({ type: 'PREV' })}
           />
         );
       case 'traveler-activity-recommendation':
         return (
           <TravelerActivityRecommendation
             onNextPage={() => dispatch({ type: 'NEXT' })}
+            onPrevPage={() => dispatch({ type: 'PREV' })}
           />
         );
       case 'traveler-travel-schedule-confirm':
         return (
           <TravelerScheduleConfirm
             onNextPage={() => dispatch({ type: 'NEXT' })}
+            onPrevPage={() => dispatch({ type: 'PREV' })}
           />
         );
       case 'traveler-travel-schedule-arrange':
@@ -137,6 +148,7 @@ export function TravelerPage() {
             onNextPage={() => {
               router.replace('/');
             }}
+            onPrevPage={() => dispatch({ type: 'PREV' })}
           />
         );
       default:

@@ -10,7 +10,13 @@ import { getTourSpots, type GetTourSpotsDTO } from '@/features/tour-spot';
 import { TIME_STRING } from '@/features/trip';
 import { useTripStore } from '@/features/trip/trip.slice';
 
-export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
+export function TravelerAddDays({
+  onPrevPage,
+  onNextPage,
+}: {
+  onPrevPage: () => void;
+  onNextPage: () => void;
+}) {
   const [state, setState] = useState<{
     ui: 'main' | 'search' | 'confirm';
     day?: number;
@@ -19,16 +25,36 @@ export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
     tourSpotDto?: GetTourSpotsDTO;
   }>({ ui: 'main' });
 
-  const { tourInfo, activities, addTour, addActivity } = useTripStore();
+  const {
+    tourInfo,
+    activities,
+    addTour,
+    removeTour,
+    addActivity,
+    removeActivity,
+  } = useTripStore();
 
   return (
     <>
       {state.ui === 'main' && (
         <styles.container>
+          <styles.header>
+            <styles.prevButton
+              src='/chevron-left.svg'
+              alt='chevron-left'
+              onClick={onPrevPage}
+            />
+          </styles.header>
           <styles.dayContainer>
             {activities.map((acts, index) => (
               <styles.daySchedule key={index}>
-                <styles.dayTitle>{index + 1}일차</styles.dayTitle>
+                <styles.dayTitle
+                  onClick={() => {
+                    removeTour(index + 1);
+                  }}
+                >
+                  {index + 1}일차
+                </styles.dayTitle>
                 <styles.dayFrame>
                   {acts.length > 0 &&
                     acts.map((activity) => (
@@ -37,6 +63,9 @@ export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
                         destination={{
                           time: activity.dayTime,
                           name: activity.spotName,
+                        }}
+                        onRemove={() => {
+                          removeActivity(index + 1, activity);
                         }}
                       />
                     ))}
@@ -96,6 +125,12 @@ export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
           onContentChange={(value) =>
             setState((prev) => ({ ...prev, location: value }))
           }
+          onPrevPage={() => {
+            setState((prev) => ({
+              ...prev,
+              ui: 'main',
+            }));
+          }}
         />
       )}
       {state.ui === 'confirm' &&
@@ -141,6 +176,9 @@ export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
 
               setState(() => ({ ui: 'main' }));
             }}
+            onPrevPage={() => {
+              setState((prev) => ({ ...prev, ui: 'search' }));
+            }}
           />
         )}
     </>
@@ -149,14 +187,16 @@ export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
 
 function Destination({
   destination,
+  onRemove,
 }: {
   destination: {
     name: string;
     time: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
   };
+  onRemove: () => void;
 }) {
   return (
-    <styles.destinationContainer>
+    <styles.destinationContainer onClick={onRemove}>
       <p data-time>{TIME_STRING[destination.time]}</p>
       <p>{destination.name}</p>
     </styles.destinationContainer>
@@ -188,7 +228,7 @@ const styles = {
 
   dayContainer: styled.div`
     width: 100%;
-    padding: 1rem 0;
+    padding: 1rem 0.25rem;
 
     display: flex;
     flex-direction: row;
@@ -218,8 +258,9 @@ const styles = {
   dayFrame: styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+
+    padding: 1rem 0;
 
     width: 136px;
     min-height: 283px;
@@ -270,6 +311,8 @@ const styles = {
 
     display: flex;
     align-items: center;
+
+    margin: auto;
   `,
 
   CustomButton: styled(CustomButton)`
@@ -309,5 +352,18 @@ const styles = {
     padding: 0.5rem;
 
     overflow: clip;
+  `,
+
+  header: styled.div`
+    display: flex;
+    position: fixed;
+    align-items: center;
+    gap: 0.5rem;
+    transform: translateY(calc(-53px + 50%));
+  `,
+
+  prevButton: styled.img`
+    width: 1rem;
+    height: 1rem;
   `,
 };

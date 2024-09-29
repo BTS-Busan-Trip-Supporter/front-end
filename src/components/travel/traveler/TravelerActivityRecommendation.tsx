@@ -45,8 +45,10 @@ const types = {
 
 export function TravelerActivityRecommendation({
   onNextPage,
+  onPrevPage,
 }: {
   onNextPage: () => void;
+  onPrevPage: () => void;
 }) {
   const { isRecommendLoading, tourInfo, recommendContent, fillActivities } =
     useTripStore();
@@ -63,6 +65,15 @@ export function TravelerActivityRecommendation({
 
   return (
     <styles.container>
+      {!isDetailVisible && !isRecommendLoading && (
+        <styles.header>
+          <styles.prevButton
+            src='/chevron-left.svg'
+            alt='chevron-left'
+            onClick={onPrevPage}
+          />
+        </styles.header>
+      )}
       <ResultWrapper
         isLoading={isRecommendLoading}
         isDetailVisible={isDetailVisible}
@@ -72,35 +83,37 @@ export function TravelerActivityRecommendation({
         setIsDetailVisible={setIsDetailVisible}
         handleCardClick={handleCardClick}
       />
-      <CustomButton
-        color='#FF75C8'
-        text='여행 완성'
-        onClick={() => {
-          fillActivities(
-            selectedPlaces.map((place) => ({
-              dayTime: convertTimeString(place.time ?? '오전'),
-              orderIndex: 0,
-              dayNumber: 0,
-              spotName: place.item.title,
-              tourSpotDto: {
-                id: place.item.contentId,
-                sigunguCode: String(
-                  types.regionType.find(
-                    (region) => region.type === tourInfo.locationName,
-                  )?.id ?? 1,
-                ),
-                title: place.item.title,
-                typeId: String(
-                  types.travelType.find(
-                    (travel) => travel.type === recommendContent,
-                  )?.id ?? 1,
-                ),
-              },
-            })),
-          );
-          onNextPage();
-        }}
-      />
+      {!isRecommendLoading && !isDetailVisible && (
+        <CustomButton
+          color='#FF75C8'
+          text='여행 완성'
+          onClick={() => {
+            fillActivities(
+              selectedPlaces.map((place) => ({
+                dayTime: convertTimeString(place.time ?? '오전'),
+                orderIndex: 0,
+                dayNumber: 0,
+                spotName: place.item.title,
+                tourSpotDto: {
+                  id: place.item.contentId,
+                  sigunguCode: String(
+                    types.regionType.find(
+                      (region) => region.type === tourInfo.locationName,
+                    )?.id ?? 1,
+                  ),
+                  title: place.item.title,
+                  typeId: String(
+                    types.travelType.find(
+                      (travel) => travel.type === recommendContent,
+                    )?.id ?? 1,
+                  ),
+                },
+              })),
+            );
+            onNextPage();
+          }}
+        />
+      )}
     </styles.container>
   );
 }
@@ -217,8 +230,6 @@ const styles = {
     flex-direction: column;
     width: 100%;
     gap: 2rem;
-
-    margin-top: 2rem;
   `,
 
   description: styled.p`
@@ -231,6 +242,10 @@ const styles = {
     font-weight: 700;
     line-height: normal;
     letter-spacing: -0.02875rem;
+
+    align-self: center;
+
+    margin-bottom: 2rem;
   `,
 
   resultCon: styled.div`
@@ -252,5 +267,18 @@ const styles = {
       display: none;
     }
     justify-content: flex-start;
+  `,
+
+  header: styled.div`
+    display: flex;
+    position: fixed;
+    align-items: center;
+    gap: 0.5rem;
+    transform: translateY(50%);
+  `,
+
+  prevButton: styled.img`
+    width: 1rem;
+    height: 1rem;
   `,
 };

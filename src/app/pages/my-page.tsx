@@ -82,6 +82,8 @@ const styles = {
     height: 100%;
     flex-direction: column;
     align-items: center;
+
+    overflow-y: auto;
   `,
   top: styled.div`
     display: flex;

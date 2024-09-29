@@ -7,12 +7,21 @@ import { SearchBox } from '@/components';
 export function TravelerLocationSearch({
   onClick,
   onContentChange,
+  onPrevPage,
 }: {
   onClick: () => void;
   onContentChange: (value: string) => void;
+  onPrevPage: () => void;
 }) {
   return (
     <styles.container>
+      <styles.header>
+        <styles.prevButton
+          src='/chevron-left.svg'
+          alt='chevron-left'
+          onClick={onPrevPage}
+        />
+      </styles.header>
       <h2>미리 계획한 장소를 입력하세요.</h2>
       <SearchBox setContent={onContentChange} onClick={onClick} />
     </styles.container>
@@ -36,5 +45,18 @@ const styles = {
 
       color: #505050;
     }
+  `,
+
+  header: styled.div`
+    display: flex;
+    position: fixed;
+    align-items: center;
+    gap: 0.5rem;
+    transform: translate(-175%, 45%);
+  `,
+
+  prevButton: styled.img`
+    width: 1rem;
+    height: 1rem;
   `,
 };
