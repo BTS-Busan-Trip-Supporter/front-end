@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useEffect, useRef } from 'react';
 
 import { DropBoxMenu } from '@/features/trip';
 
@@ -18,8 +19,25 @@ export function DropBox({
   setContent: (content: string) => void;
   setDropBoxVisible: (i: boolean) => void;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const handler = (event: MouseEvent) => {
+      if (
+        containerRef.current !== null &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setDropBoxVisible(false);
+      }
+    };
+
+    document.addEventListener('click', handler);
+    return () => {
+      document.removeEventListener('click', handler);
+    };
+  }, []);
+
   return (
-    <styles.wrapper>
+    <styles.wrapper ref={containerRef}>
       <styles.container>
         <div className='listWrapper'>
           <div className='listContainer'>
