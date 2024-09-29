@@ -5,9 +5,14 @@ import { useState } from 'react';
 
 import { TravelerLocationConfirm } from '@/components/travel/traveler/TravelerLocationConfirm';
 import { TravelerLocationSearch } from '@/components/travel/traveler/TravelerLocationSearch';
+import { useToast } from '@/features/toast';
 import type { GetTourSpotsDTO } from '@/features/tour-spot';
 import { getTourSpots } from '@/features/tour-spot';
-import { TIME_STRING } from '@/features/trip';
+import {
+  getTripSchedule,
+  postTripSchedule,
+  TIME_STRING,
+} from '@/features/trip';
 import type { Activity } from '@/features/trip/trip.slice';
 import { useTripStore } from '@/features/trip/trip.slice';
 
@@ -26,7 +31,10 @@ export function TravelerScheduleConfirm({
     tourSpotDto?: GetTourSpotsDTO;
   }>({ ui: 'main' });
 
-  const { tourInfo, activities, addActivity } = useTripStore();
+  const { tourInfo, activities, setIsLoading, addActivity, load } =
+    useTripStore();
+
+  const { createToast } = useToast();
 
   return (
     <>
@@ -54,7 +62,56 @@ export function TravelerScheduleConfirm({
               }}
             />
           ))}
-          <styles.confirmButton onClick={onNextPage}>
+          <styles.confirmButton
+            onClick={() => {
+              if (
+                !tourInfo.name ||
+                !tourInfo.locationName ||
+                !tourInfo.startTime ||
+                !tourInfo.endTime
+              )
+                return;
+
+              if (activities.some((v) => v.length === 0)) {
+                createToast('info', '장소를 한 개 이상 선택해주세요');
+                return;
+              }
+
+              postTripSchedule({
+                tourLogData: {
+                  name: tourInfo.name,
+                  locationName: tourInfo.locationName,
+                  startTime: tourInfo.startTime.toISOString().slice(0, -5),
+                  endTime: tourInfo.endTime.toISOString().slice(0, -5),
+                },
+                tourActivityDataList: activities.flat().map((act) => ({
+                  spotName: act.spotName,
+                  dayNumber: act.dayNumber,
+                  dayTime: act.dayTime,
+                  orderIndex: 0,
+                  tourSpotData: {
+                    contentId: act.tourSpotDto.id,
+                    contentTypeId: act.tourSpotDto.typeId,
+                  },
+                })),
+              }).then((res) => {
+                const { data: logId } = res;
+
+                setIsLoading(true);
+                getTripSchedule(logId)
+                  .then((dto) => {
+                    load(dto);
+                    onNextPage();
+                  })
+                  .catch(() => {
+                    createToast('error', '다시 시도해주세요.');
+                  })
+                  .finally(() => {
+                    setIsLoading(false);
+                  });
+              });
+            }}
+          >
             여행 완성
           </styles.confirmButton>
         </styles.container>
@@ -98,6 +155,8 @@ export function TravelerScheduleConfirm({
                 )
               ) {
                 setState((prev) => ({ ...prev, time }));
+              } else {
+                createToast('error', '이미 선택된 시간대입니다!');
               }
             }}
             onConfirm={() => {
@@ -219,8 +278,6 @@ const styles = {
   `,
 
   location: styled.h1`
-    transform: translateY(20px);
-
     font-family: Noto Sans KR;
     font-size: 16px;
     font-weight: 500;
@@ -229,8 +286,6 @@ const styles = {
     text-align: left;
 
     color: #969696;
-
-    margin-top: 1rem;
   `,
 
   daySchedule: styled.div`
@@ -350,7 +405,7 @@ const styles = {
 
   header: styled.div`
     display: flex;
-    position: fixed;
+    position: relative;
     align-items: center;
     gap: 0.5rem;
   `,

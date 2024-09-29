@@ -43,7 +43,12 @@ export const putTripActivityHistory = (body: PutTripActivityHistoryDTO) =>
     .then((res) => res.data);
 
 export const postTripSchedule = (body: PostTripScheduleDTO) =>
-  axios.post('/p-travel-log/trips/schedule', body).then((res) => res.data);
+  axios
+    .post<{
+      status: string;
+      data: number;
+    }>('/p-travel-log/trips/schedule', body)
+    .then((res) => res.data);
 
 export const postDayTrip = (body: PostDayTripRequestDTO) =>
   axios

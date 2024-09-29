@@ -77,7 +77,7 @@ const getToastColors = (type: ToastType) => {
 const styles = {
   wrapper: styled.div`
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     z-index: 999999;
     width: 100%;
     display: flex;

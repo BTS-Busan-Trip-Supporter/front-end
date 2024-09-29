@@ -67,7 +67,6 @@ export function TravelerPage() {
     const savedContent = sessionStorage.getItem('searchContent');
     if (savedContent) {
       setLocation(savedContent);
-      sessionStorage.removeItem('searchContent');
     }
   }, []);
 

@@ -70,7 +70,6 @@ export function TravelAutoPage() {
     const savedContent = sessionStorage.getItem('searchContent');
     if (savedContent) {
       setSearchContent(savedContent);
-      sessionStorage.removeItem('searchContent');
     }
   }, []);
 
@@ -220,6 +219,7 @@ function Results({
   selectedPlaces: Location[];
   createSchedule: () => void;
 }) {
+  const { createToast } = useToast();
   return (
     <styles.container>
       <styles.resultCon>
@@ -281,6 +281,10 @@ function Results({
             text='여행 완성'
             color='#5E5BDA'
             onClick={() => {
+              if (selectedPlaces.length === 0) {
+                createToast('info', '장소를 한 개 이상 선택해주세요');
+                return;
+              }
               createSchedule();
             }}
           />

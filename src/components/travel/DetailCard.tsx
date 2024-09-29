@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { CustomButton } from '../CustomButton';
 import { TimeCard } from '../TimeCard';
 
+import { Loading } from '@/components/travel/Loading';
 import { useTourSpotData } from '@/features/tour-spot';
 import type { TripItem } from '@/features/trip';
 
@@ -34,7 +35,7 @@ export function DetailCard({
 }) {
   const [time, setTime] = useState<Times>(place.time ?? '오전');
 
-  const { data: tourSpot } = useTourSpotData(
+  const { data: tourSpot, isLoading } = useTourSpotData(
     place.item.contentId,
     place.item.contentTypeId,
   );
@@ -104,6 +105,8 @@ export function DetailCard({
     );
     setIsDetailVisible(false);
   };
+
+  if (isLoading) return <Loading type='detail' />;
 
   return (
     <styles.wrapper>

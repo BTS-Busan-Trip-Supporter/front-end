@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 
 import { CustomButton, SearchBox } from '@/components';
+import { useToast } from '@/features/toast';
 import { postDayTrip } from '@/features/trip';
 import { useTripStore } from '@/features/trip/trip.slice';
 
@@ -45,10 +46,12 @@ export function TravelerActivitySelection({
   const {
     tourInfo,
     recommendContent,
-    setIsRecommendLoading,
+    setIsLoading,
     setRecommendContent,
     setRecommendedItems,
   } = useTripStore();
+
+  const { createToast } = useToast();
 
   return (
     <styles.container>
@@ -67,7 +70,8 @@ export function TravelerActivitySelection({
           setRecommendContent(value);
         }}
         onClick={() => {
-          setIsRecommendLoading(true);
+          setIsLoading(true);
+
           postDayTrip({
             tourDate: new Date().toISOString(),
             sigunguCode: String(
@@ -81,10 +85,17 @@ export function TravelerActivitySelection({
               )?.id ?? '1',
             ),
             dayTimes: ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'],
-          }).then((res) => {
-            setRecommendedItems(res.data);
-            setIsRecommendLoading(false);
-          });
+          })
+            .then((res) => {
+              setRecommendedItems(res.data);
+            })
+            .catch(() => {
+              createToast('error', '오류가 발생했습니다. 다시 시도해주세요.');
+              onPrevPage();
+            })
+            .finally(() => {
+              setIsLoading(false);
+            });
 
           onNextPage();
         }}
@@ -93,7 +104,7 @@ export function TravelerActivitySelection({
         color='#FF75C8'
         text='알아서 해줘'
         onClick={() => {
-          setIsRecommendLoading(true);
+          setIsLoading(true);
           postDayTrip({
             tourDate: new Date().toISOString(),
             sigunguCode: String(
@@ -107,10 +118,15 @@ export function TravelerActivitySelection({
               )?.id ?? '1',
             ),
             dayTimes: ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'],
-          }).then((res) => {
-            setRecommendedItems(res.data);
-            setIsRecommendLoading(false);
-          });
+          })
+            .then((res) => {
+              setRecommendedItems(res.data);
+              setIsLoading(false);
+            })
+            .catch(() => {
+              createToast('error', '오류가 발생했습니다. 다시 시도해주세요.');
+              onPrevPage();
+            });
 
           onNextPage();
         }}
