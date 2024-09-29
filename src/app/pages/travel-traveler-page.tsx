@@ -148,6 +148,7 @@ export function TravelerPage() {
             onNextPage={() => {
               router.replace('/');
             }}
+            onPrevPage={() => dispatch({ type: 'PREV' })}
           />
         );
       default:
