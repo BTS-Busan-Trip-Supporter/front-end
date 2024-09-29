@@ -20,10 +20,7 @@ export function LoginPage() {
           P의 여행과 함께
           <br /> 지금 여행을 시작하세요!
         </h2>
-        <styles.socialSection>
-          <styles.bubble>간편 로그인 시작하기</styles.bubble>
-          <styles.kakaoLoginBtn onClick={() => {}} />
-        </styles.socialSection>
+        <styles.socialSection />
         <styles.customBtn
           $type='login'
           onClick={() => {
