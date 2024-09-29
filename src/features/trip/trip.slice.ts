@@ -117,7 +117,8 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
 
       const DAY = 60 * 60 * 24 * 1000;
       const days =
-        Math.round(tourInfo.endTime.getTime() - tourInfo.startTime.getTime()) /
+        (Math.round(tourInfo.endTime.getTime() - tourInfo.startTime.getTime()) +
+          1) /
         DAY;
 
       return {
@@ -134,13 +135,19 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
     }),
 
   removeTour: (day) =>
-    set((prev) => ({
-      ...prev,
-      activities: [
-        ...prev.activities.slice(0, day - 1),
-        ...prev.activities.slice(day),
-      ],
-    })),
+    set((prev) => {
+      const { tourInfo, activities } = prev;
+      if (!tourInfo.startTime || !tourInfo.endTime) return prev;
+
+      return {
+        ...prev,
+        tourInfo: {
+          ...tourInfo,
+          endTime: new Date(tourInfo.endTime.getTime() - 60 * 60 * 24 * 1000),
+        },
+        activities: [...activities.slice(0, day - 1), ...activities.slice(day)],
+      };
+    }),
 
   addActivity: (day, activity) =>
     set((prev) => ({
