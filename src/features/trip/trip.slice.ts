@@ -111,7 +111,43 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
     })),
 
   addTour: () =>
-    set((prev) => ({ ...prev, activities: [...prev.activities, []] })),
+    set((prev) => {
+      const { tourInfo, activities } = prev;
+      if (!tourInfo.startTime || !tourInfo.endTime) return prev;
+
+      const DAY = 60 * 60 * 24 * 1000;
+      const days =
+        (Math.round(tourInfo.endTime.getTime() - tourInfo.startTime.getTime()) +
+          1) /
+        DAY;
+
+      return {
+        ...prev,
+        tourInfo: {
+          ...tourInfo,
+          endTime:
+            days >= activities.length
+              ? new Date(tourInfo.endTime.getTime() + DAY)
+              : tourInfo.endTime,
+        },
+        activities: [...prev.activities, []],
+      };
+    }),
+
+  removeTour: (day) =>
+    set((prev) => {
+      const { tourInfo, activities } = prev;
+      if (!tourInfo.startTime || !tourInfo.endTime) return prev;
+
+      return {
+        ...prev,
+        tourInfo: {
+          ...tourInfo,
+          endTime: new Date(tourInfo.endTime.getTime() - 60 * 60 * 24 * 1000),
+        },
+        activities: [...activities.slice(0, day - 1), ...activities.slice(day)],
+      };
+    }),
 
   removeTour: (day) =>
     set((prev) => ({
@@ -154,22 +190,22 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
 
       const newActivities = [...activities];
 
-      for (const activity of items) {
+      items.forEach((activity) => {
         const targetTime = activity.dayTime;
 
         let flag = false;
-        for (const acts of newActivities) {
-          if (acts.find((act) => act.dayTime === targetTime)) continue;
-          acts.push(activity);
+        newActivities.some((acts, index) => {
+          if (acts.find((act) => act.dayTime === targetTime)) return false;
+          acts.push({ ...activity, dayNumber: index + 1 });
           acts.sort((a, b) => TIME_ORDER[a.dayTime] - TIME_ORDER[b.dayTime]);
           flag = true;
-          break;
-        }
+          return true;
+        });
 
-        if (flag) continue;
+        if (flag) return;
 
-        for (const acts of newActivities) {
-          if (acts.length === 4) continue;
+        newActivities.forEach((acts, index) => {
+          if (acts.length === 4) return;
 
           const remaining = acts.reduce<
             ('MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT')[]
@@ -180,11 +216,11 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
 
           const time = remaining.shift();
           if (time) {
-            acts.push({ ...activity, dayTime: time });
+            acts.push({ ...activity, dayTime: time, dayNumber: index + 1 });
             acts.sort((a, b) => TIME_ORDER[a.dayTime] - TIME_ORDER[b.dayTime]);
           }
-        }
-      }
+        });
+      });
 
       return { ...prev, activities: newActivities };
     }),
