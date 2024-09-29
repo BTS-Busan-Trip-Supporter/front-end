@@ -109,6 +109,12 @@ export function TravelerAddDays({
           onContentChange={(value) =>
             setState((prev) => ({ ...prev, location: value }))
           }
+          onPrevPage={() => {
+            setState((prev) => ({
+              ...prev,
+              ui: 'main',
+            }));
+          }}
         />
       )}
       {state.ui === 'confirm' &&
@@ -153,6 +159,9 @@ export function TravelerAddDays({
               });
 
               setState(() => ({ ui: 'main' }));
+            }}
+            onPrevPage={() => {
+              setState((prev) => ({ ...prev, ui: 'search' }));
             }}
           />
         )}
