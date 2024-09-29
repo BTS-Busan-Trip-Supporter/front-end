@@ -139,6 +139,7 @@ export function TravelerPage() {
         return (
           <TravelerScheduleConfirm
             onNextPage={() => dispatch({ type: 'NEXT' })}
+            onPrevPage={() => dispatch({ type: 'PREV' })}
           />
         );
       case 'traveler-travel-schedule-arrange':

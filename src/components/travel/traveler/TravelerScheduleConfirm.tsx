@@ -13,8 +13,10 @@ import { useTripStore } from '@/features/trip/trip.slice';
 
 export function TravelerScheduleConfirm({
   onNextPage,
+  onPrevPage,
 }: {
   onNextPage: () => void;
+  onPrevPage: () => void;
 }) {
   const [state, setState] = useState<{
     ui: 'main' | 'search' | 'confirm';
@@ -30,6 +32,13 @@ export function TravelerScheduleConfirm({
     <>
       {state.ui === 'main' && (
         <styles.container>
+          <styles.header>
+            <styles.prevButton
+              src='/chevron-left.svg'
+              alt='chevron-left'
+              onClick={onPrevPage}
+            />
+          </styles.header>
           <styles.location>{tourInfo.locationName}</styles.location>
           {activities.map((acts, index) => (
             <DayScheduleItem
@@ -68,6 +77,9 @@ export function TravelerScheduleConfirm({
           onContentChange={(value) =>
             setState((prev) => ({ ...prev, location: value }))
           }
+          onPrevPage={() => {
+            setState((prev) => ({ ...prev, ui: 'main' }));
+          }}
         />
       )}
       {state.ui === 'confirm' &&
@@ -112,6 +124,9 @@ export function TravelerScheduleConfirm({
               });
 
               setState(() => ({ ui: 'main' }));
+            }}
+            onPrevPage={() => {
+              setState((prev) => ({ ...prev, ui: 'search' }));
             }}
           />
         )}
@@ -214,6 +229,8 @@ const styles = {
     text-align: left;
 
     color: #969696;
+
+    margin-top: 1rem;
   `,
 
   daySchedule: styled.div`
@@ -329,5 +346,17 @@ const styles = {
     color: #ffffff;
 
     margin-top: 43px;
+  `,
+
+  header: styled.div`
+    display: flex;
+    position: fixed;
+    align-items: center;
+    gap: 0.5rem;
+  `,
+
+  prevButton: styled.img`
+    width: 1rem;
+    height: 1rem;
   `,
 };
