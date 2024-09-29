@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import {
@@ -62,6 +63,7 @@ function transformTourActivityData(selectedPlaces: Location[]) {
 
 export function TravelAutoPage() {
   const { createToast } = useToast();
+  const router = useRouter();
   const [searchContent, setSearchContent] = useState('');
 
   useEffect(() => {
@@ -84,7 +86,21 @@ export function TravelAutoPage() {
   };
 
   const ResultsRef = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const isResultVisible = useIntersectionObserver(ResultsRef);
+
+  useEffect(() => {
+    if (wrapperRef.current) {
+      if (event === '') wrapperRef.current.style.overflow = 'hidden';
+      else wrapperRef.current.style.overflow = 'auto';
+    }
+
+    return () => {
+      if (wrapperRef.current) {
+        wrapperRef.current.style.overflow = 'auto';
+      }
+    };
+  }, [event]);
 
   const parsingItem = () => {
     const contentType = DropBoxMenu.travelType.find(
@@ -132,9 +148,10 @@ export function TravelAutoPage() {
     useCreateTripSchedule(parsingSchedule());
 
   useEffect(() => {
-    if (isCreate === 'success')
+    if (isCreate === 'success') {
       createToast('success', '여행이 완성되었습니다!');
-    else if (isCreate === 'error')
+      router.replace('/');
+    } else if (isCreate === 'error')
       createToast('error', '여행이 완성되지 않았습니다.');
   }, [isCreate]);
 
@@ -148,7 +165,7 @@ export function TravelAutoPage() {
       />
     ),
     childNode: (
-      <styles.wrapper>
+      <styles.wrapper ref={wrapperRef}>
         <InputWhat where={searchContent} setContent={setEvent} />
         <div ref={ResultsRef} className='result-wrapper'>
           <ResultWrapper
@@ -299,7 +316,7 @@ function ResultWrapper({
   createSchedule,
 }: AutoProps) {
   if (isLoading) {
-    return <Loading />;
+    return <Loading type='travel' />;
   }
 
   if (!isDetailVisible) {

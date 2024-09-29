@@ -9,9 +9,7 @@ export function EditPasswordSection({ onClick }: { onClick: () => void }) {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
-  const { mutate: changePWD } = useChangePassword(
-    localStorage.getItem('accessToken'),
-  );
+  const { mutate: changePWD } = useChangePassword();
 
   return (
     <styles.container>

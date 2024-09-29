@@ -48,9 +48,7 @@ function ProfileInfo({
 
 function ListItem({ menu, content }: { menu: string; content?: string }) {
   const [value, setValue] = useState<string>();
-  const { mutate: changeUserName } = useChangeUserName(
-    localStorage.getItem('accessToken'),
-  );
+  const { mutate: changeUserName } = useChangeUserName();
   return (
     <li>
       <p>{menu}</p>

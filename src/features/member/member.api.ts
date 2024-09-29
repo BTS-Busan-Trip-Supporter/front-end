@@ -43,41 +43,13 @@ export const postRegisterMember = (
     })
     .then((res) => res.data);
 
-export const getUserData = (token: string | null) =>
-  axios
-    .get<GetUserDataDTO>(`/p-travel-log/mypage`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((res) => res.data);
+export const getUserData = () =>
+  axios.get<GetUserDataDTO>(`/p-travel-log/mypage`).then((res) => res.data);
 
-export const putUserName = (token: string | null, newName: string) =>
-  axios
-    .put(
-      `/p-travel-log/namechange`,
-      { newName },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    )
-    .then((res) => res.data);
+export const putUserName = (newName: string) =>
+  axios.put(`/p-travel-log/namechange`, { newName }).then((res) => res.data);
 
-export const putPassword = (
-  token: string | null,
-  oldPassword: string,
-  newPassword: string,
-) =>
+export const putPassword = (oldPassword: string, newPassword: string) =>
   axios
-    .put(
-      `/p-travel-log/pwchange`,
-      { oldPassword, newPassword },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    )
+    .put(`/p-travel-log/pwchange`, { oldPassword, newPassword })
     .then((res) => res.data);

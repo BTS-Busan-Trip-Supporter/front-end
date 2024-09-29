@@ -54,31 +54,37 @@ export function DetailCard({
 
   const savePlace = () => {
     onSelect((prevSelectedPlaces) => {
+      const existingPlaceForId = prevSelectedPlaces.find(
+        (p) => p.item.contentId === place.item.contentId,
+      );
+
       const existingPlaceForTime = prevSelectedPlaces.find(
         (p) => p.time === time,
       );
 
-      if (existingPlaceForTime) {
-        if (existingPlaceForTime.item.contentId === place.item.contentId) {
-          const updatedPlaces = [...prevSelectedPlaces];
-          const placeIndex = prevSelectedPlaces.findIndex(
-            (p) => p.item.contentId === place.item.contentId,
-          );
-          const updatedPlace = {
-            ...updatedPlaces[placeIndex],
-            time,
-          };
-          updatedPlaces[placeIndex] = updatedPlace;
-          return updatedPlaces;
+      if (existingPlaceForId) {
+        if (
+          existingPlaceForTime &&
+          existingPlaceForTime.item.contentId !== place.item.contentId
+        ) {
+          return prevSelectedPlaces
+            .filter(
+              (p) => p.item.contentId !== existingPlaceForTime.item.contentId,
+            )
+            .map((p) =>
+              p.item.contentId === place.item.contentId ? { ...p, time } : p,
+            );
         }
 
         return prevSelectedPlaces.map((p) =>
-          p.time === time ? { ...p, item: place.item, time } : p,
+          p.item.contentId === place.item.contentId ? { ...p, time } : p,
         );
       }
 
+      const filteredPlaces = prevSelectedPlaces.filter((p) => p.time !== time);
+
       return [
-        ...prevSelectedPlaces,
+        ...filteredPlaces,
         {
           item: place.item,
           selected: true,
@@ -86,6 +92,7 @@ export function DetailCard({
         },
       ];
     });
+
     setIsDetailVisible(false);
   };
 

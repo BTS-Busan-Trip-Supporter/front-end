@@ -17,7 +17,7 @@ export function TravelPage() {
     sessionStorage.setItem('searchContent', searchContent);
   };
 
-  const { data: userData } = useUserData(localStorage.getItem('accessToken'));
+  const { data: userData } = useUserData();
 
   return (
     <>
