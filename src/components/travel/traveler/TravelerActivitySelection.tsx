@@ -3,6 +3,7 @@
 import styled from '@emotion/styled';
 
 import { CustomButton, SearchBox } from '@/components';
+import { useToast } from '@/features/toast';
 import { postDayTrip } from '@/features/trip';
 import { useTripStore } from '@/features/trip/trip.slice';
 
@@ -50,6 +51,8 @@ export function TravelerActivitySelection({
     setRecommendedItems,
   } = useTripStore();
 
+  const { createToast } = useToast();
+
   return (
     <styles.container>
       <styles.header>
@@ -81,10 +84,15 @@ export function TravelerActivitySelection({
               )?.id ?? '1',
             ),
             dayTimes: ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'],
-          }).then((res) => {
-            setRecommendedItems(res.data);
-            setIsRecommendLoading(false);
-          });
+          })
+            .then((res) => {
+              setRecommendedItems(res.data);
+              setIsRecommendLoading(false);
+            })
+            .catch(() => {
+              createToast('error', '오류가 발생했습니다. 다시 시도해주세요.');
+              onPrevPage();
+            });
 
           onNextPage();
         }}
@@ -107,10 +115,15 @@ export function TravelerActivitySelection({
               )?.id ?? '1',
             ),
             dayTimes: ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'],
-          }).then((res) => {
-            setRecommendedItems(res.data);
-            setIsRecommendLoading(false);
-          });
+          })
+            .then((res) => {
+              setRecommendedItems(res.data);
+              setIsRecommendLoading(false);
+            })
+            .catch(() => {
+              createToast('error', '오류가 발생했습니다. 다시 시도해주세요.');
+              onPrevPage();
+            });
 
           onNextPage();
         }}

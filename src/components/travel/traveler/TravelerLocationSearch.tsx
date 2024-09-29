@@ -35,7 +35,7 @@ const styles = {
     flex-direction: column;
     gap: 2rem;
 
-    h1 {
+    h2 {
       font-family: Noto Sans KR;
       font-size: 23px;
       font-weight: 700;
@@ -52,7 +52,7 @@ const styles = {
     position: fixed;
     align-items: center;
     gap: 0.5rem;
-    transform: translate(-175%, 45%);
+    transform: translate(-110%, 45%);
   `,
 
   prevButton: styled.img`

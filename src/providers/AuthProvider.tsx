@@ -118,9 +118,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const responseInterceptor = axios.interceptors.response.use(
       (response) => response,
       async (error) => {
-        if (error.response?.status === 500) {
-          router.replace('/login');
+        if (
+          error.response?.status === 500 &&
+          error.response?.data.data === '필터 내부의 예외가 발생했습니다.'
+        ) {
+          createToast('error', '서버와의 통신에 실패하였습니다.');
         }
+        return Promise.reject(error);
       },
     );
 

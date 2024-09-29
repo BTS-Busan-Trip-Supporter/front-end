@@ -2,6 +2,7 @@
 
 import styled from '@emotion/styled';
 
+import { useToast } from '@/features/toast';
 import { postTripSchedule, TIME_STRING } from '@/features/trip';
 import type { Activity } from '@/features/trip/trip.slice';
 import { useTripStore } from '@/features/trip/trip.slice';
@@ -14,6 +15,7 @@ export function TravelerTravelArrange({
   onPrevPage: () => void;
 }) {
   const { tourInfo, activities } = useTripStore();
+  const { createToast } = useToast();
 
   return (
     <styles.container>
@@ -38,6 +40,11 @@ export function TravelerTravelArrange({
             !tourInfo.endTime
           )
             return;
+
+          if (activities.some((v) => v.length === 0)) {
+            createToast('info', '장소를 한 개 이상 선택해주세요');
+            return;
+          }
 
           postTripSchedule({
             tourLogData: {
