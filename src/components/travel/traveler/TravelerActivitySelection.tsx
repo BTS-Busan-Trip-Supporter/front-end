@@ -36,8 +36,10 @@ const types = {
 };
 
 export function TravelerActivitySelection({
+  onPrevPage,
   onNextPage,
 }: {
+  onPrevPage: () => void;
   onNextPage: () => void;
 }) {
   const {
@@ -50,6 +52,13 @@ export function TravelerActivitySelection({
 
   return (
     <styles.container>
+      <styles.header>
+        <styles.prevButton
+          src='/chevron-left.svg'
+          alt='chevron-left'
+          onClick={onPrevPage}
+        />
+      </styles.header>
       <styles.caption>나머지 일정도 추천해드릴게요.</styles.caption>
       <styles.description>어떤 활동을 하고 싶으세요?</styles.description>
       <SearchBox
@@ -128,7 +137,6 @@ const styles = {
     font-weight: 700;
     line-height: 28.96px;
     letter-spacing: -0.02em;
-    align-self: flex-start;
 
     color: #505050;
   `,
@@ -147,5 +155,18 @@ const styles = {
 
   CustomButton: styled(CustomButton)`
     margin-bottom: auto;
+  `,
+
+  header: styled.div`
+    align-self: flex-start;
+    display: flex;
+    position: fixed;
+    gap: 0.5rem;
+    transform: translateY(50%);
+  `,
+
+  prevButton: styled.img`
+    width: 1rem;
+    height: 1rem;
   `,
 };

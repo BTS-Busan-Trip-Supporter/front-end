@@ -125,6 +125,7 @@ export function TravelerPage() {
         return (
           <TravelerActivitySelection
             onNextPage={() => dispatch({ type: 'NEXT' })}
+            onPrevPage={() => dispatch({ type: 'PREV' })}
           />
         );
       case 'traveler-activity-recommendation':
