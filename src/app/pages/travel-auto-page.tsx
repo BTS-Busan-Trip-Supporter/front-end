@@ -299,7 +299,7 @@ function ResultWrapper({
   createSchedule,
 }: AutoProps) {
   if (isLoading) {
-    return <Loading />;
+    return <Loading type='travel' />;
   }
 
   if (!isDetailVisible) {

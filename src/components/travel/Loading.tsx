@@ -2,15 +2,19 @@
 
 import styled from '@emotion/styled';
 
-export function Loading() {
+export function Loading({ type }: { type: 'record' | 'travel' }) {
   return (
     <styles.wrapper>
       <div>
-        <p>
-          흥미로운 여행지를
-          <br />
-          선택해보세요!
-        </p>
+        {type === 'travel' ? (
+          <p>
+            흥미로운 여행지를
+            <br />
+            선택해보세요!
+          </p>
+        ) : (
+          <p>기록을 불러오는 중입니다</p>
+        )}
         <div className='loader' />
       </div>
     </styles.wrapper>

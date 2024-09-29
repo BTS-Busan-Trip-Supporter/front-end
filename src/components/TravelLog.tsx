@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import { Loading } from './travel/Loading';
 import { ReviewCard } from './travel/ReviewCard';
 
 import {
@@ -30,7 +31,7 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
   const router = useRouter();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
-  const { data: tripSchedule } = useTripSchedule(selectedTravel);
+  const { data: tripSchedule, status } = useTripSchedule(selectedTravel);
   const [groupedData, setGroupedData] = useState<
     Record<number, TourActivityDTO[]>
   >([]);
@@ -76,6 +77,7 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
 
   return (
     <styles.wrapper>
+      {status === 'pending' ? <Loading type='record' /> : null}
       {selectedDay === null ? (
         <>
           <styles.header>
