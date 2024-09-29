@@ -25,7 +25,8 @@ export function TravelerAddDays({
     tourSpotDto?: GetTourSpotsDTO;
   }>({ ui: 'main' });
 
-  const { tourInfo, activities, addTour, addActivity } = useTripStore();
+  const { tourInfo, activities, addTour, addActivity, removeActivity } =
+    useTripStore();
 
   return (
     <>
@@ -50,6 +51,9 @@ export function TravelerAddDays({
                         destination={{
                           time: activity.dayTime,
                           name: activity.spotName,
+                        }}
+                        onRemove={() => {
+                          removeActivity(index + 1, activity);
                         }}
                       />
                     ))}
@@ -171,14 +175,16 @@ export function TravelerAddDays({
 
 function Destination({
   destination,
+  onRemove,
 }: {
   destination: {
     name: string;
     time: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
   };
+  onRemove: () => void;
 }) {
   return (
-    <styles.destinationContainer>
+    <styles.destinationContainer onClick={onRemove}>
       <p data-time>{TIME_STRING[destination.time]}</p>
       <p>{destination.name}</p>
     </styles.destinationContainer>
