@@ -25,7 +25,14 @@ export function TravelerAddDays({
     tourSpotDto?: GetTourSpotsDTO;
   }>({ ui: 'main' });
 
-  const { tourInfo, activities, addTour, addActivity } = useTripStore();
+  const {
+    tourInfo,
+    activities,
+    addTour,
+    removeTour,
+    addActivity,
+    removeActivity,
+  } = useTripStore();
 
   return (
     <>
@@ -41,7 +48,13 @@ export function TravelerAddDays({
           <styles.dayContainer>
             {activities.map((acts, index) => (
               <styles.daySchedule key={index}>
-                <styles.dayTitle>{index + 1}일차</styles.dayTitle>
+                <styles.dayTitle
+                  onClick={() => {
+                    removeTour(index + 1);
+                  }}
+                >
+                  {index + 1}일차
+                </styles.dayTitle>
                 <styles.dayFrame>
                   {acts.length > 0 &&
                     acts.map((activity) => (
@@ -50,6 +63,9 @@ export function TravelerAddDays({
                         destination={{
                           time: activity.dayTime,
                           name: activity.spotName,
+                        }}
+                        onRemove={() => {
+                          removeActivity(index + 1, activity);
                         }}
                       />
                     ))}
@@ -171,14 +187,16 @@ export function TravelerAddDays({
 
 function Destination({
   destination,
+  onRemove,
 }: {
   destination: {
     name: string;
     time: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
   };
+  onRemove: () => void;
 }) {
   return (
-    <styles.destinationContainer>
+    <styles.destinationContainer onClick={onRemove}>
       <p data-time>{TIME_STRING[destination.time]}</p>
       <p>{destination.name}</p>
     </styles.destinationContainer>
@@ -210,7 +228,7 @@ const styles = {
 
   dayContainer: styled.div`
     width: 100%;
-    padding: 1rem 0;
+    padding: 1rem 0.25rem;
 
     display: flex;
     flex-direction: row;
@@ -240,8 +258,9 @@ const styles = {
   dayFrame: styled.div`
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+
+    padding: 1rem 0;
 
     width: 136px;
     min-height: 283px;
@@ -292,6 +311,8 @@ const styles = {
 
     display: flex;
     align-items: center;
+
+    margin: auto;
   `,
 
   CustomButton: styled(CustomButton)`
