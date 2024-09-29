@@ -106,6 +106,11 @@ export function TravelerPage() {
       case 'traveler-add-days':
         return (
           <TravelerAddDays
+            onPrevPage={() => {
+              dispatch({
+                type: 'PREV',
+              });
+            }}
             onNextPage={() => {
               dispatch({
                 type: 'NEXT',

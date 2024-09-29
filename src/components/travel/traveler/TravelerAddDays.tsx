@@ -10,7 +10,13 @@ import { getTourSpots, type GetTourSpotsDTO } from '@/features/tour-spot';
 import { TIME_STRING } from '@/features/trip';
 import { useTripStore } from '@/features/trip/trip.slice';
 
-export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
+export function TravelerAddDays({
+  onPrevPage,
+  onNextPage,
+}: {
+  onPrevPage: () => void;
+  onNextPage: () => void;
+}) {
   const [state, setState] = useState<{
     ui: 'main' | 'search' | 'confirm';
     day?: number;
@@ -25,6 +31,13 @@ export function TravelerAddDays({ onNextPage }: { onNextPage: () => void }) {
     <>
       {state.ui === 'main' && (
         <styles.container>
+          <styles.header>
+            <styles.prevButton
+              src='/chevron-left.svg'
+              alt='chevron-left'
+              onClick={onPrevPage}
+            />
+          </styles.header>
           <styles.dayContainer>
             {activities.map((acts, index) => (
               <styles.daySchedule key={index}>
@@ -309,5 +322,18 @@ const styles = {
     padding: 0.5rem;
 
     overflow: clip;
+  `,
+
+  header: styled.div`
+    display: flex;
+    position: fixed;
+    align-items: center;
+    gap: 0.5rem;
+    transform: translateY(calc(-53px + 50%));
+  `,
+
+  prevButton: styled.img`
+    width: 1rem;
+    height: 1rem;
   `,
 };
