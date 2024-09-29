@@ -20,7 +20,7 @@ export function ProfileEditPage() {
     setIsEditPWD(false);
   };
 
-  const { data: userData } = useUserData(localStorage.getItem('accessToken'));
+  const { data: userData } = useUserData();
 
   return (
     <styles.container>
