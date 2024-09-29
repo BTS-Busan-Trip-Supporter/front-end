@@ -46,7 +46,7 @@ export function TravelerActivitySelection({
   const {
     tourInfo,
     recommendContent,
-    setIsRecommendLoading,
+    setIsLoading,
     setRecommendContent,
     setRecommendedItems,
   } = useTripStore();
@@ -70,7 +70,8 @@ export function TravelerActivitySelection({
           setRecommendContent(value);
         }}
         onClick={() => {
-          setIsRecommendLoading(true);
+          setIsLoading(true);
+
           postDayTrip({
             tourDate: new Date().toISOString(),
             sigunguCode: String(
@@ -87,11 +88,13 @@ export function TravelerActivitySelection({
           })
             .then((res) => {
               setRecommendedItems(res.data);
-              setIsRecommendLoading(false);
             })
             .catch(() => {
               createToast('error', '오류가 발생했습니다. 다시 시도해주세요.');
               onPrevPage();
+            })
+            .finally(() => {
+              setIsLoading(false);
             });
 
           onNextPage();
@@ -101,7 +104,7 @@ export function TravelerActivitySelection({
         color='#FF75C8'
         text='알아서 해줘'
         onClick={() => {
-          setIsRecommendLoading(true);
+          setIsLoading(true);
           postDayTrip({
             tourDate: new Date().toISOString(),
             sigunguCode: String(
@@ -118,7 +121,7 @@ export function TravelerActivitySelection({
           })
             .then((res) => {
               setRecommendedItems(res.data);
-              setIsRecommendLoading(false);
+              setIsLoading(false);
             })
             .catch(() => {
               createToast('error', '오류가 발생했습니다. 다시 시도해주세요.');

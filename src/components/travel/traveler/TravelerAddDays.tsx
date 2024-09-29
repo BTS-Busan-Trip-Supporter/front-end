@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { CustomButton } from '@/components';
 import { TravelerLocationConfirm } from '@/components/travel/traveler/TravelerLocationConfirm';
 import { TravelerLocationSearch } from '@/components/travel/traveler/TravelerLocationSearch';
+import { useToast } from '@/features/toast';
 import { getTourSpots, type GetTourSpotsDTO } from '@/features/tour-spot';
 import { TIME_STRING } from '@/features/trip';
 import { useTripStore } from '@/features/trip/trip.slice';
@@ -33,6 +34,8 @@ export function TravelerAddDays({
     addActivity,
     removeActivity,
   } = useTripStore();
+
+  const { createToast } = useToast();
 
   return (
     <>
@@ -149,6 +152,8 @@ export function TravelerAddDays({
                 )
               ) {
                 setState((prev) => ({ ...prev, time }));
+              } else {
+                createToast('error', '이미 선택된 시간대입니다!');
               }
             }}
             onConfirm={() => {

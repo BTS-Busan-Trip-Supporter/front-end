@@ -50,7 +50,7 @@ export function TravelerActivityRecommendation({
   onNextPage: () => void;
   onPrevPage: () => void;
 }) {
-  const { isRecommendLoading, tourInfo, recommendContent, fillActivities } =
+  const { isLoading, tourInfo, recommendContent, fillActivities } =
     useTripStore();
 
   const [isDetailVisible, setIsDetailVisible] = useState(false);
@@ -65,7 +65,7 @@ export function TravelerActivityRecommendation({
 
   return (
     <styles.container>
-      {!isDetailVisible && !isRecommendLoading && (
+      {!isDetailVisible && !isLoading && (
         <styles.header>
           <styles.prevButton
             src='/chevron-left.svg'
@@ -75,7 +75,7 @@ export function TravelerActivityRecommendation({
         </styles.header>
       )}
       <ResultWrapper
-        isLoading={isRecommendLoading}
+        isLoading={isLoading}
         isDetailVisible={isDetailVisible}
         selectedPlace={selectedPlace}
         selectedPlaces={selectedPlaces}
@@ -83,7 +83,7 @@ export function TravelerActivityRecommendation({
         setIsDetailVisible={setIsDetailVisible}
         handleCardClick={handleCardClick}
       />
-      {!isRecommendLoading && !isDetailVisible && (
+      {!isLoading && !isDetailVisible && (
         <CustomButton
           color='#FF75C8'
           text='여행 완성'
