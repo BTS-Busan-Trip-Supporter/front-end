@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 
-import type { TripItem } from '@/features/trip/trip.dto';
+import type {
+  GetTripScheduleResponseDTO,
+  TripItem,
+} from '@/features/trip/trip.dto';
 import { DropBoxMenu, TIME_ORDER } from '@/features/trip/trip.type';
 
 export interface Activity {
@@ -16,6 +19,7 @@ export interface Activity {
     title: string;
     sigunguCode: string;
   };
+  totalTime?: number;
 }
 
 export interface TourInfo {
@@ -30,7 +34,7 @@ export interface TripState {
   tourInfo: TourInfo;
   activities: Array<Array<Activity>>;
 
-  isRecommendLoading: boolean;
+  isLoading: boolean;
   recommendContent?: string;
   recommendedItems: TripItem[];
 }
@@ -39,7 +43,7 @@ export interface TripAction {
   isAllTravelSchedulesFilled: () => boolean;
   setLocation: (location: string) => void;
   setDates: (dates: { start: Date; end: Date }) => void;
-  setIsRecommendLoading: (isRecommendLoading: boolean) => void;
+  setIsLoading: (isLoading: boolean) => void;
   setRecommendContent: (content: string) => void;
   setRecommendedItems: (items: TripItem[]) => void;
   addTour: () => void;
@@ -47,12 +51,13 @@ export interface TripAction {
   addActivity: (day: number, activity: Activity) => void;
   removeActivity: (day: number, activity: Activity) => void;
   fillActivities: (items: Activity[]) => void;
+  load: (dto: GetTripScheduleResponseDTO) => void;
 }
 
 const initialState: TripState = {
   tourInfo: {},
   activities: [],
-  isRecommendLoading: false,
+  isLoading: false,
   recommendedItems: [],
 };
 
@@ -95,10 +100,10 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
       ),
     })),
 
-  setIsRecommendLoading: (isRecommendLoading) =>
+  setIsLoading: (isLoading) =>
     set((prev) => ({
       ...prev,
-      isRecommendLoading,
+      isLoading,
     })),
 
   setRecommendContent: (content: string) =>
@@ -148,15 +153,6 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
         activities: [...activities.slice(0, day - 1), ...activities.slice(day)],
       };
     }),
-
-  removeTour: (day) =>
-    set((prev) => ({
-      ...prev,
-      activities: [
-        ...prev.activities.slice(0, day - 1),
-        ...prev.activities.slice(day),
-      ],
-    })),
 
   addActivity: (day, activity) =>
     set((prev) => ({
@@ -220,6 +216,24 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
             acts.sort((a, b) => TIME_ORDER[a.dayTime] - TIME_ORDER[b.dayTime]);
           }
         });
+      });
+
+      return { ...prev, activities: newActivities };
+    }),
+
+  load: (dto) =>
+    set((prev) => {
+      const newActivities = [...prev.activities];
+
+      dto.data.tourActivityInfos.forEach((activityInfo) => {
+        const { dayNumber } = activityInfo;
+        newActivities[dayNumber - 1] = newActivities[dayNumber - 1].map(
+          (activity) =>
+            activity.spotName === activityInfo.spotName &&
+            activity.dayTime === activityInfo.dayTime
+              ? { ...activity, totalTime: activityInfo.totalTime }
+              : activity,
+        );
       });
 
       return { ...prev, activities: newActivities };

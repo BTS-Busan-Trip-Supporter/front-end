@@ -6,13 +6,19 @@ import { useState } from 'react';
 
 import { Background, CustomButton, SearchBox } from '@/components';
 import { useUserData } from '@/features/member';
+import { useToast } from '@/features/toast';
 
 export function TravelPage() {
   const [searchContent, setSearchContent] = useState('');
+  const { createToast } = useToast();
 
   const router = useRouter();
 
   const handleButtonClick = (route: string) => {
+    if (searchContent === '') {
+      createToast('info', '장소를 선택해보세요!');
+      return;
+    }
     router.replace(route);
     sessionStorage.setItem('searchContent', searchContent);
   };

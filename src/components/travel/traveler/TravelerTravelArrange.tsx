@@ -2,7 +2,8 @@
 
 import styled from '@emotion/styled';
 
-import { postTripSchedule, TIME_STRING } from '@/features/trip';
+import { Loading } from '@/components/travel';
+import { TIME_STRING } from '@/features/trip';
 import type { Activity } from '@/features/trip/trip.slice';
 import { useTripStore } from '@/features/trip/trip.slice';
 
@@ -13,7 +14,9 @@ export function TravelerTravelArrange({
   onNextPage: () => void;
   onPrevPage: () => void;
 }) {
-  const { tourInfo, activities } = useTripStore();
+  const { tourInfo, activities, isLoading } = useTripStore();
+
+  if (isLoading) return <Loading type='record' />;
 
   return (
     <styles.container>
@@ -28,37 +31,7 @@ export function TravelerTravelArrange({
       {activities.map((acts, index) => (
         <DayScheduleItem key={index} day={index + 1} activities={acts} />
       ))}
-      <button
-        type='button'
-        onClick={() => {
-          if (
-            !tourInfo.name ||
-            !tourInfo.locationName ||
-            !tourInfo.startTime ||
-            !tourInfo.endTime
-          )
-            return;
-
-          postTripSchedule({
-            tourLogData: {
-              name: tourInfo.name,
-              locationName: tourInfo.locationName,
-              startTime: tourInfo.startTime.toISOString().slice(0, -5),
-              endTime: tourInfo.endTime.toISOString().slice(0, -5),
-            },
-            tourActivityDataList: activities.flat().map((act) => ({
-              spotName: act.spotName,
-              dayNumber: act.dayNumber,
-              dayTime: act.dayTime,
-              orderIndex: 0,
-              tourSpotData: {
-                contentId: act.tourSpotDto.id,
-                contentTypeId: act.tourSpotDto.typeId,
-              },
-            })),
-          }).then(onNextPage);
-        }}
-      >
+      <button type='button' onClick={onNextPage}>
         <div>
           <img src='/traveler-write-record.svg' alt='button to write review' />
           <p>기록하기</p>
@@ -79,11 +52,12 @@ function DayScheduleItem({
     <styles.daySchedule>
       <h2>{day}일차</h2>
       <ul>
-        {activities.map((activity) => (
+        {activities.map((activity, index) => (
           <DestinationItem
             key={`${activity.dayTime}-${activity.spotName}`}
             day={day}
             activity={activity}
+            isLast={activities.length - 1 === index}
           />
         ))}
       </ul>
@@ -94,9 +68,11 @@ function DayScheduleItem({
 function DestinationItem({
   day,
   activity,
+  isLast,
 }: {
   day: number;
   activity: Activity;
+  isLast: boolean;
 }) {
   function DashedLine() {
     return (
@@ -123,10 +99,16 @@ function DestinationItem({
 
   function TimeToDestination() {
     return (
-      <div style={{ width: '100%', gap: '6px' }}>
-        <img src='/location-pin.svg' alt='location pin' />
-        {/* <p data-timetodestination>{activity.timeToDestination}분</p> */}
-      </div>
+      <>
+        {!isLast && activity.totalTime && (
+          <div style={{ width: '100%', gap: '6px' }}>
+            <img src='/location-pin.svg' alt='location pin' />
+            <p data-timetodestination>
+              {Math.round(activity.totalTime / 60)}분
+            </p>
+          </div>
+        )}
+      </>
     );
   }
 
@@ -180,8 +162,6 @@ const styles = {
   `,
 
   location: styled.h1`
-    transform: translateY(20px);
-
     font-family: Noto Sans KR;
     font-size: 16px;
     font-weight: 500;
@@ -190,8 +170,6 @@ const styles = {
     text-align: left;
 
     color: #969696;
-
-    margin-top: 1rem;
   `,
 
   daySchedule: styled.div`
@@ -300,7 +278,7 @@ const styles = {
 
   header: styled.div`
     display: flex;
-    position: fixed;
+    position: relative;
     align-items: center;
     gap: 0.5rem;
   `,

@@ -19,6 +19,7 @@ export interface TourActivityDTO {
   dayNumber: number;
   dayTime: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
   orderIndex: number;
+  totalTime?: number;
 }
 
 export interface TourSpotDTO {
