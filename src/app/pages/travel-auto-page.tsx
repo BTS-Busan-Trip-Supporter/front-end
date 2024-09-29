@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 
 import {
@@ -62,6 +63,7 @@ function transformTourActivityData(selectedPlaces: Location[]) {
 
 export function TravelAutoPage() {
   const { createToast } = useToast();
+  const router = useRouter();
   const [searchContent, setSearchContent] = useState('');
 
   useEffect(() => {
@@ -146,9 +148,10 @@ export function TravelAutoPage() {
     useCreateTripSchedule(parsingSchedule());
 
   useEffect(() => {
-    if (isCreate === 'success')
+    if (isCreate === 'success') {
       createToast('success', '여행이 완성되었습니다!');
-    else if (isCreate === 'error')
+      router.replace('/');
+    } else if (isCreate === 'error')
       createToast('error', '여행이 완성되지 않았습니다.');
   }, [isCreate]);
 
