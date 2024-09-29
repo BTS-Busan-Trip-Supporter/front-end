@@ -2,19 +2,23 @@
 
 import styled from '@emotion/styled';
 
-export function Loading({ type }: { type: 'record' | 'travel' }) {
+const typeMap: Record<'record' | 'travel' | 'detail', React.ReactElement> = {
+  record: <p>기록을 불러오는 중입니다</p>,
+  travel: (
+    <p>
+      흥미로운 여행지를
+      <br />
+      선택해보세요!
+    </p>
+  ),
+  detail: <p>잠시만 기다려주세요!</p>,
+};
+
+export function Loading({ type }: { type: 'record' | 'travel' | 'detail' }) {
   return (
     <styles.wrapper>
       <div>
-        {type === 'travel' ? (
-          <p>
-            흥미로운 여행지를
-            <br />
-            선택해보세요!
-          </p>
-        ) : (
-          <p>기록을 불러오는 중입니다</p>
-        )}
+        {typeMap[type]}
         <div className='loader' />
       </div>
     </styles.wrapper>
