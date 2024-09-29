@@ -43,6 +43,7 @@ export interface TripAction {
   setRecommendContent: (content: string) => void;
   setRecommendedItems: (items: TripItem[]) => void;
   addTour: () => void;
+  removeTour: (day: number) => void;
   addActivity: (day: number, activity: Activity) => void;
   removeActivity: (day: number, activity: Activity) => void;
   fillActivities: (items: Activity[]) => void;
@@ -111,6 +112,15 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
 
   addTour: () =>
     set((prev) => ({ ...prev, activities: [...prev.activities, []] })),
+
+  removeTour: (day) =>
+    set((prev) => ({
+      ...prev,
+      activities: [
+        ...prev.activities.slice(0, day - 1),
+        ...prev.activities.slice(day),
+      ],
+    })),
 
   addActivity: (day, activity) =>
     set((prev) => ({

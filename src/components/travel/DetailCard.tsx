@@ -34,8 +34,6 @@ export function DetailCard({
 }) {
   const [time, setTime] = useState<Times>(place.time ?? '오전');
 
-  console.log(time);
-
   const { data: tourSpot } = useTourSpotData(
     place.item.contentId,
     place.item.contentTypeId,
@@ -222,7 +220,6 @@ const styles = {
 
   placeImg: styled.img<NoImage>`
     width: 100%;
-    object-fit: content;
     flex: 1;
     border-radius: 8px;
     margin-top: 0.8rem;

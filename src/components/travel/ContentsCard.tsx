@@ -17,7 +17,7 @@ const styles = {
   container: styled.div<{ $type: 'auto' | 'traveler' | 'edit' }>`
     width: 100%;
     height: 76%;
-    border-radius: 2.6875rem;
+    border-radius: 2.6875rem 2.6875rem 0 0;
     background: #fafaff;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     position: absolute;
@@ -29,5 +29,7 @@ const styles = {
     justify-content: start;
 
     top: 24%;
+
+    overflow-y: scroll;
   `,
 };

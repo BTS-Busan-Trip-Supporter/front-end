@@ -8,13 +8,22 @@ import { useTripStore } from '@/features/trip/trip.slice';
 
 export function TravelerTravelArrange({
   onNextPage,
+  onPrevPage,
 }: {
   onNextPage: () => void;
+  onPrevPage: () => void;
 }) {
   const { tourInfo, activities } = useTripStore();
 
   return (
     <styles.container>
+      <styles.header>
+        <styles.prevButton
+          src='/chevron-left.svg'
+          alt='chevron-left'
+          onClick={onPrevPage}
+        />
+      </styles.header>
       <styles.location>{tourInfo.locationName}</styles.location>
       {activities.map((acts, index) => (
         <DayScheduleItem key={index} day={index + 1} activities={acts} />
@@ -181,6 +190,8 @@ const styles = {
     text-align: left;
 
     color: #969696;
+
+    margin-top: 1rem;
   `,
 
   daySchedule: styled.div`
@@ -285,5 +296,17 @@ const styles = {
       stroke-width: 2px;
       stroke-dasharray: 5, 5;
     }
+  `,
+
+  header: styled.div`
+    display: flex;
+    position: fixed;
+    align-items: center;
+    gap: 0.5rem;
+  `,
+
+  prevButton: styled.img`
+    width: 1rem;
+    height: 1rem;
   `,
 };

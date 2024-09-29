@@ -8,15 +8,24 @@ export function TravelerLocationConfirm({
   selectedTime,
   onTimeClicked,
   onConfirm,
+  onPrevPage,
 }: {
   location: string;
   day: number;
   selectedTime?: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
   onTimeClicked: (time: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT') => void;
   onConfirm: () => void;
+  onPrevPage: () => void;
 }) {
   return (
     <styles.container>
+      <styles.header>
+        <styles.prevButton
+          src='/chevron-left.svg'
+          alt='chevron-left'
+          onClick={onPrevPage}
+        />
+      </styles.header>
       <p>{location}을/를</p>
       <p>{day}일차</p>
       <styles.timeCardCon>
@@ -60,6 +69,8 @@ const styles = {
     gap: 2rem;
     align-items: start;
 
+    padding-top: 2rem;
+
     p {
       font-family: Noto Sans KR;
       font-size: 23px;
@@ -71,14 +82,29 @@ const styles = {
       color: #505050;
     }
   `,
+
   timeCardCon: styled.div`
     display: grid;
     width: 100%;
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
   `,
+
   CustomButton: styled(CustomButton)`
     margin-top: auto;
     margin-bottom: auto;
+  `,
+
+  header: styled.div`
+    display: flex;
+    position: fixed;
+    align-items: center;
+    gap: 0.5rem;
+    transform: translateY(calc(-2rem + 50%));
+  `,
+
+  prevButton: styled.img`
+    width: 1rem;
+    height: 1rem;
   `,
 };
