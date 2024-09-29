@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     refreshAccessToken().finally(() => setLoading(false));
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const requestInterceptor = axios.interceptors.request.use(

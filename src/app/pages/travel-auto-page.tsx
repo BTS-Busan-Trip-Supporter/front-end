@@ -84,7 +84,21 @@ export function TravelAutoPage() {
   };
 
   const ResultsRef = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const isResultVisible = useIntersectionObserver(ResultsRef);
+
+  useEffect(() => {
+    if (wrapperRef.current) {
+      if (event === '') wrapperRef.current.style.overflow = 'hidden';
+      else wrapperRef.current.style.overflow = 'auto';
+    }
+
+    return () => {
+      if (wrapperRef.current) {
+        wrapperRef.current.style.overflow = 'auto';
+      }
+    };
+  }, [event]);
 
   const parsingItem = () => {
     const contentType = DropBoxMenu.travelType.find(
@@ -148,7 +162,7 @@ export function TravelAutoPage() {
       />
     ),
     childNode: (
-      <styles.wrapper>
+      <styles.wrapper ref={wrapperRef}>
         <InputWhat where={searchContent} setContent={setEvent} />
         <div ref={ResultsRef} className='result-wrapper'>
           <ResultWrapper
