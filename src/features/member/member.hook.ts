@@ -50,25 +50,19 @@ export const useRegisterMember = (
     onSuccess: (data) => data.data,
   });
 
-export const useUserData = (token: string | null) =>
+export const useUserData = () =>
   useQuery({
-    queryKey: ['/mypage', token],
-    queryFn: () => getUserData(token),
-    enabled: token != null,
+    queryKey: ['/mypage'],
+    queryFn: () => getUserData(),
   });
 
-export const useChangeUserName = (token: string | null) =>
+export const useChangeUserName = () =>
   useMutation({
-    mutationFn: (newName: string) => {
-      if (!token) {
-        return Promise.reject(new Error('Token does not exist'));
-      }
-      return putUserName(token, newName);
-    },
+    mutationFn: (newName: string) => putUserName(newName),
     onSuccess: (data) => data.data,
   });
 
-export const useChangePassword = (token: string | null) =>
+export const useChangePassword = () =>
   useMutation({
     mutationFn: ({
       oldPassword,
@@ -76,12 +70,7 @@ export const useChangePassword = (token: string | null) =>
     }: {
       oldPassword: string;
       newPassword: string;
-    }) => {
-      if (!token) {
-        throw new Error('Token does not exist');
-      }
-      return putPassword(token, oldPassword, newPassword);
-    },
+    }) => putPassword(oldPassword, newPassword),
     onSuccess: (data) => data.data,
   });
 

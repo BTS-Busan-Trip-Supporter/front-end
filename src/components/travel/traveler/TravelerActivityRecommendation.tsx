@@ -140,7 +140,7 @@ function ResultWrapper({
   const { recommendedItems } = useTripStore();
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading type='travel' />;
   }
 
   if (!isDetailVisible) {

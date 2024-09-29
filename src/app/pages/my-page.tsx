@@ -8,7 +8,7 @@ import { type TourLogDTO, useTripSchedules } from '@/features/trip';
 import { convertDate } from '@/shared';
 
 export function MyPage() {
-  const { data: userData } = useUserData(localStorage.getItem('accessToken'));
+  const { data: userData } = useUserData();
 
   const router = useRouter();
   const { logout } = useAuth();

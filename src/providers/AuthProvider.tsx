@@ -63,29 +63,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const getTokenExpiration = (token: string) => {
-    const base64Url = token.split('.')[1];
-    const tokenPayload = JSON.parse(atob(base64Url));
-
-    return tokenPayload.exp * 1000;
-  };
-
   const refreshAccessToken = useCallback(async () => {
     if (isRefreshing) return;
 
     setIsRefreshing(true);
     const token = localStorage.getItem('accessToken');
     try {
-      const response = await axios
-        .get('/p-travel-log/reissue', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        })
-        .catch(() => {
-          router.replace('/login');
-        });
+      const response = await axios.get('/p-travel-log/reissue', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
 
       if (response && response.data) {
         const newToken = response.data.data.accessToken.split(' ')[1];
@@ -96,35 +85,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsRefreshing(false);
     }
-  }, [isRefreshing]);
-
-  const scheduleTokenRefresh = useCallback(
-    (token: string) => {
-      const expirationTime = getTokenExpiration(token);
-      const currentTime = Date.now();
-      const timeUntilRefresh = expirationTime - currentTime - 60 * 1000;
-
-      if (timeUntilRefresh > 0) {
-        setTimeout(() => {
-          if (!isRefreshing) refreshAccessToken();
-        }, timeUntilRefresh);
-      }
-    },
-    [refreshAccessToken, isRefreshing],
-  );
-
-  const checkTokenValidity = useCallback(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) return false;
-
-    const expirationTime = getTokenExpiration(token);
-    const currentTime = Date.now();
-
-    if (expirationTime - currentTime < 60 * 1000) {
-      return false;
-    }
-
-    return true;
   }, []);
 
   useLayoutEffect(() => {
@@ -135,23 +95,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (
-      pathname.startsWith('/login') ||
-      pathname.startsWith('sign-up') ||
-      token == null
-    ) {
+    if (pathname.startsWith('/login') || pathname === '/sign-up') {
       setLoading(false);
       return;
     }
 
-    const isValid = checkTokenValidity();
-    if (!isValid) {
-      refreshAccessToken().finally(() => setLoading(false));
-    } else {
-      scheduleTokenRefresh(token ?? '');
-      setLoading(false);
-    }
-  }, [pathname, refreshAccessToken]);
+    refreshAccessToken().finally(() => setLoading(false));
+  }, [pathname]);
 
   useEffect(() => {
     const requestInterceptor = axios.interceptors.request.use(
@@ -164,8 +114,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
       (error) => Promise.reject(error),
     );
+
+    const responseInterceptor = axios.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        if (error.response?.status === 500) {
+          router.replace('/login');
+        }
+      },
+    );
+
     return () => {
       axios.interceptors.request.eject(requestInterceptor);
+      axios.interceptors.response.eject(responseInterceptor);
     };
   }, []);
 
