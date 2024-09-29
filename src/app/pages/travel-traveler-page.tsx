@@ -132,6 +132,7 @@ export function TravelerPage() {
         return (
           <TravelerActivityRecommendation
             onNextPage={() => dispatch({ type: 'NEXT' })}
+            onPrevPage={() => dispatch({ type: 'PREV' })}
           />
         );
       case 'traveler-travel-schedule-confirm':
