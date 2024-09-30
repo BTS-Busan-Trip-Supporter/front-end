@@ -23,7 +23,11 @@ export function TravelerLocationSearch({
         />
       </styles.header>
       <h2>미리 계획한 장소를 입력하세요.</h2>
-      <SearchBox setContent={onContentChange} onClick={onClick} />
+      <SearchBox
+        setContent={onContentChange}
+        onClick={onClick}
+        placeholder='장소를 입력해주세요.'
+      />
     </styles.container>
   );
 }

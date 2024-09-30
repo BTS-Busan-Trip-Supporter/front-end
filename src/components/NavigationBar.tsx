@@ -49,12 +49,12 @@ export function NavigationBar() {
           {pathName === '/' || pathName.startsWith('/travel') ? (
             <styles.menu $active>
               <styles.icon src='/travel-active.png' alt='travel-active-menu' />
-              여행하기
+              놀러가기
             </styles.menu>
           ) : (
             <styles.menu>
               <styles.icon src='/travel.png' alt='travel-menu' />
-              여행하기
+              놀러가기
             </styles.menu>
           )}
         </button>

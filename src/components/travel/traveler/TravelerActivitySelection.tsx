@@ -64,7 +64,7 @@ export function TravelerActivitySelection({
       </styles.header>
       <styles.caption>나머지 일정도 추천해드릴게요.</styles.caption>
       <styles.description>어떤 활동을 하고 싶으세요?</styles.description>
-      <SearchBox
+      <styles.SearchBox
         dropBoxType='travelType'
         setContent={(value) => {
           setRecommendContent(value);
@@ -95,37 +95,6 @@ export function TravelerActivitySelection({
             })
             .finally(() => {
               setIsLoading(false);
-            });
-
-          onNextPage();
-        }}
-      />
-      <styles.CustomButton
-        color='#FF75C8'
-        text='알아서 해줘'
-        onClick={() => {
-          setIsLoading(true);
-          postDayTrip({
-            tourDate: new Date().toISOString(),
-            sigunguCode: String(
-              types.regionType.find(
-                (region) => region.type === tourInfo.locationName,
-              )?.id ?? '1',
-            ),
-            contentTypeId: String(
-              types.travelType.find(
-                (region) => region.type === recommendContent,
-              )?.id ?? '1',
-            ),
-            dayTimes: ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'],
-          })
-            .then((res) => {
-              setRecommendedItems(res.data);
-              setIsLoading(false);
-            })
-            .catch(() => {
-              createToast('error', '오류가 발생했습니다. 다시 시도해주세요.');
-              onPrevPage();
             });
 
           onNextPage();
@@ -184,5 +153,9 @@ const styles = {
   prevButton: styled.img`
     width: 1rem;
     height: 1rem;
+  `,
+
+  SearchBox: styled(SearchBox)`
+    margin-bottom: auto;
   `,
 };

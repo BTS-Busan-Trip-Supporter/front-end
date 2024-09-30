@@ -130,7 +130,9 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
                       <li key={activity.id}>
                         <div className='contents'>
                           <styles.pin src='/gray-pin.svg' alt='gray-pin-icon' />
-                          <p className='name'>{activity.spotName}</p>
+                          <styles.name $isHistory={activity.history}>
+                            {activity.spotName}
+                          </styles.name>
                           <span className='dotted-line' />
                           <p className='time'>
                             {translateDayTime(activity.dayTime)}
@@ -219,6 +221,10 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
 
 interface ActiveProp {
   $active: boolean;
+}
+
+interface History {
+  $isHistory?: string | null;
 }
 
 const styles = {
@@ -322,21 +328,6 @@ const styles = {
         align-items: center;
       }
 
-      .name {
-        color: #7d7d7d;
-        font-family: 'Noto Sans KR';
-        font-size: 0.9375rem;
-        font-style: normal;
-        font-weight: 700;
-        line-height: normal;
-        letter-spacing: -0.01875rem;
-
-        max-width: 50%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
       .dotted-line {
         flex-grow: 1;
         border-bottom: 1px dashed #d3d3d3;
@@ -352,6 +343,24 @@ const styles = {
         white-space: nowrap;
       }
     }
+  `,
+
+  name: styled.p<History>`
+    color: #7d7d7d;
+    font-family: 'Noto Sans KR';
+    font-size: 0.9375rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: -0.01875rem;
+
+    background-color: ${(props) =>
+      props.$isHistory != null ? '#f5fca6' : 'transparent'};
+
+    max-width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   `,
 
   pin: styled.img`
