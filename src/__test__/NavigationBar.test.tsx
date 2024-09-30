@@ -40,16 +40,16 @@ describe('내비게이션 바 스냅샷 테스트', () => {
     mockUsePathname.mockReturnValue('/test');
 
     const { getByText } = render(<NavigationBar />);
-    expect(getByText('여행하기')).toBeInTheDocument();
+    expect(getByText('놀러가기')).toBeInTheDocument();
     expect(getByText('기록하기')).toBeInTheDocument();
   });
 
-  test('pathname이 / 경우 여행하기 메뉴가 활성화 되어야 합니다.', () => {
+  test('pathname이 / 경우 놀러가기 메뉴가 활성화 되어야 합니다.', () => {
     mockUsePathname.mockReturnValue('/');
     render(<NavigationBar />);
 
     expect(screen.getByAltText('travel-active-menu')).toBeInTheDocument();
-    expect(screen.getByText('여행하기')).toHaveStyle('color: #605EFF');
+    expect(screen.getByText('놀러가기')).toHaveStyle('color: #605EFF');
   });
 
   test('pathname이 /record인 경우 기록하기 메뉴가 활성화 되어야 합니다.', () => {
@@ -60,11 +60,11 @@ describe('내비게이션 바 스냅샷 테스트', () => {
     expect(screen.getByText('기록하기')).toHaveStyle('color: #605EFF');
   });
 
-  test('여행하기 메뉴에 클릭 이벤트가 발생한 경우 router가 / 로 replace 되어야 합니다.', () => {
+  test('놀러가기 메뉴에 클릭 이벤트가 발생한 경우 router가 / 로 replace 되어야 합니다.', () => {
     mockUsePathname.mockReturnValue('/');
 
     const { getByText } = render(<NavigationBar />);
-    fireEvent.click(getByText('여행하기'));
+    fireEvent.click(getByText('놀러가기'));
 
     expect(mockRouter.replace).toHaveBeenCalledWith('/');
   });
