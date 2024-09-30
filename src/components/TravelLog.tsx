@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { Loading } from './travel/Loading';
 import { ReviewCard } from './travel/ReviewCard';
 
+import { useToast } from '@/features/toast';
 import {
   type TourActivityDTO,
   translateDayTime,
@@ -30,6 +31,7 @@ const groupByDayNumber = (
 export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
   const router = useRouter();
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const { createToast } = useToast();
 
   const { data: tripSchedule, status } = useTripSchedule(selectedTravel);
   const [groupedData, setGroupedData] = useState<
@@ -52,10 +54,22 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
       ...prev,
       [id]: review,
     }));
-    updateReview({
-      tourActivityId: id,
-      history: review,
-    });
+    updateReview(
+      {
+        tourActivityId: id,
+        history: review,
+      },
+      {
+        onSuccess: () => {
+          createToast(
+            review != null ? 'success' : 'error',
+            review != null
+              ? '한 줄 평이 저장되었습니다!'
+              : '한 줄 평이 삭제되었습니다.',
+          );
+        },
+      },
+    );
   };
 
   const handleSetRecommend = (id: number, recommend: boolean | null) => {
@@ -63,10 +77,15 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
       ...prev,
       [id]: recommend,
     }));
-    updateRecommend({
-      tourActivityId: id,
-      recommend,
-    });
+    updateRecommend(
+      {
+        tourActivityId: id,
+        recommend,
+      },
+      {
+        onSuccess: () => createToast('success', '저장되었습니다!'),
+      },
+    );
   };
 
   useEffect(() => {
@@ -120,6 +139,11 @@ export function TravelLog({ selectedTravel }: { selectedTravel: number }) {
                       onClick={() => {
                         setSelectedDay(dayNumber);
                         setCurrentPage(0);
+                        createToast(
+                          'info',
+                          '여행에 대한 한 줄 평과 좋아요를 남겨보세요!',
+                          5000,
+                        );
                       }}
                     >
                       기록하기

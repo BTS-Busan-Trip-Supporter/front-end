@@ -145,7 +145,7 @@ export function TravelerPage() {
         return (
           <TravelerTravelArrange
             onNextPage={() => {
-              router.replace('/');
+              router.replace('/record');
             }}
             onPrevPage={() => dispatch({ type: 'PREV' })}
           />

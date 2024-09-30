@@ -42,7 +42,7 @@ export function TravelPage() {
         <styles.btnCon>
           <CustomButton
             color='#FF75C8'
-            text='알아서 해줘'
+            text='선택 완료'
             onClick={() => {
               handleButtonClick('/travel/auto');
             }}

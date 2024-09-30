@@ -29,22 +29,25 @@ interface ToastContainer {
 function ToastItem({ toast }: { toast: Toast }) {
   const [visible, setVisible] = useState(true);
   const { removeToast } = useToastStore();
-  const { id, type, message } = toast;
+  const { id, type, message, duration } = toast;
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-    }, DURATION);
+    }, duration ?? DURATION);
 
-    const removeTimer = setTimeout(() => {
-      removeToast(id);
-    }, DURATION + ANIMATION);
+    const removeTimer = setTimeout(
+      () => {
+        removeToast(id);
+      },
+      (duration ?? DURATION) + ANIMATION,
+    );
 
     return () => {
       clearTimeout(timer);
       clearTimeout(removeTimer);
     };
-  }, [id, removeToast]);
+  }, [id, removeToast, duration]);
   return (
     <styles.container id={id} $type={type} $visible={visible}>
       {message}
@@ -64,13 +67,13 @@ const fadeOut = keyframes`
 const getToastColors = (type: ToastType) => {
   switch (type) {
     case 'success':
-      return { backgroundColor: '#6B67F9' };
+      return { backgroundColor: '#f7f7fc' };
     case 'error':
       return { backgroundColor: '#FF6F61' };
     case 'info':
-      return { backgroundColor: '#505050' };
+      return { backgroundColor: '#f7f7fc' };
     default:
-      return { backgroundColor: '#505050' };
+      return { backgroundColor: '#f7f7fc' };
   }
 };
 
@@ -84,13 +87,12 @@ const styles = {
     align-items: center;
     flex-direction: column;
     gap: 1rem;
-    overflow: hidden;
   `,
 
   container: styled.div<ToastContainer>`
     width: 90%;
     border-radius: 8px;
-    color: #fff;
+    color: ${({ $type }) => ($type === 'error' ? 'white' : '#505050')};
     font-family: 'Noto Sans KR';
     font-size: 1rem;
     font-style: normal;
@@ -100,6 +102,7 @@ const styles = {
     background: ${({ $type }) => getToastColors($type).backgroundColor};
     text-align: center;
     padding: 1rem;
+    box-shadow: 0px 1px 4px 0px #6e80913d;
     animation: ${({ $visible }) => ($visible ? fadeIn : fadeOut)} 0.5s ease;
     transition:
       opacity 0.5s ease,
