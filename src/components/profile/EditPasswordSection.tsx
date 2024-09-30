@@ -3,13 +3,13 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
-import { useChangePassword } from '@/features/member';
+import { putPassword } from '@/features/member/member.api';
+import { useToast } from '@/features/toast';
 
 export function EditPasswordSection({ onClick }: { onClick: () => void }) {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-
-  const { mutate: changePWD } = useChangePassword();
+  const { createToast } = useToast();
 
   return (
     <styles.container>
@@ -37,8 +37,14 @@ export function EditPasswordSection({ onClick }: { onClick: () => void }) {
       </ul>
       <styles.submitButton
         onClick={() => {
-          changePWD({ oldPassword, newPassword });
-          onClick();
+          putPassword(oldPassword, newPassword)
+            .then(() => {
+              createToast('success', '비밀번호가 변경되었습니다.');
+            })
+            .catch(() => {
+              createToast('error', '현재 비밀번호가 일치하지 않습니다.');
+            })
+            .finally(onClick);
         }}
       >
         확인

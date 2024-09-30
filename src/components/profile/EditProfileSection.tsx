@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { useState } from 'react';
 
 import { useChangeUserName, type User } from '@/features/member';
+import { useToast } from '@/features/toast';
 
 export function EditProfileSection({
   user,
@@ -49,6 +50,7 @@ function ProfileInfo({
 function ListItem({ menu, content }: { menu: string; content?: string }) {
   const [value, setValue] = useState<string>();
   const { mutate: changeUserName } = useChangeUserName();
+  const { createToast } = useToast();
   return (
     <li>
       <p>{menu}</p>
@@ -62,7 +64,13 @@ function ListItem({ menu, content }: { menu: string; content?: string }) {
       {menu === '닉네임' && (
         <styles.changeButton
           onClick={() => {
-            if (value) changeUserName(value);
+            if (value)
+              changeUserName(value, {
+                onSuccess: () =>
+                  createToast('success', '변경이 완료되었습니다.'),
+                onError: () =>
+                  createToast('error', '변경하려는 이름이 너무 깁니다.'),
+              });
           }}
         >
           변경하기
@@ -141,6 +149,7 @@ const styles = {
   `,
 
   changeButton: styled.button`
+    min-width: 3.33rem;
     padding: 0.15rem 0.38rem;
     border-radius: 0.25rem;
     border: 0.4px solid #c9c9c9;
@@ -188,7 +197,7 @@ const styles = {
 
       input {
         border: none;
-        width: 50%;
+        flex: 1;
         height: 100%;
         color: #b5b5b5;
         text-align: right;
