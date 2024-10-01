@@ -190,13 +190,13 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
 
       const newActivities = [...activities];
 
-      items.forEach((activity, index) => {
+      items.forEach((activity) => {
         if (
           newActivities[day - 1].some((act) => act.dayTime === activity.dayTime)
         )
           return;
 
-        newActivities[day - 1].push({ ...activity, dayNumber: index + 1 });
+        newActivities[day - 1].push({ ...activity, dayNumber: day });
         newActivities[day - 1].sort(
           (a, b) => TIME_ORDER[a.dayTime] - TIME_ORDER[b.dayTime],
         );
