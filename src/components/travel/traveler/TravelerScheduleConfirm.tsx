@@ -1,6 +1,7 @@
 'use client';
 
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
 import { useToast } from '@/features/toast';
 import {
@@ -21,6 +22,8 @@ export function TravelerScheduleConfirm({
   onRecommendPage: (day: number) => void;
 }) {
   const { tourInfo, activities, setIsLoading, load } = useTripStore();
+
+  const [enabled, setEnabled] = useState<boolean>(true);
 
   const { createToast } = useToast();
 
@@ -46,6 +49,8 @@ export function TravelerScheduleConfirm({
       ))}
       <styles.confirmButton
         onClick={() => {
+          if (!enabled) return;
+
           if (
             !tourInfo.name ||
             !tourInfo.locationName ||
@@ -76,22 +81,24 @@ export function TravelerScheduleConfirm({
                 contentTypeId: act.tourSpotDto.typeId,
               },
             })),
-          }).then((res) => {
-            const { data: logId } = res;
+          })
+            .then((res) => {
+              const { data: logId } = res;
 
-            setIsLoading(true);
-            getTripSchedule(logId)
-              .then((dto) => {
-                load(dto);
-                onNextPage();
-              })
-              .catch(() => {
-                createToast('error', '다시 시도해주세요.');
-              })
-              .finally(() => {
-                setIsLoading(false);
-              });
-          });
+              setIsLoading(true);
+              getTripSchedule(logId)
+                .then((dto) => {
+                  load(dto);
+                  onNextPage();
+                })
+                .catch(() => {
+                  createToast('error', '다시 시도해주세요.');
+                })
+                .finally(() => {
+                  setIsLoading(false);
+                });
+            })
+            .finally(() => setEnabled(false));
         }}
       >
         여행 완성

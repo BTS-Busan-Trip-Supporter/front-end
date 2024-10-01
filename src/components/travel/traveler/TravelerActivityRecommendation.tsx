@@ -67,11 +67,12 @@ export function TravelerActivityRecommendation({
   const { createToast } = useToast();
 
   useEffect(() => {
-    createToast(
-      'info',
-      '기존 계획에 특정 시간대가 추가되어있다면, 추천에서 해당 시간대를 추가하더라도 추가되지 않습니다.',
-      5000,
-    );
+    if (!isLoading)
+      createToast(
+        'info',
+        '기존 계획에 특정 시간대가 추가되어있다면, 추천에서 해당 시간대를 추가하더라도 추가되지 않습니다.',
+        5000,
+      );
   }, [isLoading]);
 
   return (
