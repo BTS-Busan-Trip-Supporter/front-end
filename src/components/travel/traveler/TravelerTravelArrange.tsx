@@ -9,10 +9,8 @@ import { useTripStore } from '@/features/trip/trip.slice';
 
 export function TravelerTravelArrange({
   onNextPage,
-  onPrevPage,
 }: {
   onNextPage: () => void;
-  onPrevPage: () => void;
 }) {
   const { tourInfo, activities, isLoading } = useTripStore();
 
@@ -20,13 +18,6 @@ export function TravelerTravelArrange({
 
   return (
     <styles.container>
-      <styles.header>
-        <styles.prevButton
-          src='/chevron-left.svg'
-          alt='chevron-left'
-          onClick={onPrevPage}
-        />
-      </styles.header>
       <styles.location>{tourInfo.locationName}</styles.location>
       {activities.map((acts, index) => (
         <DayScheduleItem key={index} day={index + 1} activities={acts} />

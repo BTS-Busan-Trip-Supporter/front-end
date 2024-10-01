@@ -34,12 +34,12 @@ const transitionMap: { [key in UIState]: { NEXT?: UIState; PREV?: UIState } } =
       NEXT: 'traveler-add-days',
     },
     'traveler-add-days': {
-      NEXT: 'traveler-activity-selection',
+      NEXT: 'traveler-travel-schedule-confirm',
       PREV: 'traveler-schedule-selection',
     },
     'traveler-activity-selection': {
       NEXT: 'traveler-activity-recommendation',
-      PREV: 'traveler-add-days',
+      PREV: 'traveler-travel-schedule-confirm',
     },
     'traveler-activity-recommendation': {
       NEXT: 'traveler-travel-schedule-confirm',
@@ -47,7 +47,7 @@ const transitionMap: { [key in UIState]: { NEXT?: UIState; PREV?: UIState } } =
     },
     'traveler-travel-schedule-confirm': {
       NEXT: 'traveler-travel-schedule-arrange',
-      PREV: 'traveler-activity-selection',
+      PREV: 'traveler-add-days',
     },
     'traveler-travel-schedule-arrange': {
       PREV: 'traveler-travel-schedule-confirm',
@@ -61,7 +61,8 @@ const uiReducer = (state: UIState, action: UIAction): UIState => {
 };
 
 export function TravelerPage() {
-  const { tourInfo, isAllTravelSchedulesFilled, setLocation } = useTripStore();
+  const { tourInfo, isAllTravelSchedulesFilled, setLocation, setSelectedDay } =
+    useTripStore();
 
   useEffect(() => {
     const savedContent = sessionStorage.getItem('searchContent');
@@ -139,15 +140,21 @@ export function TravelerPage() {
           <TravelerScheduleConfirm
             onNextPage={() => dispatch({ type: 'NEXT' })}
             onPrevPage={() => dispatch({ type: 'PREV' })}
+            onRecommendPage={(day) => {
+              setSelectedDay(day);
+              dispatch({
+                type: 'NEXT',
+                payload: { nextState: 'traveler-activity-selection' },
+              });
+            }}
           />
         );
       case 'traveler-travel-schedule-arrange':
         return (
           <TravelerTravelArrange
             onNextPage={() => {
-              router.replace('/');
+              router.replace('/record');
             }}
-            onPrevPage={() => dispatch({ type: 'PREV' })}
           />
         );
       default:

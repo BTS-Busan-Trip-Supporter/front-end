@@ -9,10 +9,14 @@ export function SearchBox({
   onClick,
   setContent,
   dropBoxType,
+  placeholder,
+  className,
 }: {
   onClick?: () => void;
   setContent?: (value: string) => void;
   dropBoxType?: 'travelType' | 'regionType';
+  placeholder?: string;
+  className?: string;
 }) {
   const [value, setValue] = useState<string | null>(null);
   const [dropBoxVisible, setDropBoxVisible] = useState(false);
@@ -27,9 +31,11 @@ export function SearchBox({
       onClick={() => {
         if (dropBoxType !== undefined) setDropBoxVisible(true);
       }}
+      className={className}
     >
       <styles.searchInput
-        placeholder='키워드나 활동을 찾아보세요.'
+        readOnly={dropBoxType != null}
+        placeholder={placeholder || '키워드나 활동을 찾아보세요.'}
         value={value ?? ''}
         onChange={
           dropBoxType === undefined

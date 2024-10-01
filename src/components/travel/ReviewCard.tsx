@@ -85,7 +85,6 @@ function ReviewInput({
       {review ? (
         <>
           <input
-            className='existReview'
             type='text'
             placeholder='한줄 기록 남기기'
             value={text ?? review}

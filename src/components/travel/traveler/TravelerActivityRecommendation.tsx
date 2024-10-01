@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { CustomButton, LoadingCard } from '@/components';
 import { DetailCard, Loading } from '@/components/travel';
+import { useToast } from '@/features/toast';
 import type { TripItem } from '@/features/trip';
 import { useTripStore } from '@/features/trip/trip.slice';
 
@@ -50,7 +51,7 @@ export function TravelerActivityRecommendation({
   onNextPage: () => void;
   onPrevPage: () => void;
 }) {
-  const { isLoading, tourInfo, recommendContent, fillActivities } =
+  const { isLoading, tourInfo, recommendContent, fillActivities, selectedDay } =
     useTripStore();
 
   const [isDetailVisible, setIsDetailVisible] = useState(false);
@@ -62,6 +63,17 @@ export function TravelerActivityRecommendation({
     setSelectedPlace(place);
     setIsDetailVisible(true);
   };
+
+  const { createToast } = useToast();
+
+  useEffect(() => {
+    if (!isLoading)
+      createToast(
+        'info',
+        '기존 계획에 특정 시간대가 추가되어있다면, 추천에서 해당 시간대를 추가하더라도 추가되지 않습니다.',
+        5000,
+      );
+  }, [isLoading]);
 
   return (
     <styles.container>
@@ -88,7 +100,10 @@ export function TravelerActivityRecommendation({
           color='#FF75C8'
           text='여행 완성'
           onClick={() => {
+            if (!selectedDay) return;
+
             fillActivities(
+              selectedDay,
               selectedPlaces.map((place) => ({
                 dayTime: convertTimeString(place.time ?? '오전'),
                 orderIndex: 0,

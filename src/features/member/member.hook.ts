@@ -71,7 +71,7 @@ export const useChangePassword = () =>
       oldPassword: string;
       newPassword: string;
     }) => putPassword(oldPassword, newPassword),
-    onSuccess: (data) => data.data,
+    onSuccess: (data) => data,
   });
 
 export const useAuth = () => {

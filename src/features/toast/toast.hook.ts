@@ -6,9 +6,13 @@ import { type ToastType } from './toast.type';
 export function useToast() {
   const { addToast } = useToastStore();
 
-  const createToast = (type: ToastType, message: string) => {
+  const createToast = (
+    type: ToastType,
+    message: string,
+    duration: number = 2000,
+  ) => {
     const id = uuidv4();
-    addToast({ id, type, message });
+    addToast({ id, type, message, duration });
   };
 
   return { createToast };
