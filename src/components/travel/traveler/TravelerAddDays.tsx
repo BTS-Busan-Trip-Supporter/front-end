@@ -7,9 +7,20 @@ import { CustomButton } from '@/components';
 import { TravelerLocationConfirm } from '@/components/travel/traveler/TravelerLocationConfirm';
 import { TravelerLocationSearch } from '@/components/travel/traveler/TravelerLocationSearch';
 import { useToast } from '@/features/toast';
-import { getTourSpots, type GetTourSpotsDTO } from '@/features/tour-spot';
-import { TIME_STRING } from '@/features/trip';
+import {
+  getTourSpotContents,
+  getTourSpots,
+  type GetTourSpotsDTO,
+} from '@/features/tour-spot';
+import { postDayTrip, TIME_STRING } from '@/features/trip';
 import { useTripStore } from '@/features/trip/trip.slice';
+
+interface Location {
+  contentId: string;
+  contentTypeId: string;
+  title: string;
+  imageUrl: string;
+}
 
 export function TravelerAddDays({
   onPrevPage,
@@ -33,9 +44,12 @@ export function TravelerAddDays({
     removeTour,
     addActivity,
     removeActivity,
+    setIsLoading,
   } = useTripStore();
 
   const { createToast } = useToast();
+
+  const [locations, setLocations] = useState<Location[]>([]);
 
   return (
     <>
@@ -112,18 +126,45 @@ export function TravelerAddDays({
       )}
       {state.ui === 'search' && (
         <TravelerLocationSearch
+          locations={locations}
           onClick={() => {
             if (!state.location) return;
 
-            getTourSpots(state.location, tourInfo.sigunguCode ?? '').then(
-              (res) => {
-                setState((prev) => ({
-                  ...prev,
-                  ui: 'confirm',
-                  tourSpotDto: res,
-                }));
-              },
-            );
+            setLocations([]);
+            setIsLoading(true);
+            getTourSpots(state.location, tourInfo.sigunguCode ?? '')
+              .then((res) => {
+                const { contentId, contentTypeId, sigunguCode } = res.data;
+
+                getTourSpotContents(contentId, contentTypeId)
+                  .then((content) => ({ data: content.data }))
+                  .then((contentData) => {
+                    postDayTrip({
+                      contentTypeId,
+                      dayTimes: ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'],
+                      sigunguCode,
+                      tourDate: new Date().toISOString(),
+                    })
+                      .then((recommend) => {
+                        setLocations((prev) => [
+                          ...prev,
+                          ...recommend.data.filter(
+                            (v) => v.contentId !== contentData.data.contentId,
+                          ),
+                          {
+                            contentId: contentData.data.contentId,
+                            contentTypeId: contentData.data.contentTypeId,
+                            title: contentData.data.title,
+                            imageUrl: contentData.data.firstImage,
+                          },
+                        ]);
+                      })
+                      .finally(() => setIsLoading(false));
+                  });
+              })
+              .catch(() => {
+                setIsLoading(false);
+              });
           }}
           onContentChange={(value) =>
             setState((prev) => ({ ...prev, location: value }))
@@ -132,6 +173,21 @@ export function TravelerAddDays({
             setState((prev) => ({
               ...prev,
               ui: 'main',
+            }));
+          }}
+          onItemClick={(location) => {
+            setState((prev) => ({
+              ...prev,
+              ui: 'confirm',
+              tourSpotDto: {
+                status: 'success',
+                data: {
+                  title: location.title,
+                  contentId: location.contentId,
+                  contentTypeId: location.contentTypeId,
+                  sigunguCode: tourInfo.sigunguCode ?? '1',
+                },
+              },
             }));
           }}
         />
@@ -180,6 +236,7 @@ export function TravelerAddDays({
               });
 
               setState(() => ({ ui: 'main' }));
+              setLocations([]);
             }}
             onPrevPage={() => {
               setState((prev) => ({ ...prev, ui: 'search' }));
