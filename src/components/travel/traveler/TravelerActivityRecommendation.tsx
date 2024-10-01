@@ -50,7 +50,7 @@ export function TravelerActivityRecommendation({
   onNextPage: () => void;
   onPrevPage: () => void;
 }) {
-  const { isLoading, tourInfo, recommendContent, fillActivities } =
+  const { isLoading, tourInfo, recommendContent, fillActivities, selectedDay } =
     useTripStore();
 
   const [isDetailVisible, setIsDetailVisible] = useState(false);
@@ -88,7 +88,10 @@ export function TravelerActivityRecommendation({
           color='#FF75C8'
           text='여행 완성'
           onClick={() => {
+            if (!selectedDay) return;
+
             fillActivities(
+              selectedDay,
               selectedPlaces.map((place) => ({
                 dayTime: convertTimeString(place.time ?? '오전'),
                 orderIndex: 0,

@@ -1,13 +1,8 @@
 'use client';
 
 import styled from '@emotion/styled';
-import { useState } from 'react';
 
-import { TravelerLocationConfirm } from '@/components/travel/traveler/TravelerLocationConfirm';
-import { TravelerLocationSearch } from '@/components/travel/traveler/TravelerLocationSearch';
 import { useToast } from '@/features/toast';
-import type { GetTourSpotsDTO } from '@/features/tour-spot';
-import { getTourSpots } from '@/features/tour-spot';
 import {
   getTripSchedule,
   postTripSchedule,
@@ -19,177 +14,89 @@ import { useTripStore } from '@/features/trip/trip.slice';
 export function TravelerScheduleConfirm({
   onNextPage,
   onPrevPage,
+  onRecommendPage,
 }: {
   onNextPage: () => void;
   onPrevPage: () => void;
+  onRecommendPage: (day: number) => void;
 }) {
-  const [state, setState] = useState<{
-    ui: 'main' | 'search' | 'confirm';
-    day?: number;
-    location?: string;
-    time?: 'MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT';
-    tourSpotDto?: GetTourSpotsDTO;
-  }>({ ui: 'main' });
-
-  const { tourInfo, activities, setIsLoading, addActivity, load } =
-    useTripStore();
+  const { tourInfo, activities, setIsLoading, load } = useTripStore();
 
   const { createToast } = useToast();
 
   return (
-    <>
-      {state.ui === 'main' && (
-        <styles.container>
-          <styles.header>
-            <styles.prevButton
-              src='/chevron-left.svg'
-              alt='chevron-left'
-              onClick={onPrevPage}
-            />
-          </styles.header>
-          <styles.location>{tourInfo.locationName}</styles.location>
-          {activities.map((acts, index) => (
-            <DayScheduleItem
-              key={index}
-              day={index + 1}
-              activities={acts}
-              onAddActivityButtonClick={() => {
-                setState((prev) => ({
-                  ...prev,
-                  ui: 'search',
-                  day: index + 1,
-                }));
-              }}
-            />
-          ))}
-          <styles.confirmButton
-            onClick={() => {
-              if (
-                !tourInfo.name ||
-                !tourInfo.locationName ||
-                !tourInfo.startTime ||
-                !tourInfo.endTime
-              )
-                return;
-
-              if (activities.some((v) => v.length === 0)) {
-                createToast('info', '장소를 한 개 이상 선택해주세요');
-                return;
-              }
-
-              postTripSchedule({
-                tourLogData: {
-                  name: tourInfo.name,
-                  locationName: tourInfo.locationName,
-                  startTime: tourInfo.startTime.toISOString().slice(0, -5),
-                  endTime: tourInfo.endTime.toISOString().slice(0, -5),
-                },
-                tourActivityDataList: activities.flat().map((act) => ({
-                  spotName: act.spotName,
-                  dayNumber: act.dayNumber,
-                  dayTime: act.dayTime,
-                  orderIndex: 0,
-                  tourSpotData: {
-                    contentId: act.tourSpotDto.id,
-                    contentTypeId: act.tourSpotDto.typeId,
-                  },
-                })),
-              }).then((res) => {
-                const { data: logId } = res;
-
-                setIsLoading(true);
-                getTripSchedule(logId)
-                  .then((dto) => {
-                    load(dto);
-                    onNextPage();
-                  })
-                  .catch(() => {
-                    createToast('error', '다시 시도해주세요.');
-                  })
-                  .finally(() => {
-                    setIsLoading(false);
-                  });
-              });
-            }}
-          >
-            여행 완성
-          </styles.confirmButton>
-        </styles.container>
-      )}{' '}
-      {state.ui === 'search' && (
-        <TravelerLocationSearch
-          onClick={() => {
-            if (!state.location) return;
-
-            getTourSpots(state.location, tourInfo.sigunguCode ?? '').then(
-              (res) => {
-                setState((prev) => ({
-                  ...prev,
-                  ui: 'confirm',
-                  tourSpotDto: res,
-                }));
-              },
-            );
-          }}
-          onContentChange={(value) =>
-            setState((prev) => ({ ...prev, location: value }))
-          }
-          onPrevPage={() => {
-            setState((prev) => ({ ...prev, ui: 'main' }));
+    <styles.container>
+      <styles.header>
+        <styles.prevButton
+          src='/chevron-left.svg'
+          alt='chevron-left'
+          onClick={onPrevPage}
+        />
+      </styles.header>
+      <styles.location>{tourInfo.locationName}</styles.location>
+      {activities.map((acts, index) => (
+        <DayScheduleItem
+          key={index}
+          day={index + 1}
+          activities={acts}
+          onAddActivityButtonClick={() => {
+            onRecommendPage(index + 1);
           }}
         />
-      )}
-      {state.ui === 'confirm' &&
-        state.tourSpotDto &&
-        state.day &&
-        state.location && (
-          <TravelerLocationConfirm
-            location={state.tourSpotDto.data.title}
-            day={state.day}
-            selectedTime={state.time}
-            onTimeClicked={(time) => {
-              if (
-                state.day &&
-                !activities[state.day - 1]?.find(
-                  (activity) => activity.dayTime === time,
-                )
-              ) {
-                setState((prev) => ({ ...prev, time }));
-              } else {
-                createToast('error', '이미 선택된 시간대입니다!');
-              }
-            }}
-            onConfirm={() => {
-              if (
-                !state.day ||
-                !state.time ||
-                !state.tourSpotDto ||
-                !tourInfo.startTime ||
-                !tourInfo.endTime
-              )
-                return;
+      ))}
+      <styles.confirmButton
+        onClick={() => {
+          if (
+            !tourInfo.name ||
+            !tourInfo.locationName ||
+            !tourInfo.startTime ||
+            !tourInfo.endTime
+          )
+            return;
 
-              addActivity(state.day, {
-                dayNumber: state.day,
-                dayTime: state.time,
-                spotName: state.tourSpotDto.data.title,
-                tourSpotDto: {
-                  id: state.tourSpotDto.data.contentId,
-                  typeId: state.tourSpotDto.data.contentTypeId,
-                  title: state.tourSpotDto.data.title,
-                  sigunguCode: state.tourSpotDto.data.sigunguCode,
-                },
-                orderIndex: 0,
+          if (activities.some((v) => v.length === 0)) {
+            createToast('info', '장소를 한 개 이상 선택해주세요');
+            return;
+          }
+
+          postTripSchedule({
+            tourLogData: {
+              name: tourInfo.name,
+              locationName: tourInfo.locationName,
+              startTime: tourInfo.startTime.toISOString().slice(0, -5),
+              endTime: tourInfo.endTime.toISOString().slice(0, -5),
+            },
+            tourActivityDataList: activities.flat().map((act) => ({
+              spotName: act.spotName,
+              dayNumber: act.dayNumber,
+              dayTime: act.dayTime,
+              orderIndex: 0,
+              tourSpotData: {
+                contentId: act.tourSpotDto.id,
+                contentTypeId: act.tourSpotDto.typeId,
+              },
+            })),
+          }).then((res) => {
+            const { data: logId } = res;
+
+            setIsLoading(true);
+            getTripSchedule(logId)
+              .then((dto) => {
+                load(dto);
+                onNextPage();
+              })
+              .catch(() => {
+                createToast('error', '다시 시도해주세요.');
+              })
+              .finally(() => {
+                setIsLoading(false);
               });
-
-              setState(() => ({ ui: 'main' }));
-            }}
-            onPrevPage={() => {
-              setState((prev) => ({ ...prev, ui: 'search' }));
-            }}
-          />
-        )}
-    </>
+          });
+        }}
+      >
+        여행 완성
+      </styles.confirmButton>
+    </styles.container>
   );
 }
 

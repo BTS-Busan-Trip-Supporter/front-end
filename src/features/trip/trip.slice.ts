@@ -34,6 +34,7 @@ export interface TripState {
   tourInfo: TourInfo;
   activities: Array<Array<Activity>>;
 
+  selectedDay?: number;
   isLoading: boolean;
   recommendContent?: string;
   recommendedItems: TripItem[];
@@ -50,8 +51,9 @@ export interface TripAction {
   removeTour: (day: number) => void;
   addActivity: (day: number, activity: Activity) => void;
   removeActivity: (day: number, activity: Activity) => void;
-  fillActivities: (items: Activity[]) => void;
+  fillActivities: (day: number, items: Activity[]) => void;
   load: (dto: GetTripScheduleResponseDTO) => void;
+  setSelectedDay: (day: number) => void;
 }
 
 const initialState: TripState = {
@@ -118,13 +120,15 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
   addTour: () =>
     set((prev) => {
       const { tourInfo, activities } = prev;
-      if (!tourInfo.startTime || !tourInfo.endTime) return prev;
+
+      if (!tourInfo.startTime) return prev;
+
+      const { startTime } = tourInfo;
+      const endTime = tourInfo.endTime ?? startTime;
 
       const DAY = 60 * 60 * 24 * 1000;
       const days =
-        (Math.round(tourInfo.endTime.getTime() - tourInfo.startTime.getTime()) +
-          1) /
-        DAY;
+        (Math.round(endTime.getTime() - startTime.getTime()) + 1) / DAY;
 
       return {
         ...prev,
@@ -132,7 +136,7 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
           ...tourInfo,
           endTime:
             days >= activities.length
-              ? new Date(tourInfo.endTime.getTime() + DAY)
+              ? new Date(endTime.getTime() + DAY)
               : tourInfo.endTime,
         },
         activities: [...prev.activities, []],
@@ -180,42 +184,22 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
       ),
     })),
 
-  fillActivities: (items) =>
+  fillActivities: (day, items) =>
     set((prev) => {
       const { activities } = prev;
 
       const newActivities = [...activities];
 
-      items.forEach((activity) => {
-        const targetTime = activity.dayTime;
+      items.forEach((activity, index) => {
+        if (
+          newActivities[day - 1].some((act) => act.dayTime === activity.dayTime)
+        )
+          return;
 
-        let flag = false;
-        newActivities.some((acts, index) => {
-          if (acts.find((act) => act.dayTime === targetTime)) return false;
-          acts.push({ ...activity, dayNumber: index + 1 });
-          acts.sort((a, b) => TIME_ORDER[a.dayTime] - TIME_ORDER[b.dayTime]);
-          flag = true;
-          return true;
-        });
-
-        if (flag) return;
-
-        newActivities.forEach((acts, index) => {
-          if (acts.length === 4) return;
-
-          const remaining = acts.reduce<
-            ('MORNING' | 'AFTERNOON' | 'EVENING' | 'NIGHT')[]
-          >(
-            (res, curr) => res.filter((v) => v !== curr.dayTime),
-            ['MORNING', 'AFTERNOON', 'EVENING', 'NIGHT'],
-          );
-
-          const time = remaining.shift();
-          if (time) {
-            acts.push({ ...activity, dayTime: time, dayNumber: index + 1 });
-            acts.sort((a, b) => TIME_ORDER[a.dayTime] - TIME_ORDER[b.dayTime]);
-          }
-        });
+        newActivities[day - 1].push({ ...activity, dayNumber: index + 1 });
+        newActivities[day - 1].sort(
+          (a, b) => TIME_ORDER[a.dayTime] - TIME_ORDER[b.dayTime],
+        );
       });
 
       return { ...prev, activities: newActivities };
@@ -238,4 +222,6 @@ export const useTripStore = create<TripState & TripAction>((set, get) => ({
 
       return { ...prev, activities: newActivities };
     }),
+
+  setSelectedDay: (day) => set((prev) => ({ ...prev, selectedDay: day })),
 }));
