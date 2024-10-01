@@ -34,7 +34,7 @@ export function SearchBox({
       className={className}
     >
       <styles.searchInput
-        readOnly={dropBoxVisible}
+        readOnly={dropBoxType != null}
         placeholder={placeholder || '키워드나 활동을 찾아보세요.'}
         value={value ?? ''}
         onChange={
