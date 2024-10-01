@@ -120,7 +120,6 @@ const styles = {
     width: 1.5rem;
     height: 1.5rem;
     background: url('/camera.svg') no-repeat center;
-    background-size: content;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -185,7 +184,7 @@ const styles = {
       gap: 0.8rem;
 
       p {
-        width: 5rem;
+        flex-shrink: 0;
         color: #505050;
         font-family: 'Noto Sans KR';
         font-size: 0.9375rem;
@@ -197,7 +196,7 @@ const styles = {
 
       input {
         border: none;
-        flex: 1;
+        width: 100%;
         height: 100%;
         color: #b5b5b5;
         text-align: right;
