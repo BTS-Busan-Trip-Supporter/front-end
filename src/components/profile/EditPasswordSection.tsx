@@ -72,7 +72,7 @@ const styles = {
 
     li {
       border-bottom: 0.4px solid #d3d3d3;
-      flex-grow: 1;
+      width: 100%;
       padding: 1rem 0.3rem;
       display: flex;
       justify-content: space-between;
@@ -121,7 +121,7 @@ const styles = {
   `,
 
   inputPWD: styled.input`
-    flex-grow: 1;
+    width: 100%;
     height: 100%;
     border: none;
 
