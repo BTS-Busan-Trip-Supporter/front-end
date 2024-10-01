@@ -15,7 +15,7 @@ export function EditPasswordSection({ onClick }: { onClick: () => void }) {
     <styles.container>
       <ul>
         <li>
-          현재 비밀번호{' '}
+          <p>현재 비밀번호 </p>
           <styles.inputPWD
             type='password'
             value={oldPassword}
@@ -25,7 +25,7 @@ export function EditPasswordSection({ onClick }: { onClick: () => void }) {
           />
         </li>
         <li>
-          변경할 비밀번호{' '}
+          <p>변경할 비밀번호 </p>
           <styles.inputPWD
             type='password'
             value={newPassword}
@@ -72,7 +72,7 @@ const styles = {
 
     li {
       border-bottom: 0.4px solid #d3d3d3;
-      width: 100%;
+      flex-grow: 1;
       padding: 1rem 0.3rem;
       display: flex;
       justify-content: space-between;
@@ -86,6 +86,10 @@ const styles = {
       font-weight: 500;
       line-height: normal;
       letter-spacing: -0.01875rem;
+
+      p {
+        flex-shrink: 0;
+      }
     }
 
     span {

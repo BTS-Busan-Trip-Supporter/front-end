@@ -91,9 +91,6 @@ export function TravelerScheduleConfirm({
                   load(dto);
                   onNextPage();
                 })
-                .catch(() => {
-                  createToast('error', '다시 시도해주세요.');
-                })
                 .finally(() => {
                   setIsLoading(false);
                 });
