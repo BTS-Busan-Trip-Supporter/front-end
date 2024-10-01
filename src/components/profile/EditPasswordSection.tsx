@@ -121,7 +121,7 @@ const styles = {
   `,
 
   inputPWD: styled.input`
-    flex: 1;
+    flex-grow: 1;
     height: 100%;
     border: none;
 
